@@ -1,14 +1,25 @@
 {
   "name": "doves-and-dandys-app",
   "version": "1.0.0",
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "description": "E-commerce app for Doves and Dandys Western Wear",
   "main": "app.js",
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {},
   "scripts": {
+    "db:seed": "node api/seeder/seeder.js",
+    "db:delete-all": "node api/seeder/seeder.js -d",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jammsmith/doves-and-dandys.git"
   },
   "author": "James Smith",
   "license": "ISC",
-  "dependencies": {
-    "dotenv": "^10.0.0"
-  }
+  "bugs": {
+    "url": "https://github.com/jammsmith/doves-and-dandys/issues"
+  },
+  "homepage": "https://github.com/jammsmith/doves-and-dandys#readme"
 }
