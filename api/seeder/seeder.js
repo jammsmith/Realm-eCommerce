@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const { Customer } = require('../models/customerModel.js');
-const { Product } = require('../models/productModel.js');
-const { Order } = require('../models/orderModel.js');
+const User = require('../models/user.js');
+const Product = require('../models/product.js');
+const Order = require('../models/singleProductOrder.js');
 
 const products = require('./data/products.js');
-const customers = require('./data/customers.js');
+const users = require('./data/users.js');
 
 dotenv.config();
 
@@ -27,12 +27,12 @@ db.once('open', () => console.log('Connected with dovesAndDandysDB'));
 //
 const addFakeData = async () => {
   try {
-    await Customer.deleteMany();
+    await User.deleteMany();
     await Order.deleteMany();
     await Product.deleteMany();
 
-    await Customer.insertMany(customers);
-    console.log('Fake customer data imported successfully');
+    await User.insertMany(users);
+    console.log('Fake user data imported successfully');
 
     await Product.insertMany(products);
     console.log('Fake products imported successfully.');
@@ -46,7 +46,7 @@ const addFakeData = async () => {
 
 const deleteAllData = async () => {
   try {
-    await Customer.deleteMany();
+    await User.deleteMany();
     await Order.deleteMany();
     await Product.deleteMany();
 
