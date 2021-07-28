@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 const User = require('../models/user.js');
 const Product = require('../models/product.js');
-const Order = require('../models/singleProductOrder.js');
+const Order = require('../models/orderItem.js');
 
 const products = require('./data/products.js');
 const users = require('./data/users.js');

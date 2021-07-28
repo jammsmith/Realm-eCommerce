@@ -39,6 +39,9 @@ const db = mongoose.connection;
 db.on('error', err => console.log(err));
 db.once('open', () => console.log('Connected with dovesAndDandysDB'));
 //
+// Set mongoose to always return the updated value after a mutation.
+// Default behaviour is to return the original value before mutation.
+mongoose.set('returnOriginal', false);
 
 const PORT = process.env.PORT;
 
