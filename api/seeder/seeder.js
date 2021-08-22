@@ -2,10 +2,13 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 const User = require('../models/user.js');
-const Product = require('../models/product.js');
-const Order = require('../models/orderItem.js');
+const Category = require('../models/shop/category.js');
+const SubCategory = require('../models/shop/subCategory');
+const Product = require('../models/shop/product.js');
+const Order = require('../models/shop/orderItem.js');
 
-const products = require('./data/products.js');
+const categories = require('./data/shop/categories.js');
+const products = require('./data/shop/products.js');
 const users = require('./data/users.js');
 
 dotenv.config();

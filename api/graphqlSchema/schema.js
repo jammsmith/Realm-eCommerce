@@ -1,8 +1,12 @@
 const graphql = require('graphql');
 
 const User = require('../models/user.js');
-const Product = require('../models/product.js');
-const OrderItem = require('../models/orderItem.js');
+const Product = require('../models/shop/product.js');
+const OrderItem = require('../models/shop/orderItem.js');
+
+const { UserType } = require('./types.js');
+const { ProductType } = require('./types.js');
+const { OrderItemType } = require('./types.js');
 
 const convertScalarTypeToValue = require('../helpers/graphql.js');
 
@@ -16,63 +20,6 @@ const {
   GraphQLBoolean,
   GraphQLNonNull
 } = graphql;
-
-// Define the types ---->
-
-// A user of the website
-const UserType = new GraphQLObjectType({
-  name: 'User',
-  fields: () => ({
-    id: { type: GraphQLID },
-    firstName: { type: GraphQLString },
-    lastName: { type: GraphQLString },
-    email: { type: GraphQLString },
-    password: { type: GraphQLString },
-    isAdmin: { type: GraphQLBoolean },
-    orders: {
-      type: new GraphQLList(OrderItemType),
-      resolve (parent) {
-        return OrderItem.find({ userId: parent.id });
-      }
-    }
-  })
-});
-
-// One product for sale
-const ProductType = new GraphQLObjectType({
-  name: 'Product',
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    image: { type: GraphQLString },
-    category: { type: GraphQLString },
-    description: { type: GraphQLString },
-    price: { type: GraphQLInt },
-    numInStock: { type: GraphQLInt }
-  })
-});
-
-// One item in an order
-const OrderItemType = new GraphQLObjectType({
-  name: 'OrderItem',
-  fields: () => ({
-    id: { type: GraphQLID },
-    size: { type: GraphQLString },
-    quantity: { type: GraphQLInt },
-    product: {
-      type: ProductType,
-      resolve (parent) {
-        return Product.findById(parent.productId);
-      }
-    },
-    customer: {
-      type: UserType,
-      resolve (parent) {
-        return User.findById(parent.userId);
-      }
-    }
-  })
-});
 
 // Declare Root Query 'start points' ---->
 const RootQuery = new GraphQLObjectType({
@@ -139,6 +86,7 @@ const RootQuery = new GraphQLObjectType({
         return Product.findById(args.id);
       }
     },
+    // Multiple products
     productsByCategory: {
       type: new GraphQLList(ProductType),
       args: {
@@ -148,6 +96,15 @@ const RootQuery = new GraphQLObjectType({
         return Product.find({ category: args.category });
       }
     },
+    productsBySubCategory: {
+      type: new GraphQLList(ProductType),
+      args: {
+        subCategory: { type: GraphQLString }
+      },
+      resolve (_, args) {
+        return Product.find({ subCategory: args.subCategory });
+      }
+    },
     // All products
     allProducts: {
       type: new GraphQLList(ProductType),
@@ -155,6 +112,13 @@ const RootQuery = new GraphQLObjectType({
         return Product.find({});
       }
     }
+    // Categories
+    // subCategories: {
+    //   type: SubCategoryEnumType, // need to define this enum
+    //   resolve () {
+    //     // find all subCategories that have the correct category
+    //   }
+    // }
   }
 });
 

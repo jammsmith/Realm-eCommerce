@@ -9,6 +9,7 @@ const app = express();
 
 dotenv.config({ path: '../.env' });
 
+app.use(cors());
 app.use(
   '/graphql',
   graphqlHTTP({
@@ -16,8 +17,6 @@ app.use(
     graphiql: true
   })
 );
-
-app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
