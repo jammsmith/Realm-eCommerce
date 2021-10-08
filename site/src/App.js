@@ -5,7 +5,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 // Main views
 import Home from './Views/Client/Home/Home.js';
 import Shop from './Views/Client/Shop/Shop.js';
-import Basket from './Views/Client/Shop/Basket.js';
+import Basket from './Views/Client/Shop/Checkout/Basket.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
 import Error404 from './Views/Error/Error404.js';
@@ -15,6 +15,9 @@ import Navbar from './Components/Navbar/Navbar';
 import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
+
+// Contexts
+import CurrentUserContextProvider from './context/currentUser.js';
 
 // Apollo instance
 const client = new ApolloClient({
@@ -30,25 +33,27 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <Navbar handleToggleClick={toggleHandler} />
-        {
-          menuInView &&
-            <>
-              <SideDrawer show={menuInView} handleDrawerLinkClick={closeMenu} />
-              <BackgroundShadow handleBackgroundClick={closeMenu} />
-            </>
-        }
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
-          <Route exact path='/basket' component={Basket} />
-          <Route exact path='/about-us' component={AboutUs} />
-          <Route exact path='/contact-us' component={ContactUs} />
-          <Route path='/' component={Error404} />
-        </Switch>
-        <Footer />
-      </Router>
+      <CurrentUserContextProvider>
+        <Router>
+          <Navbar handleToggleClick={toggleHandler} />
+          {
+            menuInView &&
+              <>
+                <SideDrawer show={menuInView} handleDrawerLinkClick={closeMenu} />
+                <BackgroundShadow handleBackgroundClick={closeMenu} />
+              </>
+          }
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
+            <Route exact path='/basket' component={Basket} />
+            <Route exact path='/about-us' component={AboutUs} />
+            <Route exact path='/contact-us' component={ContactUs} />
+            <Route path='/' component={Error404} />
+          </Switch>
+          <Footer />
+        </Router>
+      </CurrentUserContextProvider>
     </ApolloProvider>
   );
 };

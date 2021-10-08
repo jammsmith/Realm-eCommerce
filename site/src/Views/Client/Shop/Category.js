@@ -15,6 +15,7 @@ const Category = () => {
   const { category } = useParams();
 
   return (
+
     <CategoryByName categoryName={category}>
       {
         category =>
