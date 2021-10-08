@@ -1,14 +1,18 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
+const createMongooseConnection = require('./helpers/createMongooseConnection.js');
 const schema = require('./graphqlSchema/schema.js');
 const app = express();
 
+// Find and declare dotenv vars
 dotenv.config({ path: '../.env' });
+const { PORT } = process.env;
 
+// Middleware
 app.use(cors());
 app.use(
   '/graphql',
@@ -17,31 +21,14 @@ app.use(
     graphiql: true
   })
 );
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Create Mongoose connection
-
-const { MONGO_CONNECTION_URI } = process.env;
-
-mongoose
-  .connect(MONGO_CONNECTION_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-  })
-  .catch(err => console.log(err));
-
-// Check mongoose connection
-const db = mongoose.connection;
-db.on('error', err => console.log(err));
-db.once('open', () => console.log('Connected with dovesAndDandysDB'));
-//
+// Create Mongoose connection.
+createMongooseConnection();
 // Set mongoose to always return the updated value after a mutation.
 // Default behaviour is to return the original value before mutation.
 mongoose.set('returnOriginal', false);
 
-const PORT = process.env.PORT;
-
-app.listen(5000, () => console.log('Server running on port 5000'));
+// Start-up server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

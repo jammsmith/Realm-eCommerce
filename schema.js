@@ -32,7 +32,7 @@ const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
     // User related queries -->
-    userById: {
+    userByID: {
       type: UserType,
       args: {
         id: { type: GraphQLID }
@@ -47,16 +47,6 @@ const RootQuery = new GraphQLObjectType({
         return User.find({});
       }
     },
-    // A single category
-    categoryByName: {
-      type: CategoryType,
-      args: {
-        name: { type: GraphQLString }
-      },
-      resolve (_, args) {
-        return Category.findOne({ name: args.name });
-      }
-    },
     // All categories
     allCategories: {
       type: new GraphQLList(CategoryType),
@@ -64,15 +54,14 @@ const RootQuery = new GraphQLObjectType({
         return Category.find({});
       }
     },
-    // Specific sub-category
-    singleSubCategory: {
-      type: SubCategoryType,
+    // Sub-categories from a specific category
+    subCategoriesByCategory: {
+      type: new GraphQLList(SubCategoryType),
       args: {
-        name: { type: GraphQLString },
         category: { type: GraphQLString }
       },
       resolve (_, args) {
-        return SubCategory.findOne({ name: args.name, category: args.category });
+        return SubCategory.find({ category: args.category });
       }
     },
     // All sub-categories
@@ -83,7 +72,7 @@ const RootQuery = new GraphQLObjectType({
       }
     },
     // Single product
-    productById: {
+    productByID: {
       type: ProductType,
       args: {
         id: { type: GraphQLID }
@@ -122,13 +111,23 @@ const RootQuery = new GraphQLObjectType({
       }
     },
     // One specific order
-    orderById: {
+    orderByID: {
       type: OrderType,
       args: {
         id: { type: GraphQLID }
       },
       resolve (_, args) {
         return Order.findById(args.id);
+      }
+    },
+    // All orders made by a specific customer
+    ordersByCustomerID: {
+      type: new GraphQLList(OrderType),
+      args: {
+        id: { type: GraphQLID }
+      },
+      resolve (_, args) {
+        return Order.find({ customerId: args.id });
       }
     },
     allOrders: {
