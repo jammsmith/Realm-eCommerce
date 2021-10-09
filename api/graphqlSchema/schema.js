@@ -1,20 +1,20 @@
 const graphql = require('graphql');
 
-const User = require('../models/user.js'); // done
+// Mongoose models
+const User = require('../models/user.js');
 const Category = require('../models/shop/category.js');
 const SubCategory = require('../models/shop/subCategory');
-const Product = require('../models/shop/product.js'); // done
+const Product = require('../models/shop/product.js');
 const Order = require('../models/shop/order.js');
-const OrderItem = require('../models/shop/orderItem.js'); // done
+const OrderItem = require('../models/shop/orderItem.js');
 
+// Graphql types
 const { UserType } = require('./types.js');
 const { CategoryType } = require('./types.js');
 const { SubCategoryType } = require('./types.js');
 const { ProductType } = require('./types.js');
 const { OrderType } = require('./types.js');
 const { OrderItemType } = require('./types.js');
-
-const convertScalarTypeToValue = require('../helpers/graphql.js');
 
 const {
   GraphQLObjectType,
@@ -140,9 +140,8 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
-// ******** Need to relook a mutations now that db fields have been changed. ********* //
-
 // Declare 'create, update and delete' mutations -->
+// Could do with adding category/sub-category add, update, delete mutations too.
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
@@ -170,13 +169,20 @@ const Mutation = new GraphQLObjectType({
       type: UserType,
       args: {
         userId: { type: new GraphQLNonNull(GraphQLID) },
-        key: { type: new GraphQLNonNull(GraphQLString) },
-        stringValue: { type: GraphQLString },
-        booleanValue: { type: GraphQLBoolean }
+        firstName: { type: GraphQLString },
+        lastName: { type: GraphQLString },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+        isAdmin: { type: GraphQLBoolean }
       },
-      resolve (_, { userId, key, stringValue, booleanValue }) {
-        const value = convertScalarTypeToValue(stringValue, booleanValue);
-        return User.findByIdAndUpdate(userId, { [key]: value });
+      resolve (_, args) {
+        return User.findByIdAndUpdate(args.userId, {
+          firstName: args.firstName,
+          lastName: args.lastName,
+          email: args.email,
+          password: args.password,
+          isAdmin: args.isAdmin
+        });
       }
     },
     deleteUser: {
@@ -189,56 +195,14 @@ const Mutation = new GraphQLObjectType({
       }
     },
     //
-    // Order related mutations -->
-    addOrder: {
-      type: OrderItemType,
-      args: {
-        size: { type: GraphQLString },
-        quantity: { type: new GraphQLNonNull(GraphQLInt) },
-        userId: { type: new GraphQLNonNull(GraphQLID) },
-        orderId: { type: new GraphQLNonNull(GraphQLID) },
-        productId: { type: new GraphQLNonNull(GraphQLID) }
-      },
-      resolve (_, args) {
-        return new OrderItem({
-          size: args.size,
-          quantity: args.quantity,
-          userId: args.userId,
-          orderId: args.orderId,
-          productId: args.productId
-        }).save();
-      }
-    },
-    updateOrder: {
-      type: UserType,
-      args: {
-        orderId: { type: new GraphQLNonNull(GraphQLID) },
-        key: { type: new GraphQLNonNull(GraphQLString) },
-        stringValue: { type: GraphQLString },
-        booleanValue: { type: GraphQLBoolean }
-      },
-      resolve (_, { orderId, key, stringValue, booleanValue }) {
-        const value = convertScalarTypeToValue(stringValue, booleanValue);
-        return User.findByIdAndUpdate(orderId, { [key]: value });
-      }
-    },
-    deleteOrder: {
-      type: OrderItemType,
-      args: {
-        orderId: { type: new GraphQLNonNull(GraphQLID) }
-      },
-      resolve (_, args) {
-        return OrderItem.findByIdAndDelete(args.orderId);
-      }
-    },
-    //
-    // Product related mutations
+    // Inventory related mutations
     addProductToInventory: {
       type: ProductType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         image: { type: new GraphQLNonNull(GraphQLString) },
         category: { type: new GraphQLNonNull(GraphQLString) },
+        subCategory: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: new GraphQLNonNull(GraphQLString) },
         price: { type: new GraphQLNonNull(GraphQLInt) },
         numInStock: { type: new GraphQLNonNull(GraphQLInt) }
@@ -248,6 +212,7 @@ const Mutation = new GraphQLObjectType({
           name: args.name,
           image: args.image,
           category: args.category,
+          subCategory: args.subCategory,
           description: args.description,
           price: args.price,
           numInStock: args.numInStock
@@ -258,13 +223,24 @@ const Mutation = new GraphQLObjectType({
       type: ProductType,
       args: {
         productId: { type: new GraphQLNonNull(GraphQLID) },
-        key: { type: new GraphQLNonNull(GraphQLString) },
-        stringValue: { type: GraphQLString },
-        integerValue: { type: GraphQLInt }
+        name: { type: GraphQLString },
+        image: { type: GraphQLString },
+        category: { type: GraphQLString },
+        subCategory: { type: GraphQLString },
+        description: { type: GraphQLString },
+        price: { type: GraphQLInt },
+        numInStock: { type: GraphQLInt }
       },
-      resolve (_, { productId, key, stringValue, integerValue }) {
-        const value = convertScalarTypeToValue(stringValue, integerValue);
-        return Product.findByIdAndUpdate(productId, { [key]: value });
+      resolve (_, args) {
+        return Product.findByIdAndUpdate(args.productId, {
+          name: args.name,
+          image: args.image,
+          category: args.category,
+          subCategory: args.subCategory,
+          description: args.description,
+          price: args.price,
+          numInStock: args.numInStock
+        });
       }
     },
     removeProductFromInventory: {
@@ -274,6 +250,96 @@ const Mutation = new GraphQLObjectType({
       },
       resolve (_, args) {
         return Product.findByIdAndDelete(args.productId);
+      }
+    },
+    //
+    // Order related mutations -->
+    addOrder: {
+      type: OrderType,
+      args: {
+        customerId: { type: new GraphQLNonNull(GraphQLID) },
+        extraInfo: { type: GraphQLString },
+        isPendingInCheckout: { type: new GraphQLNonNull(GraphQLBoolean) },
+        isPaidFor: { type: new GraphQLNonNull(GraphQLBoolean) },
+        isOrderConfirmed: { type: new GraphQLNonNull(GraphQLBoolean) },
+        isDelivered: { type: new GraphQLNonNull(GraphQLBoolean) }
+      },
+      resolve (_, args) {
+        return new Order({
+          customerId: args.customerId,
+          extraInfo: args.extraInfo,
+          isPendingInCheckout: args.isPendingInCheckout,
+          isPaidFor: args.isPaidFor,
+          isOrderConfirmed: args.isOrderConfirmed,
+          isDelivered: args.isDelivered
+        }).save();
+      }
+    },
+    updateOrder: {
+      type: OrderType,
+      args: {
+        orderId: { type: new GraphQLNonNull(GraphQLID) },
+        isPendingInCheckout: { type: GraphQLBoolean },
+        isPaidFor: { type: GraphQLBoolean },
+        isOrderConfirmed: { type: GraphQLBoolean },
+        isDelivered: { type: GraphQLBoolean }
+      },
+      resolve (_, args) {
+        return Order.findByIdAndUpdate(args.orderId, {
+          isPendingInCheckout: args.isPendingInCheckout,
+          isPaidFor: args.isPaidFor,
+          isOrderConfirmed: args.isOrderConfirmed,
+          isDelivered: args.isDelivered
+        });
+      }
+    },
+    deleteOrder: {
+      type: OrderType,
+      args: {
+        orderId: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      resolve (_, args) {
+        return Order.findByIdAndDelete(args.orderId);
+      }
+    },
+    addItemToOrder: {
+      type: OrderItemType,
+      args: {
+        size: { type: GraphQLString },
+        quantity: { type: new GraphQLNonNull(GraphQLInt) },
+        orderId: { type: new GraphQLNonNull(GraphQLID) },
+        productId: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      resolve (_, args) {
+        return new OrderItem({
+          size: args.size,
+          quantity: args.quantity,
+          orderId: args.orderId,
+          productId: args.productId
+        }).save();
+      }
+    },
+    updateItemInOrder: {
+      type: OrderItemType,
+      args: {
+        orderItemId: { type: new GraphQLNonNull(GraphQLID) },
+        size: { type: GraphQLString },
+        quantity: { type: GraphQLInt }
+      },
+      resolve (_, args) {
+        return OrderItem.findByIdAndUpdate(args.orderId, {
+          size: args.size,
+          quantity: args.quantity
+        });
+      }
+    },
+    deleteItemFromOrder: {
+      type: OrderItemType,
+      args: {
+        orderItemId: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      resolve (_, args) {
+        return OrderItem.findByIdAndDelete(args.orderItemId);
       }
     }
   }

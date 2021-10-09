@@ -3,6 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IoCartOutline } from 'react-icons/io5';
 
+// Mutations
+import useDDMutation from '../../../hooks/useDDMutation.js';
+import mutations from '../../../graphql/mutations.js';
+
 // Components
 import Image from '../../Image.js';
 import ActionButton from '../../ActionButton.js';
@@ -30,6 +34,13 @@ const { dark, light } = colours;
 const ProductTile = props => {
   const { name, price, image, numInStock, linkTo, description, viewAsSingleProduct } = props;
 
+  const [addItemToOrder] = useDDMutation(mutations.AddItemToOrder, {
+    size: '------------------test-------------------',
+    quantity: 11,
+    orderId: '615c2e7039375f1ed9901dbb',
+    productId: '615c2e6f39375f1ed9901d89'
+  });
+
   let addToCartText;
   if (numInStock > 0) {
     const text = 'Add To Cart';
@@ -41,6 +52,11 @@ const ProductTile = props => {
   } else {
     addToCartText = 'Contact us to request this product';
   }
+
+  const handleAddToCart = () => {
+    console.log('add to cart');
+    addItemToOrder();
+  };
 
   return (
     <OuterContainer>
@@ -73,9 +89,9 @@ const ProductTile = props => {
         {/* Add to cart button should add item but stay on current page so no Link */}
         <ActionButton
           text={addToCartText}
-          linkTo='/basket'
           customStyles={{ background: dark, color: light, width: '100%' }}
           variant='contained'
+          onClick={handleAddToCart}
         />
       </ButtonContainer>
     </OuterContainer>
