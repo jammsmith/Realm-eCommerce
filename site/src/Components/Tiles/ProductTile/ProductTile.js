@@ -54,7 +54,6 @@ const ProductTile = props => {
   }
 
   const handleAddToCart = () => {
-    console.log('add to cart');
     addItemToOrder();
   };
 
