@@ -36,15 +36,10 @@ const Product = () => {
     <ProductById productId={productId}>
       {
         product => {
-          const { name, image, description, price, numInStock } = product;
           return (
             <>
               <ProductTile
-                name={name}
-                price={price}
-                image={image}
-                numInStock={numInStock}
-                description={description}
+                product={product}
                 viewAsSingleProduct
               />
               <SectionSpacer dark spaceAbove spaceBelow />

@@ -150,18 +150,13 @@ const Mutation = new GraphQLObjectType({
     addUser: {
       type: UserType,
       args: {
-        firstName: { type: new GraphQLNonNull(GraphQLString) },
         lastName: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type: new GraphQLNonNull(GraphQLString) },
-        password: { type: new GraphQLNonNull(GraphQLString) }
+        email: { type: GraphQLString }
       },
       resolve (_, args) {
-        // ************ Should encrpt the password here and store the hashed version ************* //
         return new User({
-          firstName: args.firstName,
           lastName: args.lastName,
-          email: args.email,
-          password: args.password
+          email: args.email
         }).save();
       }
     },
@@ -257,21 +252,11 @@ const Mutation = new GraphQLObjectType({
     addOrder: {
       type: OrderType,
       args: {
-        customerId: { type: new GraphQLNonNull(GraphQLID) },
-        extraInfo: { type: GraphQLString },
-        isPendingInCheckout: { type: new GraphQLNonNull(GraphQLBoolean) },
-        isPaidFor: { type: new GraphQLNonNull(GraphQLBoolean) },
-        isOrderConfirmed: { type: new GraphQLNonNull(GraphQLBoolean) },
-        isDelivered: { type: new GraphQLNonNull(GraphQLBoolean) }
+        customerId: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve (_, args) {
         return new Order({
-          customerId: args.customerId,
-          extraInfo: args.extraInfo,
-          isPendingInCheckout: args.isPendingInCheckout,
-          isPaidFor: args.isPaidFor,
-          isOrderConfirmed: args.isOrderConfirmed,
-          isDelivered: args.isDelivered
+          customerId: args.customerId
         }).save();
       }
     },
@@ -282,14 +267,16 @@ const Mutation = new GraphQLObjectType({
         isPendingInCheckout: { type: GraphQLBoolean },
         isPaidFor: { type: GraphQLBoolean },
         isOrderConfirmed: { type: GraphQLBoolean },
-        isDelivered: { type: GraphQLBoolean }
+        isDelivered: { type: GraphQLBoolean },
+        extraInfo: { type: GraphQLString }
       },
       resolve (_, args) {
         return Order.findByIdAndUpdate(args.orderId, {
           isPendingInCheckout: args.isPendingInCheckout,
           isPaidFor: args.isPaidFor,
           isOrderConfirmed: args.isOrderConfirmed,
-          isDelivered: args.isDelivered
+          isDelivered: args.isDelivered,
+          extraInfo: args.extraInfo
         });
       }
     },

@@ -1,11 +1,11 @@
 const graphql = require('graphql');
 
-const User = require('../models/user.js'); // done
-const Category = require('../models/shop/category.js');
+const User = require('../models/user.js');
+// const Category = require('../models/shop/category.js');
 const SubCategory = require('../models/shop/subCategory');
-const Product = require('../models/shop/product.js'); // done
+const Product = require('../models/shop/product.js');
 const Order = require('../models/shop/order.js');
-const OrderItem = require('../models/shop/orderItem.js'); // done
+const OrderItem = require('../models/shop/orderItem.js');
 
 const {
   GraphQLObjectType,
@@ -131,6 +131,8 @@ const OrderType = new GraphQLObjectType({
     }
   })
 });
+
+//
 
 module.exports = {
   UserType,

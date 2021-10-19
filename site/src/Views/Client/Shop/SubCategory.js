@@ -23,15 +23,11 @@ const SubCategory = () => {
               <TextSection heading={_.startCase(name)} text={description} />
               {
                 products.map((product, index) => {
-                  const { id, name, image, price, numInStock } = product;
                   return (
                     <ProductTile
                       key={index}
-                      name={name}
-                      price={price}
-                      image={image}
-                      numInStock={numInStock}
-                      linkTo={`${url}/${id}`}
+                      product={product}
+                      linkTo={`${url}/${product.id}`}
                     />
                   );
                 })

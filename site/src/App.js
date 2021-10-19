@@ -17,7 +17,7 @@ import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
 
 // Contexts
-import CurrentUserContextProvider from './context/currentUser.js';
+import { CurrentUserContextProvider } from './context/currentUserContext.js';
 
 // Apollo instance
 const client = new ApolloClient({
