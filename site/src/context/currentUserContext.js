@@ -1,30 +1,27 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { userById } from '../graphql/queries.js';
 
 export const CurrentUserContext = createContext([{}, () => {}]);
 
 export const CurrentUserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
+  const [getUser, { data, error }] = useLazyQuery(userById);
 
-  const localStorageUser = JSON.parse(window.localStorage.getItem('currentUser'));
-  let variables;
-  if (localStorageUser) {
-    variables = { id: localStorageUser.id };
-  } else {
-    variables = { id: '' };
-  }
-
-  // Set user context to localStorage user if there is one
-  const { data, error } = useQuery(userById, { variables });
+  // Get full user for localStorage user if there is one or guest user if one is added during checkout
   useEffect(() => {
-    if (error) console.log(error);
-    if (data) {
-      const user = data.userById;
-      setCurrentUser(user);
+    const localStorageUser = JSON.parse(window.localStorage.getItem('currentUser'));
+
+    if (localStorageUser && localStorageUser !== currentUser) {
+      getUser({ variables: { id: localStorageUser.id } });
     }
-  }, [data, error]);
+    if (currentUser && currentUser.type === 'GUEST') {
+      getUser({ variables: { id: currentUser.id } });
+    }
+    if (error) console.log('error', error);
+    if (data) setCurrentUser(data.userById);
+  }, [currentUser, getUser, data, error]);
 
   return (
     <CurrentUserContext.Provider value={[currentUser, setCurrentUser]}>

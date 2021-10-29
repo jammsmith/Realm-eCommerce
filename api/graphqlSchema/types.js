@@ -25,7 +25,7 @@ const UserType = new GraphQLObjectType({
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
-    isAdmin: { type: GraphQLBoolean },
+    type: { type: GraphQLString },
     orders: {
       type: new GraphQLList(OrderType),
       resolve (parent) {

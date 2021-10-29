@@ -28,8 +28,8 @@ const addFakeData = async () => {
     await OrderItem.deleteMany();
 
     // Add customer/user data
-    await User.insertMany(users);
-    console.log('Users added successfully.');
+    // await User.insertMany(users);
+    // console.log('Users added successfully.');
 
     // Add shop stock data
     const categories = generateCategories();
@@ -42,17 +42,17 @@ const addFakeData = async () => {
     console.log('Products added successfully.');
 
     // Add orders based on above data
-    const usersFromDb = await User.find({});
-    const orders = generateOrders(usersFromDb);
-    await Order.insertMany(orders);
-    console.log('Orders added successfully.');
+    // const usersFromDb = await User.find({});
+    // const orders = generateOrders(usersFromDb);
+    // await Order.insertMany(orders);
+    // console.log('Orders added successfully.');
 
     // Add items to order based on above data
-    const ordersFromDB = await Order.find({});
-    const productsFromDB = await Product.find({});
-    const orderItems = generateOrderItems(ordersFromDB, productsFromDB);
-    await OrderItem.insertMany(orderItems);
-    console.log('Order items added successfully.');
+    // const ordersFromDB = await Order.find({});
+    // const productsFromDB = await Product.find({});
+    // const orderItems = generateOrderItems(ordersFromDB, productsFromDB);
+    // await OrderItem.insertMany(orderItems);
+    // console.log('Order items added successfully.');
 
     console.log('Seed completed successfully.');
     process.exit(0).then();

@@ -9,7 +9,7 @@ export const userById = gql`
       lastName
       email
       password
-      isAdmin
+      type
       orders {
         id
         isPendingInCheckout

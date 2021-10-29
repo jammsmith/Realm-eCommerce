@@ -3,20 +3,14 @@ import gql from 'graphql-tag';
 const mutations = {
   // AUTHORS
   AddUser: gql`
-    mutation(
-      $lastName: String!
-      $email: String
-    ) {
-      addUser(
-        lastName: $lastName
-        email: $email
-      ) {
+    mutation {
+      addUser {
         id
         firstName
         lastName
         email
         password
-        isAdmin
+        type
         orders {
           id
           isPendingInCheckout
@@ -42,7 +36,7 @@ const mutations = {
       $lastName: String,
       $email: String,
       $password: String,
-      $isAdmin: Boolean,
+      $type: String,
     ) {
       updateUser(
         userId: $userId,
@@ -50,13 +44,13 @@ const mutations = {
         lastName: $lastName,
         email: $email,
         password: $password,
-        isAdmin: $isAdmin
+        type: $type
       ) {
         id,
         firstName,
         lastName,
         email,
-        isAdmin
+        type
       }
     }
   `,
