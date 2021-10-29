@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const createMongooseConnection = () => {
+const mongooseConnection = () => {
   dotenv.config();
 
   const { MONGO_CONNECTION_URI } = process.env;
@@ -19,4 +19,4 @@ const createMongooseConnection = () => {
   db.once('open', () => console.log('Connected with dovesAndDandysDB'));
 };
 
-module.exports = createMongooseConnection;
+module.exports = mongooseConnection;

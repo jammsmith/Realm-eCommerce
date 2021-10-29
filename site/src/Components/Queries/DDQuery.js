@@ -22,7 +22,7 @@ const DDQuery = ({ children, query, variables }) => {
 DDQuery.propTypes = {
   children: PropTypes.func.isRequired,
   query: PropTypes.object.isRequired,
-  variables: PropTypes.object.isRequired
+  variables: PropTypes.object
 };
 
 export default DDQuery;

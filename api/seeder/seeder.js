@@ -1,4 +1,4 @@
-const createMongooseConnection = require('../helpers/createMongooseConnection.js');
+const mongooseConnection = require('../helpers/mongooseConnection.js');
 
 const User = require('../models/user.js');
 const Category = require('../models/shop/category.js');
@@ -14,7 +14,7 @@ const generateProducts = require('./dataGeneration/products.js');
 const generateOrders = require('./dataGeneration/orders.js');
 const generateOrderItems = require('./dataGeneration/orderItems.js');
 
-createMongooseConnection();
+mongooseConnection();
 
 //
 const addFakeData = async () => {

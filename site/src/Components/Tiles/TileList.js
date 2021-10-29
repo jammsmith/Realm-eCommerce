@@ -23,7 +23,7 @@ const TileList = ({ children }) => {
 };
 
 TileList.propTypes = {
-  children: PropTypes.func.isRequired
+  children: PropTypes.array.isRequired
 };
 
 export default TileList;

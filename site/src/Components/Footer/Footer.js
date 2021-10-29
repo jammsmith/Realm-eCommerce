@@ -13,7 +13,6 @@ import {
   FooterTopSection,
   TopSectionInner,
   TopSectionLinks,
-  CTALink,
   GetInTouch,
   SocialIcons,
   FooterBottomSection,
@@ -37,10 +36,10 @@ const Footer = () => {
             <TopSectionInner>
               <TopSectionLinks>
                 <Link to='/shop'>
-                  <CTALink>Online Shop</CTALink>
+                  Online Shop
                 </Link>
                 <Link to='/testimonials'>
-                  <CTALink>Testimonials</CTALink>
+                  Testimonials
                 </Link>
                 <GetInTouch>
                   <h6 style={{ textDecoration: 'underline' }}>Get in touch</h6>

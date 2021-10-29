@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const createMongooseConnection = require('./helpers/createMongooseConnection.js');
+const mongooseConnection = require('./helpers/mongooseConnection.js');
 const schema = require('./graphqlSchema/schema.js');
 const app = express();
 
@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Create Mongoose connection.
-createMongooseConnection();
+mongooseConnection();
 // Set mongoose to always return the updated value after a mutation.
 // Default behaviour is to return the original value before mutation.
 mongoose.set('returnOriginal', false);

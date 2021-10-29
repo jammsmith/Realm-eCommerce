@@ -59,15 +59,6 @@ export const TopSectionLinks = styled.div`
   }
 `;
 
-export const CTALink = styled.a`
-  color: ${light};
-  :active,
-  :hover {
-    color: ${light};
-    text-decoration: underline;
-  }
-`;
-
 export const GetInTouch = styled.div`
   display: flex;
   flex-direction: column;

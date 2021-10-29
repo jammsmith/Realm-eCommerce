@@ -16,6 +16,8 @@ const { ProductType } = require('./types.js');
 const { OrderType } = require('./types.js');
 const { OrderItemType } = require('./types.js');
 
+// Helpers
+
 const {
   GraphQLObjectType,
   GraphQLString,
