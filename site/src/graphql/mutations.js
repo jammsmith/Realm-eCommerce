@@ -225,12 +225,12 @@ const mutations = {
   `,
   UpdateItemInOrder: gql`
     mutation(
-      $orderItemId: ID!,
+      $id: ID!,
       $size: String,
       $quantity: Int
     ) {
       updateItemInOrder(
-        orderItemId: $orderItemId,
+        id: $id,
         size: $size,
         quantity: $quantity
       ) {
@@ -248,13 +248,28 @@ const mutations = {
   `,
   DeleteItemFromOrder: gql`
     mutation(
-      $orderItemId: orderItemId
+      $id: ID!
     ) {
       deleteItemFromOrder(
-        orderItemId: $orderItemId
+        id: $id
       ) {
         id
-      }
+        quantity
+        order {
+          orderItems {
+            id
+            size
+            quantity
+            product {
+              name
+              image
+              description
+              price
+              numInStock
+            }
+          }
+        }
+      } 
     }
   `
 };

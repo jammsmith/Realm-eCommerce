@@ -5,7 +5,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 // Main views
 import Home from './Views/Client/Home/Home.js';
 import Shop from './Views/Client/Shop/Shop.js';
-import Basket from './Views/Client/Shop/Checkout/Basket.js';
+import Cart from './Views/Client/Shop/Cart/Cart.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
 import Error404 from './Views/Error/Error404.js';
@@ -46,7 +46,7 @@ const App = () => {
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
-            <Route exact path='/basket' component={Basket} />
+            <Route exact path='/cart' component={Cart} />
             <Route exact path='/about-us' component={AboutUs} />
             <Route exact path='/contact-us' component={ContactUs} />
             <Route path='/' component={Error404} />

@@ -9,7 +9,7 @@ import fonts from '../styles/fonts.js';
 const { standard } = fonts;
 
 //
-const ActionButton = ({ text, linkTo, variant, customStyles, onClick }) => {
+const ActionButton = ({ text, linkTo, variant, customStyles, onClick, disabled }) => {
   const basicStyles = {
     fontFamily: standard
   };
@@ -23,7 +23,12 @@ const ActionButton = ({ text, linkTo, variant, customStyles, onClick }) => {
 
   return (
     <Link to={linkTo}>
-      <Button onClick={onClick} variant={variant || 'outlined'} style={customStyles || basicStyles}>
+      <Button
+        onClick={onClick}
+        variant={variant || 'outlined'}
+        style={customStyles || basicStyles}
+        disabled={disabled || false}
+      >
         {text}
       </Button>
     </Link>
@@ -35,7 +40,8 @@ ActionButton.propTypes = {
   linkTo: PropTypes.string,
   variant: PropTypes.string,
   customStyles: PropTypes.object,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool
 };
 
 export default ActionButton;

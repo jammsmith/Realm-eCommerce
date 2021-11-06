@@ -8,7 +8,7 @@ const useDDMutation = (mutation, variables) => {
     resultsObj.current = {};
   };
 
-  const [callMutation, { data, loading, error }] = useMutation(mutation, { variables });
+  const [callMutation, { data, loading, error }] = useMutation(mutation, { variables }, { new: true });
 
   if (loading) {
     resultsObj.current.called = true;

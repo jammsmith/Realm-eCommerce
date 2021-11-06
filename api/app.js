@@ -26,9 +26,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Create Mongoose connection.
 mongooseConnection();
-// Set mongoose to always return the updated value after a mutation.
-// Default behaviour is to return the original value before mutation.
-mongoose.set('returnOriginal', false);
 
 // Start-up server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

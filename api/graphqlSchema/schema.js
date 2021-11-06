@@ -304,12 +304,12 @@ const Mutation = new GraphQLObjectType({
     updateItemInOrder: {
       type: OrderItemType,
       args: {
-        orderItemId: { type: new GraphQLNonNull(GraphQLID) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
         size: { type: GraphQLString },
         quantity: { type: GraphQLInt }
       },
       resolve (_, args) {
-        return OrderItem.findByIdAndUpdate(args.orderId, {
+        return OrderItem.findByIdAndUpdate(args.id, {
           size: args.size,
           quantity: args.quantity
         });
@@ -318,10 +318,10 @@ const Mutation = new GraphQLObjectType({
     deleteItemFromOrder: {
       type: OrderItemType,
       args: {
-        orderItemId: { type: new GraphQLNonNull(GraphQLID) }
+        id: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve (_, args) {
-        return OrderItem.findByIdAndDelete(args.orderItemId);
+        return OrderItem.findByIdAndDelete(args.id);
       }
     }
   }

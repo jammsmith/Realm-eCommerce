@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 // Components
 import Image from '../../Image.js';
 import ActionButton from '../../ActionButton.js';
-import AddToCart from '../../AddToCart.js';
+import AddToCart from '../../Cart/AddToCart.js';
 
 // Custom styled components
 import {

@@ -7,7 +7,7 @@ export const CurrentUserContext = createContext([{}, () => {}]);
 
 export const CurrentUserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
-  const [getUser, { data, error }] = useLazyQuery(userById);
+  const [getUser, { error, data }] = useLazyQuery(userById);
 
   // Get full user for localStorage user if there is one or guest user if one is added during checkout
   useEffect(() => {
@@ -21,7 +21,7 @@ export const CurrentUserContextProvider = ({ children }) => {
     }
     if (error) console.log('error', error);
     if (data) setCurrentUser(data.userById);
-  }, [currentUser, getUser, data, error]);
+  }, [currentUser, getUser, error, data]);
 
   return (
     <CurrentUserContext.Provider value={[currentUser, setCurrentUser]}>

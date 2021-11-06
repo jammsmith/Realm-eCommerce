@@ -6,7 +6,7 @@ import { ordersByCustomer } from '../../graphql/queries.js';
 
 const OrdersByCustomer = ({ children, customerId }) => {
   return (
-    <DDQuery query={ordersByCustomer} variables={{ id: customerId }}>
+    <DDQuery query={ordersByCustomer} variables={{ id: customerId }} fetchPolicy='network-only'>
       {data => {
         return children(data.ordersByCustomer);
       }}

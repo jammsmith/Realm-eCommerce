@@ -1,20 +1,19 @@
 // External imports
 import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import { IoCartOutline } from 'react-icons/io5';
+import { IoCartOutline, IoCheckmarkSharp } from 'react-icons/io5';
 
 // GraphQL
-import useDDMutation from '../hooks/useDDMutation.js';
-import mutations from '../graphql/mutations.js';
+import useDDMutation from '../../hooks/useDDMutation.js';
+import mutations from '../../graphql/mutations.js';
 
 // Components
-import { CurrentUserContext } from '../context/currentUserContext.js';
-// import DDModal from './DDModal.js';
+import { CurrentUserContext } from '../../context/currentUserContext.js';
+import ActionButton from '../ActionButton.js';
 
 // Styles
-import fonts from '../styles/fonts.js';
-import colours from '../styles/colours.js';
+import fonts from '../../styles/fonts.js';
+import colours from '../../styles/colours.js';
 
 const { standard } = fonts;
 const { dark, light } = colours;
@@ -116,20 +115,27 @@ const AddToCart = ({ product }) => {
   //
   let addToCartText;
   if (product.numInStock > 0) {
-    const text = 'Add To Cart';
     addToCartText =
       <>
-        {text}&nbsp;
-        <IoCartOutline />
+        Add To Cart
+        &nbsp;<IoCartOutline />
       </>;
   } else {
     addToCartText = 'Contact us to request this product';
   }
+  const addedToCartText =
+    <>
+      Added to cart
+      &nbsp; <IoCheckmarkSharp />
+    </>;
 
   return (
-    <Button onClick={handleAddToCart} variant='contained' style={styles}>
-      {addToCartText}
-    </Button>
+    <ActionButton
+      text={isItemAddedToCart ? addedToCartText : addToCartText}
+      onClick={handleAddToCart}
+      variant='contained'
+      customStyles={styles}
+    />
   );
 };
 
