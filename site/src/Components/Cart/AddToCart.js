@@ -11,6 +11,9 @@ import mutations from '../../graphql/mutations.js';
 import { CurrentUserContext } from '../../context/currentUserContext.js';
 import ActionButton from '../ActionButton.js';
 
+// Helpers
+import { getActiveOrderFromUser } from '../../helpers/user.js';
+
 // Styles
 import fonts from '../../styles/fonts.js';
 import colours from '../../styles/colours.js';
@@ -22,19 +25,24 @@ const { dark, light } = colours;
 const AddToCart = ({ product }) => {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [isItemAddedToCart, setIsItemAddedToCart] = useState(false);
-  const [activeOrder, setActiveOrder] = useState(null);
+  const [activeOrder, setActiveOrder] = useState();
 
   const [addUser] = useDDMutation(mutations.AddUser);
   const [addOrder] = useDDMutation(mutations.AddOrder);
   const [addItemToOrder] = useDDMutation(mutations.AddItemToOrder);
 
-  // Set existing order if there is one
   useEffect(() => {
-    if (currentUser && currentUser.orders && currentUser.orders.length > 0) {
-      const foundActiveOrder = currentUser.orders.find(item => item.isPendingInCheckout === true);
-      if (foundActiveOrder) setActiveOrder(foundActiveOrder);
-    }
+    // Get the active order if the user has one
+    setActiveOrder(getActiveOrderFromUser(currentUser));
   }, [currentUser]);
+
+  useEffect(() => {
+    // Check if product is already part of the active order
+    if (activeOrder && activeOrder.orderItems) {
+      const foundOrderItem = activeOrder.orderItems.find(item => item.product.id === product.id);
+      if (foundOrderItem) setIsItemAddedToCart(true);
+    }
+  }, [activeOrder, product, setIsItemAddedToCart]);
 
   // Custom styles for button
   const styles = {
@@ -132,6 +140,7 @@ const AddToCart = ({ product }) => {
   return (
     <ActionButton
       text={isItemAddedToCart ? addedToCartText : addToCartText}
+      disabled={isItemAddedToCart && true}
       onClick={handleAddToCart}
       variant='contained'
       customStyles={styles}

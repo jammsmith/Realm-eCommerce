@@ -1,6 +1,5 @@
 export const getActiveOrderFromUser = (user) => {
-  console.log('user in helper', user);
-  if (user && user.orders) {
+  if (user && user.orders && user.orders.length > 0) {
     const activeOrder = user.orders.find(order => order.isPendingInCheckout === true);
     if (activeOrder) {
       return activeOrder;
