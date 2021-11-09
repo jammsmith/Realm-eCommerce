@@ -1,0 +1,20 @@
+{
+    "properties": {
+        "__v": {
+            "bsonType": "int"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "orderId": {
+            "bsonType": "string"
+        },
+        "productId": {
+            "bsonType": "string"
+        },
+        "quantity": {
+            "bsonType": "int"
+        }
+    },
+    "title": "orderitem"
+}

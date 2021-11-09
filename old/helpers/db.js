@@ -19,4 +19,4 @@ const mongooseConnection = () => {
   db.once('open', () => console.log('Connected with dovesAndDandysDB'));
 };
 
-module.exports = mongooseConnection;
+module.exports = { mongooseConnection };

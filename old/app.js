@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const mongooseConnection = require('./helpers/mongooseConnection.js');
+const { mongooseConnection } = require('./helpers/db.js');
 const schema = require('./graphqlSchema/schema.js');
 const app = express();
 

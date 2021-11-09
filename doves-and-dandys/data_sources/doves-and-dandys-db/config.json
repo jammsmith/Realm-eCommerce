@@ -1,0 +1,10 @@
+{
+    "name": "doves-and-dandys-db",
+    "type": "mongodb-atlas",
+    "config": {
+        "clusterName": "doves-and-dandys",
+        "readPreference": "primary",
+        "wireProtocolEnabled": false
+    },
+    "version": 1
+}

@@ -1,0 +1,12 @@
+{
+    "collection": "products",
+    "database": "dovesAndDandysDB",
+    "roles": [
+        {
+            "name": "default",
+            "apply_when": {},
+            "insert": true,
+            "delete": true
+        }
+    ]
+}
