@@ -8,8 +8,8 @@
     "lodash": "^4.17.21"
   },
   "scripts": {
-    "db:seed": "node api/seeder/seeder.js",
-    "db:delete-all": "node api/seeder/seeder.js -d",
+    "db:seed": "node api/mongoose/seeder/seeder.js",
+    "db:delete-all": "node api/mongoose/seeder/seeder.js -d",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
