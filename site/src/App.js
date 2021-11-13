@@ -29,7 +29,7 @@ import { CurrentUserContextProvider } from './context/currentUserContext.js';
 //   uri: 'http://localhost:3001/graphql',
 //   cache: new InMemoryCache()
 // });
-export const APP_ID = 'doves-and-dandys-nwzpy';
+export const APP_ID = 'doves-and-dandys-fkaex';
 // const RequireLoggedInUser = ({ children }) => {
 //   // Only render children if there is a logged in user.
 //   const app = useRealmApp();

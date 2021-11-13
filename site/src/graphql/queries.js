@@ -32,14 +32,11 @@ export const userById = gql`
 // Shop categories
 export const allCategories = gql`
   query {
-    allCategories {
-      id
-      name
+    categories{
+      _id
       description
       image
-      subCategories {
-        name
-      }
+      name
     }
   }
 `;
