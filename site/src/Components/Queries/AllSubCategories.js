@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import DDQuery from './DDQuery.js';
-import { allSubCategories } from '../../graphql/queries.js';
+import { ALL_SUBCATEGORIES } from '../../graphql/queries.js';
 
 const AllSubCategories = ({ children }) => {
   return (
-    <DDQuery query={allSubCategories}>
+    <DDQuery query={ALL_SUBCATEGORIES}>
       {data => {
-        return children(data.allSubCategories);
+        return children(data.subCategories);
       }}
     </DDQuery>
   );

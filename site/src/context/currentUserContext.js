@@ -1,13 +1,13 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useLazyQuery } from '@apollo/client';
-import { userById } from '../graphql/queries.js';
+import { SINGLE_USER } from '../graphql/queries.js';
 
 export const CurrentUserContext = createContext([{}, () => {}]);
 
 export const CurrentUserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
-  const [getUser, { error, data }] = useLazyQuery(userById);
+  const [getUser, { error, data }] = useLazyQuery(SINGLE_USER);
 
   // Get full user for localStorage user if there is one or guest user if one is added during checkout
   useEffect(() => {
@@ -20,7 +20,7 @@ export const CurrentUserContextProvider = ({ children }) => {
       getUser({ variables: { id: currentUser.id } });
     }
     if (error) console.log('error', error);
-    if (data) setCurrentUser(data.userById);
+    if (data) setCurrentUser(data.user);
   }, [currentUser, getUser, error, data]);
 
   return (

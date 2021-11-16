@@ -1,27 +1,37 @@
 import { gql } from '@apollo/client';
+import {
+  USER_DETAILS,
+  CATEGORY_DETAILS,
+  SUBCATEGORY_DETAILS,
+  PRODUCT_DETAILS,
+  ORDER_DETAILS,
+  ORDER_ITEM_DETAILS
+} from './fragments.js';
 
 // Users
-export const userById = gql`
+export const SINGLE_USER = gql`
+  ${USER_DETAILS}
   query($id: ID!) {
-    userById(id: $id) {
-      id
-      firstName
-      lastName
-      email
-      password
-      type
+    user(query: { _id: $id }) {
+      ...UserDetails
+    }
+  }
+`;
+
+export const USER_ORDERS = gql`
+  ${USER_DETAILS}
+  ${ORDER_DETAILS}
+  ${ORDER_ITEM_DETAILS}
+  query($id: ID!) {
+    user(query: { _id: $id }) {
+      ...UserDetails
       orders {
-        id
-        isPendingInCheckout
+        ...OrderDetails
         orderItems {
-          id
-          size
-          quantity
+          ...OrderItemDetails
           product {
-            id
+            _id
             name
-            image
-            price
           }
         }
       }
@@ -29,204 +39,135 @@ export const userById = gql`
   }
 `;
 
-// Shop categories
-export const ALL_CATEGORIES = gql`
-  query {
-    categories {
-      _id
-      description
-      image
-      name
-    }
-  }
-`;
-
-export const categoryByName = gql`
- query($name: String!) {
-   categoryByName(name: $name) {
-     id
-     name
-     description
-     image
-     subCategories {
-       id
-       name
-       description
-       image
-     }
+// Shop Categories
+export const SINGLE_CATEGORY = gql`
+${CATEGORY_DETAILS}
+ query($id: ID, $name: String) {
+   category(query: { _id: $id, name: $name, }) {
+     ...CategoryDetails
    }
  }
 `;
 
-export const singleSubCategory = gql`
-  query($name: String!, $category: String!) {
-    singleSubCategory(name: $name, category: $category) {
-      id
-      name
-      description
-      image
-      products {
-        id
-        name
-        image
-        description
-        price
-        numInStock
+export const ALL_CATEGORIES = gql`
+  ${CATEGORY_DETAILS}
+  query {
+    categories {
+      ...CategoryDetails
+    }
+  }
+`;
+
+export const ALL_CATEGORIES_AND_SUBCATEGORIES = gql`
+  ${CATEGORY_DETAILS}
+  ${SUBCATEGORY_DETAILS}
+  query {
+    categories {
+      ...CategoryDetails
+      subCategories {
+        ...SubCategoryDetails
       }
     }
   }
 `;
 
-export const allSubCategories = gql`
+export const SINGLE_SUBCATEGORY = gql`
+${SUBCATEGORY_DETAILS}
+ query($id: ID, $name: String) {
+   subCategories(query: { _id: $id, name: $name }) {
+     ...SubCategoryDetails
+   }
+ }
+`;
+
+export const SINGLE_SUBCATEGORY_AND_PRODUCTS = gql`
+  ${SUBCATEGORY_DETAILS}
+  ${PRODUCT_DETAILS}
+  query($id: ID!) {
+    subCategories(query: { _id: $id }) {
+      ...SubCategoryDetails
+      products {
+        ...ProductDetails
+      }
+    }
+  }
+`;
+
+export const ALL_SUBCATEGORIES = gql`
+  ${SUBCATEGORY_DETAILS}
   query {
-    allSubCategories {
-      id
-      name
-      description
-      image
-      category
+    subCategories {
+      ...SubCategoryDetails
     }
   }
 `;
 
 // Shop products
-export const productById = gql`
+export const SINGLE_PRODUCT = gql`
+  ${SUBCATEGORY_DETAILS}
   query($id: ID!) {
-    productById(id: $id) {
-      id
-      name
-      image
-      description
-      price
-      numInStock
-      category
-      subCategory
+    product(query: { _id: $id }) {
+      ...SubCategoryDetails
     }
   }
 `;
 
-export const productsByCategory = gql`
-  query($category: String!) {
-    productsByCategory(category: $category) {
-      id
-      name
-      image
-      description
-      price
-      numInStock
-      category
-      subCategory
-    }
-  }
-`;
-
-export const productsBySubCategory = gql`
-  query($category: String!, $subCategory: String!) {
-    productsBySubCategory(category: $category, subCategory: $subCategory) {
-      id
-      name
-      image
-      description
-      price
-      numInStock
-      category
-      subCategory
-    }
-  }
-`;
-
-export const allProducts = gql`
+export const ALL_PRODUCTS = gql`
+  ${PRODUCT_DETAILS}
   query {
-    allProducts {
-      id
-      name
-      image
-      description
-      price
-      numInStock
-      category
-      subCategory
+    products {
+      ...ProductDetails
     }
   }
 `;
 
-// Orders
-export const ordersByCustomer = gql`
+export const PRODUCTS_IN_SUBCATEGORY = gql`
+  ${PRODUCT_DETAILS}
   query($id: ID!) {
-    userById(id: $id) {
-      id
-      firstName
-      lastName
-      email
-      orders {
-        id
-        extraInfo
-        isPendingInCheckout
-        isPaidFor
-        isOrderConfirmed
-        isDelivered
-        orderItems {
-          id
-          size
-          quantity
-          product {
-            id
-            name
-            price
-          }
-        }
-      }
+    subCategory(
+      query: {_id: $id}
+      sortBy: NUMINSTOCK_DESC
+    ) {
+      ...ProductDetails
     }
   }
 `;
 
-export const orderById = gql`
+export const SINGLE_ORDER_DETAILED = gql`
+  ${ORDER_DETAILS}
+  ${ORDER_ITEM_DETAILS}
+  ${PRODUCT_DETAILS}
+  ${USER_DETAILS}
   query($id: ID!) {
-    orderById(id: $id) {
-      id
-      extraInfo
-      isPendingInCheckout
-      isPaidFor
-      isOrderConfirmed
-      isDelivered
-      customer {
-        id
-        firstName
-        lastName
-        email
-        orders {
-          id
-        }
-      }
+    order(query: { _id: $id }) {
+      ...OrderDetails
       orderItems {
-        id
-        size
-        quantity
+        ...OrderItemDetails
         product {
-          id
-          name
-          price
+          ...ProductDetails
+        }
+        customer {
+          ...UserDetails
         }
       }
     }
   }
 `;
 
-export const allOrders = gql`
+export const SINGLE_ORDER_BASIC = gql`
+  ${ORDER_DETAILS}
+  query($id: ID!) {
+    order(query: { _id: $id }) {
+      ...OrderDetails
+    }
+  }
+`;
+
+export const ALL_ORDERS = gql`
+  ${ORDER_DETAILS}
   query {
-    allOrders {
-      id
-      customer {
-        firstName
-        lastName
-        email
-      }
-      orderItems {
-        quantity
-        product {
-          name
-        }
-      }
+    orders {
+      ...OrderDetails
     }
   }
 `;

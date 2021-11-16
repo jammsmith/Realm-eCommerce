@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import DDQuery from './DDQuery.js';
-import { allProducts } from '../../graphql/queries.js';
+import { ALL_PRODUCTS } from '../../graphql/queries.js';
 
 const AllProducts = ({ children }) => {
   return (
-    <DDQuery query={allProducts}>
+    <DDQuery query={ALL_PRODUCTS}>
       {data => {
-        return children(data.allProducts);
+        return children(data.products);
       }}
     </DDQuery>
   );
