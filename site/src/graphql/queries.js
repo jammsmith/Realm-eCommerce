@@ -30,9 +30,9 @@ export const userById = gql`
 `;
 
 // Shop categories
-export const allCategories = gql`
+export const ALL_CATEGORIES = gql`
   query {
-    categories{
+    categories {
       _id
       description
       image

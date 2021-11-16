@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "__v": {
+            "bsonType": "int"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "category": {
+            "bsonType": "string"
+        },
+        "description": {
+            "bsonType": "string"
+        },
+        "image": {
+            "bsonType": "string"
+        },
+        "name": {
+            "bsonType": "string"
+        },
+        "numInStock": {
+            "bsonType": "int"
+        },
+        "price": {
+            "bsonType": "int"
+        },
+        "product_id": {
+            "bsonType": "string"
+        },
+        "subCategory": {
+            "bsonType": "string"
+        }
+    },
+    "title": "Product"
+}
