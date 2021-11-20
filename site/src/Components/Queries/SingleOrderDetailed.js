@@ -6,7 +6,7 @@ import { SINGLE_ORDER_DETAILED } from '../../graphql/queries.js';
 
 const SingleOrderDetailed = ({ children, id }) => {
   return (
-    <DDQuery query={SINGLE_ORDER_DETAILED} variables={{ id: id }}>
+    <DDQuery query={SINGLE_ORDER_DETAILED} variables={{ id }}>
       {data => {
         return children(data.order);
       }}

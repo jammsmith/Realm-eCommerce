@@ -9,7 +9,7 @@ import ProductTile from '../../../Components/Tiles/ProductTile/ProductTile.js';
 import TextSection from '../../../Components/TextSection.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 import ActionButton from '../../../Components/ActionButton.js';
-import ProductById from '../../../Components/Queries/ProductById.js';
+import SingleProduct from '../../../Components/Queries/SingleProduct.js';
 
 // Colours
 import colours from '../../../styles/colours.js';
@@ -33,7 +33,7 @@ const Product = () => {
   const goBackUrl = url.replace(`/${productId}`, '');
 
   return (
-    <ProductById productId={productId}>
+    <SingleProduct id={productId}>
       {
         product => {
           return (
@@ -62,7 +62,7 @@ const Product = () => {
           );
         }
       }
-    </ProductById>
+    </SingleProduct>
   );
 };
 

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 
 // Custom components
 import { CurrentUserContext } from '../../../../context/currentUserContext.js';
-import OrderById from '../../../../Components/Queries/OrderById.js';
+import SingleOrderDetailed from '../../../../Components/Queries/SingleOrderDetailed.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import CartProductList from './CartProductList.js';
 
@@ -22,7 +22,7 @@ const Cart = () => {
 
   return (
     activeOrder
-      ? <OrderById orderId={activeOrder.id} pollInterval={500}>
+      ? <SingleOrderDetailed id={activeOrder.id} pollInterval={500}>
         {
           orderById =>
             <>
@@ -30,7 +30,7 @@ const Cart = () => {
               <CartProductList activeOrder={orderById} />
             </>
         }
-        </OrderById>
+        </SingleOrderDetailed>
       : null
 
   );

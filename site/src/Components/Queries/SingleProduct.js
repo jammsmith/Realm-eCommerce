@@ -6,7 +6,7 @@ import { SINGLE_PRODUCT } from '../../graphql/queries.js';
 
 const SingleProduct = ({ children, id }) => {
   return (
-    <DDQuery query={SINGLE_PRODUCT} variables={{ id: id }}>
+    <DDQuery query={SINGLE_PRODUCT} variables={{ id }}>
       {data => {
         return children(data.product);
       }}

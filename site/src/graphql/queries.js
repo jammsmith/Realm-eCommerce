@@ -11,7 +11,7 @@ import {
 // Users
 export const SINGLE_USER = gql`
   ${USER_DETAILS}
-  query($id: ID!) {
+  query($id: ObjectId!) {
     user(query: { _id: $id }) {
       ...UserDetails
     }
@@ -22,7 +22,7 @@ export const USER_ORDERS = gql`
   ${USER_DETAILS}
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}
-  query($id: ID!) {
+  query($id: ObjectId!) {
     user(query: { _id: $id }) {
       ...UserDetails
       orders {
@@ -42,9 +42,13 @@ export const USER_ORDERS = gql`
 // Shop Categories
 export const SINGLE_CATEGORY = gql`
 ${CATEGORY_DETAILS}
- query($id: ID, $name: String) {
-   category(query: { _id: $id, name: $name, }) {
+${SUBCATEGORY_DETAILS}
+ query($name: String!) {
+   category(query: { name: $name, }) {
      ...CategoryDetails
+     subCategories {
+       ...SubCategoryDetails
+     }
    }
  }
 `;
@@ -73,24 +77,15 @@ export const ALL_CATEGORIES_AND_SUBCATEGORIES = gql`
 
 export const SINGLE_SUBCATEGORY = gql`
 ${SUBCATEGORY_DETAILS}
- query($id: ID, $name: String) {
-   subCategories(query: { _id: $id, name: $name }) {
+${PRODUCT_DETAILS}
+ query($name: String!, $category: String!) {
+   subCategory(query: { name: $name, category: $category }) {
      ...SubCategoryDetails
+     products {
+       ...ProductDetails
+     }
    }
  }
-`;
-
-export const SINGLE_SUBCATEGORY_AND_PRODUCTS = gql`
-  ${SUBCATEGORY_DETAILS}
-  ${PRODUCT_DETAILS}
-  query($id: ID!) {
-    subCategories(query: { _id: $id }) {
-      ...SubCategoryDetails
-      products {
-        ...ProductDetails
-      }
-    }
-  }
 `;
 
 export const ALL_SUBCATEGORIES = gql`
@@ -105,7 +100,7 @@ export const ALL_SUBCATEGORIES = gql`
 // Shop products
 export const SINGLE_PRODUCT = gql`
   ${SUBCATEGORY_DETAILS}
-  query($id: ID!) {
+  query($id: ObjectId!) {
     product(query: { _id: $id }) {
       ...SubCategoryDetails
     }
@@ -121,24 +116,12 @@ export const ALL_PRODUCTS = gql`
   }
 `;
 
-export const PRODUCTS_IN_SUBCATEGORY = gql`
-  ${PRODUCT_DETAILS}
-  query($id: ID!) {
-    subCategory(
-      query: {_id: $id}
-      sortBy: NUMINSTOCK_DESC
-    ) {
-      ...ProductDetails
-    }
-  }
-`;
-
 export const SINGLE_ORDER_DETAILED = gql`
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}
   ${PRODUCT_DETAILS}
   ${USER_DETAILS}
-  query($id: ID!) {
+  query($id: ObjectId!) {
     order(query: { _id: $id }) {
       ...OrderDetails
       orderItems {
@@ -156,7 +139,7 @@ export const SINGLE_ORDER_DETAILED = gql`
 
 export const SINGLE_ORDER_BASIC = gql`
   ${ORDER_DETAILS}
-  query($id: ID!) {
+  query($id: ObjectId!) {
     order(query: { _id: $id }) {
       ...OrderDetails
     }

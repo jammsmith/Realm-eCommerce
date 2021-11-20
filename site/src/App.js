@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Apollo / Realm
 import { ApolloProvider } from '@apollo/client';
-import client from './realmApolloClient.js';
+import client, { RealmAppProvider } from './realmApolloClient.js';
 
 // Main views
 import Home from './Views/Client/Home/Home.js';
@@ -19,9 +19,6 @@ import Navbar from './Components/Navbar/Navbar';
 import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
-
-// Context
-import { CurrentUserContextProvider } from './context/currentUserContext.js';
 
 // Stripe Instance
 // import { Elements } from '@stripe/react-stripe-js';
@@ -39,32 +36,32 @@ const App = () => {
   //   clientSecret: 'sk_test_51JssHLK4OzaV2zFU3rKfTerqgOHjFTOf71gAedWEzLRTWg5ukgHA00xXyrH31uiiKPZ3EgZ2NiaxtsMRsgJkas1Z00yIQqdI20'
   // };
   return (
-    <ApolloProvider client={client}>
-      {/* <Elements stripe={stripePromise} options={options}> */}
-      {/* <CurrentUserContextProvider> */}
-      <Router>
-        <Navbar handleToggleClick={toggleHandler} />
-        {
-          menuInView &&
-            <>
-              <SideDrawer show={menuInView} handleDrawerLinkClick={closeMenu} />
-              <BackgroundShadow handleBackgroundClick={closeMenu} />
-            </>
-        }
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
-          <Route exact path='/cart' component={Cart} />
-          <Route exact path='/checkout' component={Checkout} />
-          <Route exact path='/about-us' component={AboutUs} />
-          <Route exact path='/contact-us' component={ContactUs} />
-          <Route path='/' component={Error404} />
-        </Switch>
-        <Footer />
-      </Router>
-      {/* </CurrentUserContextProvider> */}
-      {/* </Elements> */}
-    </ApolloProvider>
+    <RealmAppProvider>
+      <ApolloProvider client={client}>
+        {/* <Elements stripe={stripePromise} options={options}> */}
+        <Router>
+          <Navbar handleToggleClick={toggleHandler} />
+          {
+            menuInView &&
+              <>
+                <SideDrawer show={menuInView} handleDrawerLinkClick={closeMenu} />
+                <BackgroundShadow handleBackgroundClick={closeMenu} />
+              </>
+          }
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
+            <Route exact path='/cart' component={Cart} />
+            <Route exact path='/checkout' component={Checkout} />
+            <Route exact path='/about-us' component={AboutUs} />
+            <Route exact path='/contact-us' component={ContactUs} />
+            <Route path='/' component={Error404} />
+          </Switch>
+          <Footer />
+        </Router>
+        {/* </Elements> */}
+      </ApolloProvider>
+    </RealmAppProvider>
   );
 };
 

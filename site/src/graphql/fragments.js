@@ -32,7 +32,7 @@ export const SUBCATEGORY_DETAILS = gql`
 `;
 
 export const PRODUCT_DETAILS = gql`
-  fragment SubCategoryDetails on SubCategory {
+  fragment ProductDetails on Product {
     _id
     product_id
     category
@@ -47,7 +47,7 @@ export const PRODUCT_DETAILS = gql`
 `;
 
 export const ORDER_DETAILS = gql`
-  fragment SubCategoryDetails on SubCategory {
+  fragment OrderDetails on Order {
     _id
     order_id
     isDelivered
@@ -59,7 +59,7 @@ export const ORDER_DETAILS = gql`
 `;
 
 export const ORDER_ITEM_DETAILS = gql`
-  fragment SubCategoryDetails on SubCategory {
+  fragment OrderItemDetails on OrderItem {
     _id
     size
     quantity
