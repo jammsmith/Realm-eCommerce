@@ -13,8 +13,7 @@ const mutations = {
   AddUser: gql`
     ${USER_DETAILS}
     mutation(
-      $id: ObjectId!
-      $user_id: ObjectId!
+      $user_id: String!
       $firstName: String,
       $lastName: String,
       $email: String,
@@ -22,7 +21,6 @@ const mutations = {
       $type: String!
     ) {
       insertOneUser(data: {
-        _id: $id,
         user_id: $user_id,
         firstName: $firstName,
         lastName: $lastName,
@@ -59,12 +57,8 @@ const mutations = {
   `,
   DeleteUser: gql`
     ${USER_DETAILS}
-    mutation(
-      $id: ObjectId!
-    ) {
-      deleteOneUser(
-        query: { _id: $id }
-      ) {
+    mutation($id: ObjectId!) {
+      deleteOneUser(query: { _id: $id }) {
         ...UserDetails
       }
     }
@@ -105,7 +99,7 @@ const mutations = {
       $subCategory: String,
       $description: String,
       $price: Int,
-      $numInStock: Int,
+      $numInStock: Int
     ) {
       updateOneProduct( 
         query: { _id: id },
@@ -125,12 +119,8 @@ const mutations = {
   `,
   RemoveProductFromInventory: gql`
     ${PRODUCT_DETAILS}
-    mutation(
-      $id: ObjectId!
-    ) {
-      deleteOneProduct(
-        query: { _id: $id }
-      ) {
+    mutation($id: ObjectId!) {
+      deleteOneProduct(query: { _id: $id }) {
         ...ProductDetails
       }
     }
@@ -145,8 +135,13 @@ const mutations = {
       $isPendingInCheckout: Boolean = false,
     ) {
       insertOneOrder(
-        data: { order_id: $order_id },
-      ) {
+        data: { 
+          order_id: $order_id,
+          isDelivered: $isDelivered,
+          isOrderConfirmed: $isOrderConfirmed,
+          isPaidFor: $isPaidFor,
+          isPendingInCheckout: $isPendingInCheckout,
+        } ) {
         ...OrderDetails
       }
     }
@@ -176,12 +171,8 @@ const mutations = {
   `,
   DeleteOrder: gql`
     ${ORDER_DETAILS}
-    mutation(
-      $id: ObjectId!
-    ) {
-      deleteOneOrder(
-        query: { _id: $id }
-      ) {
+    mutation($id: ObjectId!) {
+      deleteOneOrder(query: { _id: $id }) {
         ...OrderDetails
       }
     }
@@ -201,12 +192,13 @@ const mutations = {
           size: $size,
           quantity: $quantity,
         } ) {
-      ...OrderItemDetails
-      product {
-        ...ProductDetails
-      }
-      customer {
-        ...UserDetails
+        ...OrderItemDetails
+        product {
+          ...ProductDetails
+        }
+        customer {
+          ...UserDetails
+        }
       }
     }
   `,

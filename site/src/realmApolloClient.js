@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
@@ -29,10 +29,20 @@ export default new ApolloClient({
   cache: new InMemoryCache()
 });
 
-// Setup Realm App context
+// export const useRealmApp = () => {
+//   const app = useContext(RealmAppContext);
+//   console.log('app inside useRealmApp', app);
+//   if (!app) {
+//     throw new Error(
+//       'You must call useRealmApp() inside of a <RealmAppProvider />'
+//     );
+//   }
+//   return app;
+// };
 export const RealmAppContext = createContext();
-
 export const RealmAppProvider = ({ children }) => {
+  // Setup Realm App context
+
   const [realmApp] = useState(app);
 
   // Wrap the Realm.App object's user state with React state

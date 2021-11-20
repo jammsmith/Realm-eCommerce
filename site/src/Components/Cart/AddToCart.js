@@ -1,5 +1,6 @@
 // External imports
 import React, { useContext, useState, useEffect } from 'react';
+import { Credentials } from 'realm-web';
 import PropTypes from 'prop-types';
 import { IoCartOutline, IoCheckmarkSharp } from 'react-icons/io5';
 
@@ -8,11 +9,11 @@ import useDDMutation from '../../hooks/useDDMutation.js';
 import mutations from '../../graphql/mutations.js';
 
 // Components
-import { CurrentUserContext } from '../../context/currentUserContext.js';
 import ActionButton from '../ActionButton.js';
 
-// Helpers
+// Helpers / hooks
 import { getActiveOrderFromUser } from '../../helpers/user.js';
+import { RealmAppContext } from '../../realmApolloClient.js';
 
 // Styles
 import fonts from '../../styles/fonts.js';
@@ -23,7 +24,9 @@ const { dark, light } = colours;
 
 //
 const AddToCart = ({ product }) => {
-  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const app = useContext(RealmAppContext);
+  const [currentUser, setCurrentUser] = useState(app.currentUser);
+
   const [isItemAddedToCart, setIsItemAddedToCart] = useState(false);
   const [activeOrder, setActiveOrder] = useState();
 
@@ -31,18 +34,18 @@ const AddToCart = ({ product }) => {
   const [addOrder] = useDDMutation(mutations.AddOrder);
   const [addItemToOrder] = useDDMutation(mutations.AddItemToOrder);
 
-  useEffect(() => {
-    // Get the active order if the user has one
-    setActiveOrder(getActiveOrderFromUser(currentUser));
-  }, [currentUser]);
+  // useEffect(() => {
+  //   // Get the active order if the user has one
+  //   setActiveOrder(getActiveOrderFromUser(currentUser));
+  // }, [currentUser]);
 
-  useEffect(() => {
-    // Check if product is already part of the active order
-    if (activeOrder && activeOrder.orderItems) {
-      const foundOrderItem = activeOrder.orderItems.find(item => item.product.id === product.id);
-      if (foundOrderItem) setIsItemAddedToCart(true);
-    }
-  }, [activeOrder, product, setIsItemAddedToCart]);
+  // useEffect(() => {
+  //   // Check if product is already part of the active order
+  //   if (activeOrder && activeOrder.orderItems) {
+  //     const foundOrderItem = activeOrder.orderItems.find(item => item.product.id === product.id);
+  //     if (foundOrderItem) setIsItemAddedToCart(true);
+  //   }
+  // }, [activeOrder, product, setIsItemAddedToCart]);
 
   // Custom styles for button
   const styles = {
@@ -54,66 +57,75 @@ const AddToCart = ({ product }) => {
 
   const handleAddToCart = async () => {
     // -- Current user with an active order -- /
-    if (currentUser && currentUser.id && activeOrder) {
+    if (currentUser && currentUser.type && activeOrder) {
       try {
-        const response = await addItemToOrder({
-          variables: {
-            orderId: activeOrder.id,
-            productId: product.id,
-            quantity: 1
-          }
-        });
-        if (response.data.addItemToOrder) {
-          setIsItemAddedToCart(true);
-          console.log('Added item to existing order', response.data.addItemToOrder);
-        }
+        console.log('currentUser && currentUser.id && activeOrder');
+        // const response = await addItemToOrder({
+        //   variables: {
+        //     orderId: activeOrder.id,
+        //     productId: product.id,
+        //     quantity: 1
+        //   }
+        // });
+        // if (response.data.addItemToOrder) {
+        //   setIsItemAddedToCart(true);
+        //   console.log('Added item to existing order', response.data.addItemToOrder);
+        // }
       } catch (err) {
         console.log('Failed to add item to existing order. Error:', err);
       }
     }
 
     // -- Current user with no active order -- //
-    if (currentUser && currentUser.id && !activeOrder) {
+    if (currentUser && currentUser.type && !activeOrder) {
       try {
-        let response = await addOrder({ variables: { customerId: currentUser.id } });
-        response = await addItemToOrder({
-          variables: {
-            orderId: response.data.addOrder.id,
-            productId: product.id,
-            quantity: 1
-          }
-        });
-        if (response.data.addItemToOrder) {
-          setActiveOrder(response.data.addItemToOrder.order);
-          setIsItemAddedToCart(true);
-          console.log('Added new order and order item for existing customer', response.data.addItemToOrder);
-        }
+        console.log('currentUser && currentUser.id && !activeOrder');
+        // const response = await addOrder({ variables: { order_id: '12345' } });
+        // console.log('response from addOrder', addOrder);
+        // response = await addItemToOrder({
+        //   variables: {
+        //     orderId: response.data.addOrder.id,
+        //     productId: product.id,
+        //     quantity: 1
+        //   }
+        // });
+        // if (response.data.addItemToOrder) {
+        //   setActiveOrder(response.data.addItemToOrder.order);
+        //   setIsItemAddedToCart(true);
+        //   console.log('Added new order and order item for existing customer', response.data.addItemToOrder);
+        // }
       } catch (err) {
         console.log('Failed to add new order for existing customer. Error:', err);
       }
     }
-
-    // -- No current user -- //
-    if (currentUser && !currentUser.id) {
+    //
+    // -- No current logged in user -- //
+    if (currentUser && !currentUser.type) {
       try {
-        let response = await addUser();
-        const guestUser = response.data.addUser;
-        window.localStorage.setItem('currentUser', JSON.stringify(guestUser));
-        setCurrentUser(guestUser);
-        response = await addOrder({ variables: { customerId: guestUser.id } });
-        response = await addItemToOrder({
+        const response = await addUser({
           variables: {
-            orderId: response.data.addOrder.id,
-            productId: product.id,
-            quantity: 1,
-            size: 'test'
+            user_id: 'user-001',
+            type: 'guest'
           }
         });
-        if (response.data.addItemToOrder) {
-          setActiveOrder(response.data.addItemToOrder.order);
-          setIsItemAddedToCart(true);
-          console.log('Added new order and order item for a new localStorage customer', response.data.addItemToOrder);
-        }
+        const guestUser = response.data.insertOneUser;
+        // window.localStorage.setItem('currentUser', JSON.stringify(guestUser));
+        app.logIn(Credentials.custom(guestUser.id));
+        setCurrentUser(guestUser);
+        // response = await addOrder({ variables: { customerId: guestUser.id } });
+        // response = await addItemToOrder({
+        //   variables: {
+        //     orderId: response.data.addOrder.id,
+        //     productId: product.id,
+        //     quantity: 1,
+        //     size: 'test'
+        //   }
+        // });
+        // if (response.data.addItemToOrder) {
+        //   setActiveOrder(response.data.addItemToOrder.order);
+        //   setIsItemAddedToCart(true);
+        //   console.log('Added new order and order item for a new localStorage customer', response.data.addItemToOrder);
+        // }
       } catch (err) {
         console.log('Failed to create guest order. Error:', err);
       }
