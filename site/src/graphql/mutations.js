@@ -13,6 +13,7 @@ const mutations = {
   AddUser: gql`
     ${USER_DETAILS}
     mutation(
+      $_id: ObjectId!
       $user_id: String!
       $firstName: String,
       $lastName: String,
@@ -21,6 +22,7 @@ const mutations = {
       $type: String!
     ) {
       insertOneUser(data: {
+        _id: $_id
         user_id: $user_id,
         firstName: $firstName,
         lastName: $lastName,
@@ -125,24 +127,56 @@ const mutations = {
       }
     }
   `,
-  AddOrder: gql`
+  CreateGuestOrder: gql`
+    ${USER_DETAILS}
+    ${PRODUCT_DETAILS}
     ${ORDER_DETAILS}
+    ${ORDER_ITEM_DETAILS}
     mutation(
       $order_id: String!,
-      $isDelivered: Boolean = false,
-      $isOrderConfirmed: Boolean = false,
-      $isPaidFor: Boolean = false,
-      $isPendingInCheckout: Boolean = false,
+      $user_ObjectId: ObjectId!,
+      $user_id: String!, 
+      $orderItem_id: String!,
+      $product_id: String!,
     ) {
-      insertOneOrder(
-        data: { 
-          order_id: $order_id,
-          isDelivered: $isDelivered,
-          isOrderConfirmed: $isOrderConfirmed,
-          isPaidFor: $isPaidFor,
-          isPendingInCheckout: $isPendingInCheckout,
-        } ) {
+      insertOneOrder(data: {
+        order_id: $order_id,
+        isDelivered: false,
+        isOrderConfirmed: false,
+        isPaidFor: false,
+        isPendingInCheckout: true,
+        customer: {
+          link: "user_id",
+          create: {
+            _id: $user_ObjectId,
+            user_id: $user_id,
+            type: "guest",
+            orders: {
+              link: [$order_id]
+            }
+          }
+        },
+        orderItems: {
+          link: ["orderItem_id"],
+          create: [{
+            orderItem_id: $orderItem_id,
+            quantity: 1
+            product: {
+              link: $product_id
+            }
+          }]
+        }
+      } ) {
         ...OrderDetails
+        customer {
+          ...UserDetails
+        }
+        orderItems {
+          ...OrderItemDetails
+          product {
+            ...ProductDetails
+          }
+        }
       }
     }
   `,

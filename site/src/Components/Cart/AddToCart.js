@@ -27,12 +27,15 @@ const AddToCart = ({ product }) => {
   const app = useContext(RealmAppContext);
   const [currentUser, setCurrentUser] = useState(app.currentUser);
 
+  console.log('app.currentUser', app.currentUser);
+  console.log('currentUser', currentUser);
+
   const [isItemAddedToCart, setIsItemAddedToCart] = useState(false);
   const [activeOrder, setActiveOrder] = useState();
 
-  const [addUser] = useDDMutation(mutations.AddUser);
-  const [addOrder] = useDDMutation(mutations.AddOrder);
-  const [addItemToOrder] = useDDMutation(mutations.AddItemToOrder);
+  const [createGuestOrder] = useDDMutation(mutations.CreateGuestOrder);
+  // const [addOrder] = useDDMutation(mutations.AddOrder);
+  // const [addItemToOrder] = useDDMutation(mutations.AddItemToOrder);
 
   // useEffect(() => {
   //   // Get the active order if the user has one
@@ -102,30 +105,19 @@ const AddToCart = ({ product }) => {
     // -- No current logged in user -- //
     if (currentUser && !currentUser.type) {
       try {
-        const response = await addUser({
+        const response = await createGuestOrder({
           variables: {
+            order_id: 'order-001',
+            user_ObjectId: currentUser.id,
             user_id: 'user-001',
-            type: 'guest'
+            orderItem_id: 'orderItem-001',
+            product_id: 'gun-belts--0001'
           }
         });
-        const guestUser = response.data.insertOneUser;
-        // window.localStorage.setItem('currentUser', JSON.stringify(guestUser));
-        app.logIn(Credentials.custom(guestUser.id));
-        setCurrentUser(guestUser);
-        // response = await addOrder({ variables: { customerId: guestUser.id } });
-        // response = await addItemToOrder({
-        //   variables: {
-        //     orderId: response.data.addOrder.id,
-        //     productId: product.id,
-        //     quantity: 1,
-        //     size: 'test'
-        //   }
-        // });
-        // if (response.data.addItemToOrder) {
-        //   setActiveOrder(response.data.addItemToOrder.order);
-        //   setIsItemAddedToCart(true);
-        //   console.log('Added new order and order item for a new localStorage customer', response.data.addItemToOrder);
-        // }
+        setCurrentUser(response.data.insertOneOrder.customer);
+        setActiveOrder(response.data.insertOneOrder);
+        setIsItemAddedToCart(true);
+        console.log('Added new guest order');
       } catch (err) {
         console.log('Failed to create guest order. Error:', err);
       }

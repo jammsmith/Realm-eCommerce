@@ -6,9 +6,6 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "customer": {
-            "bsonType": "string"
-        },
         "orderItem_id": {
             "bsonType": "string"
         },
