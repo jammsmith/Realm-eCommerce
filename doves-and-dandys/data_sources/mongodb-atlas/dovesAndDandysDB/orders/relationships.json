@@ -1,8 +1,0 @@
-{
-    "orderItems": {
-        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/orderitems",
-        "source_key": "orderItems",
-        "foreign_key": "orderItem_id",
-        "is_list": true
-    }
-}

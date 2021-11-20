@@ -1,72 +1,78 @@
 import gql from 'graphql-tag';
+import {
+  USER_DETAILS,
+  // CATEGORY_DETAILS,
+  // SUBCATEGORY_DETAILS,
+  PRODUCT_DETAILS,
+  ORDER_DETAILS,
+  ORDER_ITEM_DETAILS
+} from './fragments.js';
 
 const mutations = {
   // AUTHORS
   AddUser: gql`
-    mutation {
-      addUser {
-        id
-        firstName
-        lastName
-        email
-        password
-        type
-        orders {
-          id
-          isPendingInCheckout
-          orderItems {
-            id
-            size
-            quantity
-            product {
-              id
-              name
-              image
-              price
-            }
-          }
-        }
+    ${USER_DETAILS}
+    mutation(
+      $id: ObjectId!
+      $user_id: ObjectId!
+      $firstName: String,
+      $lastName: String,
+      $email: String,
+      $password: String,
+      $type: String!
+    ) {
+      insertOneUser(data: {
+        _id: $id,
+        user_id: $user_id,
+        firstName: $firstName,
+        lastName: $lastName,
+        email: $email,
+        password: $password,
+        type: $type
+      } ) {
+        ...UserDetails
       }
     }
   `,
   UpdateUser: gql`
+    ${USER_DETAILS}
     mutation(
-      $userId: ID!,
+      $id: ObjectId!,
       $firstName: String,
       $lastName: String,
       $email: String,
       $password: String,
       $type: String,
     ) {
-      updateUser(
-        userId: $userId,
-        firstName: $firstName,
-        lastName: $lastName,
-        email: $email,
-        password: $password,
-        type: $type
-      ) {
-        id,
-        firstName,
-        lastName,
-        email,
-        type
+      updateOneUser(
+        query: { _id: $id },
+        set: {
+          firstName: $firstName,
+          lastName: $lastName,
+          email: $email,
+          password: $password,
+          type: $type,
+        } ) {
+        ...UserDetails
       }
     }
   `,
   DeleteUser: gql`
+    ${USER_DETAILS}
     mutation(
-      $userId: ID!
+      $id: ObjectId!
     ) {
-      deleteUser(
-        userId: $userId
+      deleteOneUser(
+        query: { _id: $id }
       ) {
-        id
+        ...UserDetails
       }
     }
   `,
   AddProductToInventory: gql`
+    ${PRODUCT_DETAILS}
     mutation(
+      $product_id: String!
       $name: String!,
       $image: String!,
       $category: String!,
@@ -75,7 +81,8 @@ const mutations = {
       $price: Int!,
       $numInStock: Int!,
     ) {
-      addProductToInventory(
+      insertOneProduct(data: {
+        product_id: $product_id
         name: $name,
         image: $image,
         category: $category,
@@ -83,21 +90,15 @@ const mutations = {
         description: $description,
         price: $price,
         numInStock: $numInStock
-      ) {
-        id,
-        name,
-        image,
-        category,
-        subCategory,
-        description,
-        price,
-        numInStock
+        } ) {
+          ...ProductDetails
       }
     }
   `,
   UpdateProductInInventory: gql`
+    ${PRODUCT_DETAILS}
     mutation(
-      $productId: ID!,
+      $id: ObjectId!
       $name: String,
       $image: String,
       $category: String,
@@ -106,169 +107,139 @@ const mutations = {
       $price: Int,
       $numInStock: Int,
     ) {
-      updateProductInInventory(
-        productId: $productId,
-        name: $name,
-        image: $image,
-        category: $category,
-        subCategory: $subCategory,
-        description: $description,
-        price: $price,
-        numInStock: $numInStock
-      ) {
-        id,
-        name,
-        image,
-        category,
-        subCategory,
-        description,
-        price,
-        numInStock
+      updateOneProduct( 
+        query: { _id: id },
+        set: {
+          productId: $productId,
+          name: $name,
+          image: $image,
+          category: $category,
+          subCategory: $subCategory,
+          description: $description,
+          price: $price,
+          numInStock: $numInStock
+        } ) {
+        ...ProductDetails
       }
     }
   `,
   RemoveProductFromInventory: gql`
+    ${PRODUCT_DETAILS}
     mutation(
-      $productId: ID!
+      $id: ObjectId!
     ) {
-      removeProductFromInventory(
-        productId: $productId
+      deleteOneProduct(
+        query: { _id: $id }
       ) {
-        id
+        ...ProductDetails
       }
     }
   `,
   AddOrder: gql`
+    ${ORDER_DETAILS}
     mutation(
-      $customerId: ID!,
+      $order_id: String!,
+      $isDelivered: Boolean = false,
+      $isOrderConfirmed: Boolean = false,
+      $isPaidFor: Boolean = false,
+      $isPendingInCheckout: Boolean = false,
     ) {
-      addOrder(
-        customerId: $customerId,
+      insertOneOrder(
+        data: { order_id: $order_id },
       ) {
-        id,
-        isPendingInCheckout,
-        isPaidFor,
-        isOrderConfirmed,
-        isDelivered,
-        customer {
-          id
-        }
+        ...OrderDetails
       }
     }
   `,
   UpdateOrder: gql`
+    ${ORDER_DETAILS}
     mutation(
-      $orderId: ID!,
-      $isPendingInCheckout: Boolean,
-      $isPaidFor: Boolean,
-      $isOrderConfirmed: Boolean,
+      $id: ObjectId!,
       $isDelivered: Boolean,
+      $isOrderConfirmed: Boolean,
+      $isPaidFor: Boolean,
+      $isPendingInCheckout: Boolean,
       $extraInfo: String
     ) {
-      updateOrder(
-        orderId: $orderId,
-        isPendingInCheckout: $isPendingInCheckout,
-        isPaidFor: $isPaidFor,
-        isOrderConfirmed: $isOrderConfirmed,
-        isDelivered: $isDelivered,
-        extraInfo: $extraInfo
-      ) {
-        id,
-        isPendingInCheckout,
-        isPaidFor,
-        isOrderConfirmed,
-        isDelivered,
-        extraInfo
+      updateOneOrder(
+        query: { _id: id },
+        set: {
+          isPendingInCheckout: $isPendingInCheckout,
+          isPaidFor: $isPaidFor,
+          isOrderConfirmed: $isOrderConfirmed,
+          isDelivered: $isDelivered,
+          extraInfo: $extraInfo
+        } ) {
+        ...OrderDetails
       }
     }
   `,
   DeleteOrder: gql`
+    ${ORDER_DETAILS}
     mutation(
-      $orderId: ID!
+      $id: ObjectId!
     ) {
-      deleteOrder(
-        orderId: $orderId
+      deleteOneOrder(
+        query: { _id: $id }
       ) {
-        id
+        ...OrderDetails
       }
     }
   `,
   AddItemToOrder: gql`
+    ${ORDER_ITEM_DETAILS}
+    ${PRODUCT_DETAILS}
+    ${USER_DETAILS}
     mutation(
+      $orderItem_id: String!
       $size: String,
       $quantity: Int!,
-      $orderId: ID!,
-      $productId: ID!
     ) {
-      addItemToOrder(
-        size: $size,
-        quantity: $quantity,
-        orderId: $orderId,
-        productId: $productId
-      ) {
-        id,
-        size,
-        quantity,
-        order {
-          id
-          customer {
-            id
-            firstName
-            lastName
-          }
-        },
-        product {
-          id
-        }
+      insertOneOrderItem(
+        data: {
+          orderItem_id: $orderItem_id,
+          size: $size,
+          quantity: $quantity,
+        } ) {
+      ...OrderItemDetails
+      product {
+        ...ProductDetails
+      }
+      customer {
+        ...UserDetails
       }
     }
   `,
   UpdateItemInOrder: gql`
+    ${ORDER_ITEM_DETAILS}
+    ${PRODUCT_DETAILS}
     mutation(
-      $id: ID!,
+      $id: ObjectId!,
       $size: String,
       $quantity: Int
     ) {
-      updateItemInOrder(
-        id: $id,
-        size: $size,
-        quantity: $quantity
-      ) {
-        id,
-        size,
-        quantity,
-        order {
-          id
-        },
-        product {
-          id
-        }
+      updateOneOrderItem(
+        query: { _id: $id },
+        set: {
+          size: $size,
+          quantity: $quantity
+        } ) {
+        ...OrderItemDetails
+        products {
+          ...ProductDetails
+        }  
       }
     }
   `,
   DeleteItemFromOrder: gql`
+    ${ORDER_ITEM_DETAILS}
     mutation(
-      $id: ID!
+      $id: ObjectId!
     ) {
       deleteItemFromOrder(
-        id: $id
+        query: { _id: $id }
       ) {
-        id
-        quantity
-        order {
-          orderItems {
-            id
-            size
-            quantity
-            product {
-              name
-              image
-              description
-              price
-              numInStock
-            }
-          }
-        }
+        ...OrderItemDetails
       } 
     }
   `

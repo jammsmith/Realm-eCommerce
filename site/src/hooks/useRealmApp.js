@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import RealmAppContext from '../realmApolloClient.js';
 
-export const useRealmApp = () => {
+const useRealmApp = () => {
   const app = useContext(RealmAppContext);
   if (!app) {
     throw new Error(
@@ -10,3 +10,5 @@ export const useRealmApp = () => {
   }
   return app;
 };
+
+export default useRealmApp;

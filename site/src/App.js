@@ -30,7 +30,6 @@ const App = () => {
   const [menuInView, setMenuInView] = useState(false);
   const toggleHandler = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
-
   // Stripe setup -->
   // const options = {
   //   clientSecret: 'sk_test_51JssHLK4OzaV2zFU3rKfTerqgOHjFTOf71gAedWEzLRTWg5ukgHA00xXyrH31uiiKPZ3EgZ2NiaxtsMRsgJkas1Z00yIQqdI20'

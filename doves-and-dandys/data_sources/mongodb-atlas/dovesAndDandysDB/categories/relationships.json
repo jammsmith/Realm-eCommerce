@@ -1,8 +1,0 @@
-{
-    "subCategories": {
-        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/subcategories",
-        "source_key": "subCategories",
-        "foreign_key": "subCategory_id",
-        "is_list": true
-    }
-}
