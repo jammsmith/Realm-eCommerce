@@ -1,6 +1,5 @@
 // External imports
-import React, { useContext, useState, useEffect } from 'react';
-import { Credentials } from 'realm-web';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { IoCartOutline, IoCheckmarkSharp } from 'react-icons/io5';
 
@@ -11,9 +10,8 @@ import mutations from '../../graphql/mutations.js';
 // Components
 import ActionButton from '../ActionButton.js';
 
-// Helpers / hooks
-import { getActiveOrderFromUser } from '../../helpers/user.js';
-import { RealmAppContext } from '../../realmApolloClient.js';
+// Other
+import useCurrentUser from '../../hooks/useCurrentUser.js';
 
 // Styles
 import fonts from '../../styles/fonts.js';
@@ -24,23 +22,36 @@ const { dark, light } = colours;
 
 //
 const AddToCart = ({ product }) => {
-  const app = useContext(RealmAppContext);
-  const [currentUser, setCurrentUser] = useState(app.currentUser);
-
-  console.log('app.currentUser', app.currentUser);
-  console.log('currentUser', currentUser);
-
+  const [currentUser, setCurrentUser] = useCurrentUser();
+  const activeOrder = useRef(null);
   const [isItemAddedToCart, setIsItemAddedToCart] = useState(false);
-  const [activeOrder, setActiveOrder] = useState();
+
+  //
+  useEffect(() => {
+    if (currentUser && currentUser.orders && currentUser.orders.length) {
+      const response = currentUser.orders.find(order => order.isPendingInCheckout === true);
+      if (response) activeOrder.current = response;
+    }
+  }, [currentUser]);
+
+  //
+  useEffect(() => {
+    // test setCurrentUser to see if it activates useEffect inside the hook
+    console.log('--------> currentUser', currentUser);
+    console.log('--------> setCurrentUser', setCurrentUser);
+  }, [currentUser]);
+  //
+  useEffect(() => {
+    console.log('isItemAddedToCart', isItemAddedToCart);
+  }, [isItemAddedToCart]);
+  //
+  useEffect(() => {
+    console.log('activeOrder.current', activeOrder.current);
+  }, [activeOrder]);
 
   const [createGuestOrder] = useDDMutation(mutations.CreateGuestOrder);
-  // const [addOrder] = useDDMutation(mutations.AddOrder);
-  // const [addItemToOrder] = useDDMutation(mutations.AddItemToOrder);
-
-  // useEffect(() => {
-  //   // Get the active order if the user has one
-  //   setActiveOrder(getActiveOrderFromUser(currentUser));
-  // }, [currentUser]);
+  const [createOrderForExistingCustomer] = useDDMutation(mutations.CreateOrderForExistingCustomer);
+  const [addItemToExistingOrder] = useDDMutation(mutations.AddItemToExistingOrder);
 
   // useEffect(() => {
   //   // Check if product is already part of the active order
@@ -60,48 +71,43 @@ const AddToCart = ({ product }) => {
 
   const handleAddToCart = async () => {
     // -- Current user with an active order -- /
-    if (currentUser && currentUser.type && activeOrder) {
+    if (currentUser && currentUser.type && activeOrder.current) {
       try {
-        console.log('currentUser && currentUser.id && activeOrder');
-        // const response = await addItemToOrder({
-        //   variables: {
-        //     orderId: activeOrder.id,
-        //     productId: product.id,
-        //     quantity: 1
-        //   }
-        // });
-        // if (response.data.addItemToOrder) {
-        //   setIsItemAddedToCart(true);
-        //   console.log('Added item to existing order', response.data.addItemToOrder);
-        // }
+        const response = await addItemToExistingOrder({
+          variables: {
+            orderItem_id: 'orderItem-004',
+            order_id: activeOrder.current.order_id,
+            product_id: 'combos--0002'
+          }
+        });
+        activeOrder.current = response.data.insertOneOrder;
+        setIsItemAddedToCart(true);
+        console.log('Added new item to existing order');
       } catch (err) {
         console.log('Failed to add item to existing order. Error:', err);
       }
     }
 
     // -- Current user with no active order -- //
-    if (currentUser && currentUser.type && !activeOrder) {
+    if (currentUser && currentUser.type && !activeOrder.current) {
       try {
-        console.log('currentUser && currentUser.id && !activeOrder');
-        // const response = await addOrder({ variables: { order_id: '12345' } });
-        // console.log('response from addOrder', addOrder);
-        // response = await addItemToOrder({
-        //   variables: {
-        //     orderId: response.data.addOrder.id,
-        //     productId: product.id,
-        //     quantity: 1
-        //   }
-        // });
-        // if (response.data.addItemToOrder) {
-        //   setActiveOrder(response.data.addItemToOrder.order);
-        //   setIsItemAddedToCart(true);
-        //   console.log('Added new order and order item for existing customer', response.data.addItemToOrder);
-        // }
+        console.log('currentUser && currentUser.id && !activeOrder.current');
+        const response = await createOrderForExistingCustomer({
+          variables: {
+            orderId: '12345',
+            userId: currentUser.user_id,
+            orderItemId: '67890',
+            productId: 'spur-straps-and-cuffs-sets--0006'
+          }
+        });
+        activeOrder.current = response.data.insertOneOrder;
+        setIsItemAddedToCart(true);
+        console.log('Added new order and order item for existing customer');
       } catch (err) {
         console.log('Failed to add new order for existing customer. Error:', err);
       }
     }
-    //
+
     // -- No current logged in user -- //
     if (currentUser && !currentUser.type) {
       try {
@@ -114,12 +120,12 @@ const AddToCart = ({ product }) => {
             product_id: 'gun-belts--0001'
           }
         });
-        setCurrentUser(response.data.insertOneOrder.customer);
-        setActiveOrder(response.data.insertOneOrder);
+        activeOrder.current = response.data.insertOneOrder;
         setIsItemAddedToCart(true);
-        console.log('Added new guest order');
+        setCurrentUser(response.data.insertOneOrder.customer);
+        console.log('Created new guest order');
       } catch (err) {
-        console.log('Failed to create guest order. Error:', err);
+        throw new Error(`Failed to create guest order. Error: ${err}`);
       }
     }
   };

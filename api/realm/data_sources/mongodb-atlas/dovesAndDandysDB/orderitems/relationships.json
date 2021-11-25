@@ -1,4 +1,10 @@
 {
+    "order": {
+        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/orders",
+        "source_key": "order",
+        "foreign_key": "order_id",
+        "is_list": false
+    },
     "product": {
         "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/products",
         "source_key": "product",

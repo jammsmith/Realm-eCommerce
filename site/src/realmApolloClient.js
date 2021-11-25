@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
@@ -16,7 +16,7 @@ const getValidAccessToken = async () => {
   return app.currentUser.accessToken;
 };
 
-// Setup graphql apollo client
+// Setup Graphql Apollo client
 export default new ApolloClient({
   link: new HttpLink({
     uri: graphqlUri,
@@ -29,32 +29,17 @@ export default new ApolloClient({
   cache: new InMemoryCache()
 });
 
-// export const useRealmApp = () => {
-//   const app = useContext(RealmAppContext);
-//   console.log('app inside useRealmApp', app);
-//   if (!app) {
-//     throw new Error(
-//       'You must call useRealmApp() inside of a <RealmAppProvider />'
-//     );
-//   }
-//   return app;
-// };
+// Setup Realm App context
 export const RealmAppContext = createContext();
 export const RealmAppProvider = ({ children }) => {
-  // Setup Realm App context
-
   const [realmApp] = useState(app);
-
-  // Wrap the Realm.App object's user state with React state
   const [currentUser, setCurrentUser] = useState(app.currentUser);
 
   async function logIn (credentials) {
     await app.logIn(credentials);
-    // If successful, app.currentUser is the user that just logged in
     setCurrentUser(app.currentUser);
   }
   async function logOut () {
-    // Log out the currently active user
     if (app.currentUser) {
       await app.currentUser.logout();
     }

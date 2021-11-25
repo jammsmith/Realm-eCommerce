@@ -18,7 +18,7 @@ export const SINGLE_USER = gql`
   }
 `;
 
-export const USER_ORDERS = gql`
+export const USER_DETAILED = gql`
   ${USER_DETAILS}
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}

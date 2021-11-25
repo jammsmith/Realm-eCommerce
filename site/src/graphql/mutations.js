@@ -160,13 +160,56 @@ const mutations = {
           link: ["orderItem_id"],
           create: [{
             orderItem_id: $orderItem_id,
-            quantity: 1
+            quantity: 1,
+            order: {
+              link: $order_id
+            }
             product: {
               link: $product_id
             }
           }]
         }
       } ) {
+        ...OrderDetails
+        customer {
+          ...UserDetails
+        }
+        orderItems {
+          ...OrderItemDetails
+          product {
+            ...ProductDetails
+          }
+        }
+      }
+    }
+  `,
+  CreateOrderForExistingCustomer: gql`
+    ${USER_DETAILS}
+    ${PRODUCT_DETAILS}
+    ${ORDER_DETAILS}
+    ${ORDER_ITEM_DETAILS}
+    mutation(
+      $orderId: String!,
+      $userId: String!,
+      $orderItemId: String!,
+      $productId: String!
+    ) {
+      insertOneOrder(data: {
+        order_id: $orderId,
+        customer: {
+          link: $userId,
+        },
+        orderItems: {
+          link: [$orderItemId],
+          create: [{
+            orderItem_id: $orderItemId,
+            quantity: 1
+            product: {
+              link: $productId
+            }
+          }]
+        }
+      }) {
         ...OrderDetails
         customer {
           ...UserDetails
@@ -211,27 +254,34 @@ const mutations = {
       }
     }
   `,
-  AddItemToOrder: gql`
+  AddItemToExistingOrder: gql`
     ${ORDER_ITEM_DETAILS}
+    ${ORDER_DETAILS}
     ${PRODUCT_DETAILS}
-    ${USER_DETAILS}
     mutation(
-      $orderItem_id: String!
+      $orderItem_id: String!,
+      $order_id: String!,
+      $product_id: String!,
       $size: String,
-      $quantity: Int!,
+      $quantity: Int = 1,
     ) {
-      insertOneOrderItem(
-        data: {
-          orderItem_id: $orderItem_id,
-          size: $size,
-          quantity: $quantity,
-        } ) {
+      insertOneOrderItem(data: {
+        orderItem_id: $orderItem_id,
+        size: $size,
+        quantity: $quantity,
+        order: {
+          link: $order_id
+        },
+        product: {
+          link: $product_id
+        }
+      } ) {
         ...OrderItemDetails
+        order {
+          ...OrderDetails
+        },
         product {
           ...ProductDetails
-        }
-        customer {
-          ...UserDetails
         }
       }
     }

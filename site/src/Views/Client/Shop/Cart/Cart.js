@@ -8,17 +8,17 @@ import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import CartProductList from './CartProductList.js';
 
 // Helpers
-import { getActiveOrderFromUser } from '../../../../helpers/user.js';
+// import { getActiveOrderFromUser } from '../../../../helpers/user.js';
 
 const Cart = () => {
   const [currentUser] = useContext(CurrentUserContext);
   const [activeOrder, setActiveOrder] = useState(null);
 
-  useEffect(() => {
-    if (currentUser && currentUser.id && activeOrder === null) {
-      setActiveOrder(getActiveOrderFromUser(currentUser));
-    }
-  }, [currentUser, activeOrder]);
+  // useEffect(() => {
+  //   if (currentUser && currentUser.id && activeOrder === null) {
+  //     setActiveOrder(getActiveOrderFromUser(currentUser));
+  //   }
+  // }, [currentUser, activeOrder]);
 
   return (
     activeOrder

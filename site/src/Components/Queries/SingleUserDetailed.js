@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import DDQuery from './DDQuery.js';
-import { USER_ORDERS } from '../../graphql/queries.js';
+import { USER_DETAILED } from '../../graphql/queries.js';
 
-const UserOrders = ({ children, userId }) => {
+const SingleUserDetailed = ({ children, userId }) => {
   return (
-    <DDQuery query={USER_ORDERS} variables={{ id: userId }}>
+    <DDQuery query={USER_DETAILED} variables={{ id: userId }}>
       {data => {
         return children(data.user);
       }}
@@ -14,9 +14,9 @@ const UserOrders = ({ children, userId }) => {
   );
 };
 
-UserOrders.propTypes = {
+SingleUserDetailed.propTypes = {
   children: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired
 };
 
-export default UserOrders;
+export default SingleUserDetailed;
