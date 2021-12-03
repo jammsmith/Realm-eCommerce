@@ -348,18 +348,18 @@ const mutations = {
           quantity: $quantity
         } ) {
         ...OrderItemDetails
-        products {
+        product {
           ...ProductDetails
         }  
       }
     }
   `,
-  DeleteItemFromOrder: gql`
+  DeleteOrderItem: gql`
     ${ORDER_ITEM_DETAILS}
     mutation(
       $id: ObjectId!
     ) {
-      deleteItemFromOrder(
+      deleteOneOrderItem(
         query: { _id: $id }
       ) {
         ...OrderItemDetails

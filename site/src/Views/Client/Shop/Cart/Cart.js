@@ -18,7 +18,7 @@ const Cart = () => {
         {
           order =>
             <>
-              <SectionSpacer dark spaceBelow />
+              <SectionSpacer dark />
               <CartProductList activeOrder={order} />
             </>
         }

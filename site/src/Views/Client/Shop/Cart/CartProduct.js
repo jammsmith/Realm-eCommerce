@@ -11,6 +11,7 @@ import mutations from '../../../../graphql/mutations.js';
 
 // Components
 import ActionButton from '../../../../Components/ActionButton.js';
+import SectionSpacer from '../../../../Components/SectionSpacer.js';
 
 // Colours
 import colours from '../../../../styles/colours.js';
@@ -25,32 +26,53 @@ export const CartLine = styled.div`
   margin: auto;
 `;
 
+const DetailsWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+`;
+
 const ProductDetailsWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 0.25rem;
 `;
 
 const CartDetailsWrapper = styled.div`
-  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 5rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+`;
+
+const Divider = styled.div`
+  border-right: 0.05rem solid black;
+  flex: 1;
 `;
 
 const EditButtons = styled.div`
   display: flex;
-  gap: 0.25rem;
-  align-self: flex-end;
+  gap: 1rem;
+  padding: 0.5rem;
+  align-self: center;
   align-items: center;
 `;
 
 const CartProduct = ({ orderItem }) => {
-  const [deleteItemFromOrder] = useDDMutation(mutations.DeleteItemFromOrder);
-  const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
-  const [quantity, setQuantity] = useState();
+  // Track quantity changes
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+  const [quantity, setQuantity] = useState();
+  const [productTotal, setProductTotal] = useState();
 
   useEffect(() => {
-    if (orderItem && orderItem.quantity) setQuantity(orderItem.quantity);
+    if (orderItem && orderItem.quantity) {
+      setQuantity(orderItem.quantity);
+      setProductTotal(() => orderItem.quantity * orderItem.product.price);
+    }
   }, [orderItem, setQuantity]);
+
+  useEffect(() => {
+    setProductTotal(quantity * orderItem.product.price);
+  }, [quantity, orderItem, setProductTotal]);
 
   const handleQuantityPlusClick = () => {
     setIsSaveDisabled(false);
@@ -61,12 +83,16 @@ const CartProduct = ({ orderItem }) => {
     setQuantity(quantity - 1);
   };
 
+  // Handlers
+  const [deleteOrderItem] = useDDMutation(mutations.DeleteOrderItem);
+  const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
+
   const handleSave = async (event) => {
     try {
       event.preventDefault();
       await updateItemInOrder({
         variables: {
-          id: orderItem.id,
+          id: orderItem._id,
           quantity
         }
       });
@@ -76,10 +102,11 @@ const CartProduct = ({ orderItem }) => {
     }
   };
 
+  // NOTE: This should also remove the orderItem_id from the orderItems array in the order
   const handleRemoveItem = async () => {
     try {
-      await deleteItemFromOrder({
-        variables: { id: orderItem.id }
+      await deleteOrderItem({
+        variables: { id: orderItem._id }
       });
     } catch (err) {
       console.log('Failed to delete item from order');
@@ -88,13 +115,18 @@ const CartProduct = ({ orderItem }) => {
   return (
     orderItem.product
       ? <CartLine>
-        <ProductDetailsWrapper>
-          <h6>{orderItem.product.name}</h6>
-          <h6><strong>£{orderItem.product.price}</strong></h6>
-        </ProductDetailsWrapper>
-        <CartDetailsWrapper>
-          <h6>Quantity: <strong>{quantity}</strong></h6>
-        </CartDetailsWrapper>
+        <SectionSpacer light />
+        <DetailsWrapper>
+          <ProductDetailsWrapper>
+            <h6>{orderItem.product.name}</h6>
+            <h6 style={{ fontSize: '0.75rem' }}>Unit Price: £{orderItem.product.price}</h6>
+          </ProductDetailsWrapper>
+          <Divider />
+          <CartDetailsWrapper>
+            <h6>x {quantity}</h6>
+            <h6>£{productTotal}</h6>
+          </CartDetailsWrapper>
+        </DetailsWrapper>
         <CartLine>
           <EditButtons>
             <IoAddCircleOutline style={{ fontSize: '1.75rem' }} onClick={handleQuantityPlusClick} />
