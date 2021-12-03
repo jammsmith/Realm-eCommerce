@@ -57,6 +57,21 @@ const mutations = {
       }
     }
   `,
+  UpdateUserOrders: gql`
+    ${USER_DETAILS}
+    mutation(
+      $user_id: String!,
+      $orders: [String!]
+    ) {
+      updateOneUser(
+        query: { user_id: $user_id },
+        set: {
+          orders: { link: $orders }
+        } ) {
+        ...UserDetails
+      }
+    }
+  `,
   DeleteUser: gql`
     ${USER_DETAILS}
     mutation($id: ObjectId!) {
@@ -170,14 +185,16 @@ const mutations = {
           }]
         }
       } ) {
-        ...OrderDetails
         customer {
           ...UserDetails
-        }
-        orderItems {
-          ...OrderItemDetails
-          product {
-            ...ProductDetails
+          orders {
+            ...OrderDetails
+            orderItems {
+              ...OrderItemDetails
+              product {
+                ...ProductDetails
+              }
+            }
           }
         }
       }
@@ -189,23 +206,27 @@ const mutations = {
     ${ORDER_DETAILS}
     ${ORDER_ITEM_DETAILS}
     mutation(
-      $orderId: String!,
-      $userId: String!,
-      $orderItemId: String!,
-      $productId: String!
+      $order_id: String!,
+      $user_id: String!,
+      $orderItem_id: String!,
+      $product_id: String!
     ) {
       insertOneOrder(data: {
-        order_id: $orderId,
+        order_id: $order_id,
+        isDelivered: false,
+        isOrderConfirmed: false,
+        isPaidFor: false,
+        isPendingInCheckout: true,
         customer: {
-          link: $userId,
+          link: $user_id,
         },
         orderItems: {
-          link: [$orderItemId],
+          link: [$orderItem_id],
           create: [{
-            orderItem_id: $orderItemId,
+            orderItem_id: $orderItem_id,
             quantity: 1
             product: {
-              link: $productId
+              link: $product_id
             }
           }]
         }
@@ -213,6 +234,9 @@ const mutations = {
         ...OrderDetails
         customer {
           ...UserDetails
+          orders {
+            ...OrderDetails
+          }
         }
         orderItems {
           ...OrderItemDetails
@@ -223,38 +247,7 @@ const mutations = {
       }
     }
   `,
-  UpdateOrder: gql`
-    ${ORDER_DETAILS}
-    mutation(
-      $id: ObjectId!,
-      $isDelivered: Boolean,
-      $isOrderConfirmed: Boolean,
-      $isPaidFor: Boolean,
-      $isPendingInCheckout: Boolean,
-      $extraInfo: String
-    ) {
-      updateOneOrder(
-        query: { _id: id },
-        set: {
-          isPendingInCheckout: $isPendingInCheckout,
-          isPaidFor: $isPaidFor,
-          isOrderConfirmed: $isOrderConfirmed,
-          isDelivered: $isDelivered,
-          extraInfo: $extraInfo
-        } ) {
-        ...OrderDetails
-      }
-    }
-  `,
-  DeleteOrder: gql`
-    ${ORDER_DETAILS}
-    mutation($id: ObjectId!) {
-      deleteOneOrder(query: { _id: $id }) {
-        ...OrderDetails
-      }
-    }
-  `,
-  AddItemToExistingOrder: gql`
+  CreateNewOrderItem: gql`
     ${ORDER_ITEM_DETAILS}
     ${ORDER_DETAILS}
     ${PRODUCT_DETAILS}
@@ -283,6 +276,60 @@ const mutations = {
         product {
           ...ProductDetails
         }
+      }
+    }
+  `,
+  UpdateOrderItemsInOrder: gql`
+    ${ORDER_ITEM_DETAILS}
+    ${ORDER_DETAILS}
+    ${PRODUCT_DETAILS}
+    mutation(
+      $order_id: String!,
+      $orderItems: [String!]
+    ) {
+      updateOneOrder(
+        query: { order_id: $order_id},
+        set: { 
+          orderItems: { link: $orderItems }
+        } ) {
+        ...OrderDetails
+        orderItems {
+          ...OrderItemDetails
+          product {
+            ...ProductDetails
+          }
+        }
+      }
+    }
+  `,
+  UpdateOrder: gql`
+    ${ORDER_DETAILS}
+    mutation(
+      $id: ObjectId!,
+      $isDelivered: Boolean,
+      $isOrderConfirmed: Boolean,
+      $isPaidFor: Boolean,
+      $isPendingInCheckout: Boolean,
+      $extraInfo: String
+    ) {
+      updateOneOrder(
+        query: { _id: $id },
+        set: {
+          isPendingInCheckout: $isPendingInCheckout,
+          isPaidFor: $isPaidFor,
+          isOrderConfirmed: $isOrderConfirmed,
+          isDelivered: $isDelivered,
+          extraInfo: $extraInfo
+        } ) {
+        ...OrderDetails
+      }
+    }
+  `,
+  DeleteOrder: gql`
+    ${ORDER_DETAILS}
+    mutation($id: ObjectId!) {
+      deleteOneOrder(query: { _id: $id }) {
+        ...OrderDetails
       }
     }
   `,

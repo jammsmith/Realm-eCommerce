@@ -5,7 +5,7 @@ const categories = require('../data/categories.js');
 const generateProducts = () => {
   const generatedProducts = [];
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 1; i < 50; i++) {
     const numInStockOptions = [0, 1, 2, 3];
 
     // Returns an array of category names.
@@ -21,7 +21,7 @@ const generateProducts = () => {
     const randomSubCategory = faker.random.arrayElement(currentCategory.subCategories);
 
     generatedProducts.push({
-      product_id: `${randomSubCategory}--000${i}`,
+      product_id: `product-00${i}`,
       name: faker.commerce.productName(),
       image: 'https://placedog.net/350?random',
       category: randomCategory,

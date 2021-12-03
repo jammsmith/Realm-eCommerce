@@ -1,5 +1,3 @@
-const faker = require('faker');
-
 const User = require('../models/user.js');
 const Category = require('../models/shop/category.js');
 const SubCategory = require('../models/shop/subCategory');
@@ -11,8 +9,8 @@ const users = require('./data/users.js');
 const generateCategories = require('./dataGeneration/categories.js');
 const generateSubCategories = require('./dataGeneration/subCategories.js');
 const generateProducts = require('./dataGeneration/products.js');
-const generateOrders = require('./dataGeneration/orders.js');
-const generateOrderItems = require('./dataGeneration/orderItems.js');
+// const generateOrders = require('./dataGeneration/orders.js');
+// const generateOrderItems = require('./dataGeneration/orderItems.js');
 
 const mongooseConnection = require('../client.js');
 mongooseConnection();
@@ -60,7 +58,7 @@ const addFakeData = async () => {
     // just build an order from the UI.
 
     console.log('Seed completed successfully.');
-    process.exit(0).then();
+    process.exit(0);
   } catch (err) {
     console.error(`Fake data import failed: ${err}`);
     process.exit(1);

@@ -61,6 +61,7 @@ export const ORDER_DETAILS = gql`
 export const ORDER_ITEM_DETAILS = gql`
   fragment OrderItemDetails on OrderItem {
     _id
+    orderItem_id
     size
     quantity
   }

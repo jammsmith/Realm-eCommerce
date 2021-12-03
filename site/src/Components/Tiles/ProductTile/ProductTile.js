@@ -23,8 +23,9 @@ import {
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
-const ProductTile = ({ product, linkTo, viewAsSingleProduct }) => {
+const ProductTile = ({ product, linkTo, viewAsSingleProduct, handleAddToCart, itemsInCart }) => {
   const { name, price, image, numInStock, description } = product;
+
   return (
     <OuterContainer>
       <ProductContent>
@@ -53,7 +54,7 @@ const ProductTile = ({ product, linkTo, viewAsSingleProduct }) => {
               customStyles={{ width: '100%' }}
             />
         }
-        <AddToCart product={product} />
+        <AddToCart product={product} handleAddToCart={handleAddToCart} itemsInCart={itemsInCart} />
       </ButtonContainer>
     </OuterContainer>
   );
@@ -62,7 +63,9 @@ const ProductTile = ({ product, linkTo, viewAsSingleProduct }) => {
 ProductTile.propTypes = {
   product: PropTypes.object.isRequired,
   linkTo: PropTypes.string,
-  viewAsSingleProduct: PropTypes.bool
+  viewAsSingleProduct: PropTypes.bool,
+  handleAddToCart: PropTypes.func.isRequired,
+  itemsInCart: PropTypes.object
 };
 
 export default ProductTile;

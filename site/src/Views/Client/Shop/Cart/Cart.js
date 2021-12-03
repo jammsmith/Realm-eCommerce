@@ -1,33 +1,25 @@
 // External imports
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 
 // Custom components
-import { CurrentUserContext } from '../../../../context/currentUserContext.js';
 import SingleOrderDetailed from '../../../../Components/Queries/SingleOrderDetailed.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import CartProductList from './CartProductList.js';
 
-// Helpers
-// import { getActiveOrderFromUser } from '../../../../helpers/user.js';
+// Helpers/hooks
+import useActiveOrder from '../../../../hooks/useActiveOrder.js';
 
 const Cart = () => {
-  const [currentUser] = useContext(CurrentUserContext);
-  const [activeOrder, setActiveOrder] = useState(null);
-
-  // useEffect(() => {
-  //   if (currentUser && currentUser.id && activeOrder === null) {
-  //     setActiveOrder(getActiveOrderFromUser(currentUser));
-  //   }
-  // }, [currentUser, activeOrder]);
+  const [activeOrder] = useActiveOrder();
 
   return (
     activeOrder
-      ? <SingleOrderDetailed id={activeOrder.id} pollInterval={500}>
+      ? <SingleOrderDetailed id={activeOrder._id} pollInterval={500}>
         {
-          orderById =>
+          order =>
             <>
               <SectionSpacer dark spaceBelow />
-              <CartProductList activeOrder={orderById} />
+              <CartProductList activeOrder={order} />
             </>
         }
         </SingleOrderDetailed>

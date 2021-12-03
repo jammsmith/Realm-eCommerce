@@ -99,10 +99,10 @@ export const ALL_SUBCATEGORIES = gql`
 
 // Shop products
 export const SINGLE_PRODUCT = gql`
-  ${SUBCATEGORY_DETAILS}
+  ${PRODUCT_DETAILS}
   query($id: ObjectId!) {
     product(query: { _id: $id }) {
-      ...SubCategoryDetails
+      ...ProductDetails
     }
   }
 `;
@@ -124,13 +124,13 @@ export const SINGLE_ORDER_DETAILED = gql`
   query($id: ObjectId!) {
     order(query: { _id: $id }) {
       ...OrderDetails
+      customer {
+        ...UserDetails
+      }
       orderItems {
         ...OrderItemDetails
         product {
           ...ProductDetails
-        }
-        customer {
-          ...UserDetails
         }
       }
     }
@@ -151,6 +151,26 @@ export const ALL_ORDERS = gql`
   query {
     orders {
       ...OrderDetails
+    }
+  }
+`;
+
+export const LAST_REF_IDS = gql`
+  query {
+    users(limit: 1, sortBy: USER_ID_DESC) {
+      user_id
+    }
+    orders(limit: 1, sortBy: ORDER_ID_DESC) {
+      order_id
+    }
+    orderItems(limit: 1, sortBy: ORDERITEM_ID_DESC) {
+      orderItem_id
+    }
+    subCategories(limit: 1, sortBy: SUBCATEGORY_ID_DESC) {
+      subCategory_id
+    }
+    products(limit: 1, sortBy: PRODUCT_ID_DESC) {
+      product_id
     }
   }
 `;

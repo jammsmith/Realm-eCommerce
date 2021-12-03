@@ -1,5 +1,6 @@
 // External imports
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -25,7 +26,7 @@ const ButtonContainer = styled.div`
 `;
 
 // Return a single product
-const Product = () => {
+const Product = ({ handleAddToCart, itemsInCart }) => {
   const { url } = useRouteMatch();
   const { subCategory, productId } = useParams();
 
@@ -40,6 +41,8 @@ const Product = () => {
             <>
               <ProductTile
                 product={product}
+                handleAddToCart={handleAddToCart}
+                isItemInCart={itemsInCart}
                 viewAsSingleProduct
               />
               <SectionSpacer dark spaceAbove spaceBelow />
@@ -64,6 +67,11 @@ const Product = () => {
       }
     </SingleProduct>
   );
+};
+
+Product.propTypes = {
+  handleAddToCart: PropTypes.func.isRequired,
+  itemsInCart: PropTypes.object
 };
 
 export default Product;

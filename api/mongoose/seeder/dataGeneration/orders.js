@@ -16,13 +16,13 @@ const generateOrders = (orderItems) => {
   const randomBooleanValues = faker.random.arrayElement(orderBooleans);
 
   // Generate orders
-  for (let i = 0; i < 20; i++) {
+  for (let i = 1; i < 20; i++) {
     const randomOrderItems = [];
     for (let i = 0; i < 3; i++) {
       randomOrderItems.push(faker.random.arrayElement(orderItems).orderItem_id);
     }
     const objSection1 = {
-      order_id: `0000${i}`,
+      order_id: `order-00${i}`,
       extraInfo: randomExtraInfo,
       orderItems: randomOrderItems
     };

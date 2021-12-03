@@ -6,12 +6,12 @@ const generateOrderItems = (users, products) => {
   const sizeOptions = ['S', 'M', 'L', 'XL'];
   const quantityOptions = [1, 2, 3];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 1; i < 100; i++) {
     const randomProduct = faker.random.arrayElement(products);
     const randomUser = faker.random.arrayElement(users);
 
     generatedItems.push({
-      orderItem_id: `000${i}`,
+      orderItem_id: `orderItem-00${i}`,
       size: faker.random.arrayElement(sizeOptions),
       quantity: faker.random.arrayElement(quantityOptions),
       product: randomProduct.product_id,

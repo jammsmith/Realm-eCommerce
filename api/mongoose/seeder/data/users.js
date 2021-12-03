@@ -1,6 +1,6 @@
 const users = [
   {
-    user_id: '001',
+    user_id: 'user-001',
     firstName: 'Margeret',
     lastName: 'Thatcher',
     email: 'maggymoo@mags.com',
@@ -8,7 +8,7 @@ const users = [
     type: 'customer'
   },
   {
-    user_id: '002',
+    user_id: 'user-002',
     firstName: 'John',
     lastName: 'Wayne',
     email: 'wayne@world.com',
@@ -16,7 +16,7 @@ const users = [
     type: 'customer'
   },
   {
-    user_id: '003',
+    user_id: 'user-003',
     firstName: 'Tim',
     lastName: 'Tom',
     email: 'tomtim@tim.tom',
@@ -24,7 +24,7 @@ const users = [
     type: 'guest'
   },
   {
-    user_id: '004',
+    user_id: 'user-004',
     firstName: 'Admin',
     lastName: 'User',
     email: 'test@admin.com',
