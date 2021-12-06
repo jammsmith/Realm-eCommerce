@@ -11,7 +11,6 @@ const Link = styled(LinkTo)`
   color: ${light};
   :hover,
   :active {
-    color: ${light};
     text-decoration: underline;
   }
 `;

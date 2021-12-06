@@ -1,6 +1,6 @@
 // External imports
 import React, { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IoAddCircleOutline, IoRemoveCircleSharp, IoTrashOutline } from 'react-icons/io5';
@@ -15,7 +15,7 @@ import SectionSpacer from '../../../../Components/SectionSpacer.js';
 
 // Colours
 import colours from '../../../../styles/colours.js';
-const { darkFade } = colours;
+const { darkFade, dark } = colours;
 
 // Styled components
 export const CartLine = styled.div`
@@ -28,7 +28,6 @@ export const CartLine = styled.div`
 
 const DetailsWrapper = styled.div`
   display: flex;
-  flex-wrap: nowrap;
 `;
 
 const ProductDetailsWrapper = styled.div`
@@ -57,7 +56,11 @@ const EditButtons = styled.div`
   align-items: center;
 `;
 
-const CartProduct = ({ orderItem }) => {
+const ProductLink = styled(Link)`
+  color: ${dark};
+`;
+
+const CartProduct = ({ order, orderItem }) => {
   // Track quantity changes
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
@@ -74,19 +77,17 @@ const CartProduct = ({ orderItem }) => {
     setProductTotal(quantity * orderItem.product.price);
   }, [quantity, orderItem, setProductTotal]);
 
-  const handleQuantityPlusClick = () => {
+  // Handlers
+  const handleIncreaseQuantityClick = () => {
     setIsSaveDisabled(false);
     setQuantity(quantity + 1);
   };
-  const handleQuantityMinusClick = () => {
+  const handleDecreaseQuantityClick = () => {
     setIsSaveDisabled(false);
     setQuantity(quantity - 1);
   };
 
-  // Handlers
-  const [deleteOrderItem] = useDDMutation(mutations.DeleteOrderItem);
   const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
-
   const handleSave = async (event) => {
     try {
       event.preventDefault();
@@ -102,24 +103,41 @@ const CartProduct = ({ orderItem }) => {
     }
   };
 
-  // NOTE: This should also remove the orderItem_id from the orderItems array in the order
+  const [deleteOrderItem] = useDDMutation(mutations.DeleteOrderItem);
+  const [updateOrderItemsArrayInOrder] = useDDMutation(mutations.UpdateOrderItemsArrayInOrder);
+
   const handleRemoveItem = async () => {
+    const updatedOrderItems = order.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
+    const orderItemIds = updatedOrderItems.map(item => item.orderItem_id);
+
     try {
       await deleteOrderItem({
-        variables: { id: orderItem._id }
+        variables: {
+          orderItem_id: orderItem.orderItem_id
+        }
+      });
+      await updateOrderItemsArrayInOrder({
+        variables: {
+          order_id: order.order_id,
+          updatedOrderItemsArray: orderItemIds
+        }
       });
     } catch (err) {
       console.log('Failed to delete item from order');
     }
   };
+
+  const { product } = orderItem;
   return (
     orderItem.product
       ? <CartLine>
         <SectionSpacer light />
         <DetailsWrapper>
           <ProductDetailsWrapper>
-            <h6>{orderItem.product.name}</h6>
-            <h6 style={{ fontSize: '0.75rem' }}>Unit Price: £{orderItem.product.price}</h6>
+            <ProductLink to={`/shop/${product.category}/${product.subCategory}/${product._id}`}>
+              <h6>{orderItem.product.name}</h6>
+            </ProductLink>
+            <h6 style={{ fontSize: '0.75rem' }}>Unit Price: £{product.price}</h6>
           </ProductDetailsWrapper>
           <Divider />
           <CartDetailsWrapper>
@@ -129,9 +147,21 @@ const CartProduct = ({ orderItem }) => {
         </DetailsWrapper>
         <CartLine>
           <EditButtons>
-            <IoAddCircleOutline style={{ fontSize: '1.75rem' }} onClick={handleQuantityPlusClick} />
-            <IoRemoveCircleSharp style={{ fontSize: '1.75rem' }} onClick={handleQuantityMinusClick} />
-            <IoTrashOutline style={{ fontSize: '1.75rem' }} onClick={handleRemoveItem} />
+            <IoAddCircleOutline
+              name='increase-quantity'
+              style={{ fontSize: '1.75rem' }}
+              onClick={handleIncreaseQuantityClick}
+            />
+            <IoRemoveCircleSharp
+              name='descrease-quantity'
+              style={{ fontSize: '1.75rem' }}
+              onClick={handleDecreaseQuantityClick}
+            />
+            <IoTrashOutline
+              name='remove-item'
+              onClick={handleRemoveItem}
+              style={{ fontSize: '1.75rem' }}
+            />
             <ActionButton text='Save' onClick={handleSave} disabled={isSaveDisabled} />
           </EditButtons>
         </CartLine>
@@ -141,6 +171,7 @@ const CartProduct = ({ orderItem }) => {
 };
 
 CartProduct.propTypes = {
+  order: PropTypes.object.isRequired,
   orderItem: PropTypes.object.isRequired
 };
 

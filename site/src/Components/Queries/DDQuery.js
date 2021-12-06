@@ -17,7 +17,7 @@ const DDQuery = ({ children, query, variables, fetchPolicy, pollInterval }) => {
     return <h2>Error</h2>;
   }
 
-  return children(data);
+  return data && children(data);
 };
 
 DDQuery.propTypes = {

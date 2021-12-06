@@ -118,7 +118,7 @@ const mutations = {
       $price: Int,
       $numInStock: Int
     ) {
-      updateOneProduct( 
+      updateOneProduct(
         query: { _id: id },
         set: {
           productId: $productId,
@@ -150,7 +150,7 @@ const mutations = {
     mutation(
       $order_id: String!,
       $user_ObjectId: ObjectId!,
-      $user_id: String!, 
+      $user_id: String!,
       $orderItem_id: String!,
       $product_id: String!,
     ) {
@@ -289,7 +289,7 @@ const mutations = {
     ) {
       updateOneOrder(
         query: { order_id: $order_id},
-        set: { 
+        set: {
           orderItems: { link: $orderItems }
         } ) {
         ...OrderDetails
@@ -350,20 +350,36 @@ const mutations = {
         ...OrderItemDetails
         product {
           ...ProductDetails
-        }  
+        }
       }
     }
   `,
   DeleteOrderItem: gql`
     ${ORDER_ITEM_DETAILS}
     mutation(
-      $id: ObjectId!
+      $orderItem_id: String!
     ) {
       deleteOneOrderItem(
-        query: { _id: $id }
+        query: { orderItem_id: $orderItem_id }
       ) {
         ...OrderItemDetails
-      } 
+      }
+    }
+  `,
+  UpdateOrderItemsArrayInOrder: gql`
+    ${ORDER_DETAILS}
+    mutation(
+      $order_id: String!,
+      $updatedOrderItemsArray: [String!]
+    ) {
+      updateOneOrder(
+        query: { order_id:$order_id },
+        set: {
+          orderItems: { link: $updatedOrderItemsArray }
+        }
+      ) {
+        ...OrderDetails
+      }
     }
   `
 };

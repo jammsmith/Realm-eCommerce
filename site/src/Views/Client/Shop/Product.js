@@ -42,7 +42,7 @@ const Product = ({ handleAddToCart, itemsInCart }) => {
               <ProductTile
                 product={product}
                 handleAddToCart={handleAddToCart}
-                isItemInCart={itemsInCart}
+                itemsInCart={itemsInCart}
                 viewAsSingleProduct
               />
               <SectionSpacer dark spaceAbove spaceBelow />
