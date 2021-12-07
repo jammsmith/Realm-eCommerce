@@ -28,20 +28,14 @@ const SubCategoryCaption = styled(CategoryCaption)`
   }
 `;
 
-const SubCategoryWrapper = styled(Wrapper)`
-  @media (min-width: 768px) {
-    width: 20rem;
-  }
-`;
-
 // Link to a specific sub-category
 export const SubCategoryTile = ({ title, image, linkTo }) => {
   return (
     <Link to={linkTo}>
-      <SubCategoryWrapper>
+      <Wrapper>
         <Image src={image} alt={title} />
         <SubCategoryCaption>{title}</SubCategoryCaption>
-      </SubCategoryWrapper>
+      </Wrapper>
     </Link>
   );
 };

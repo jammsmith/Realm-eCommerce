@@ -8,9 +8,7 @@ const DDQuery = ({ children, query, variables, fetchPolicy, pollInterval }) => {
     pollInterval: pollInterval
   });
 
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
+  if (loading) return null;
 
   if (error) {
     console.log('Error in DDQuery:', error);

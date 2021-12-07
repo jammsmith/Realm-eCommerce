@@ -13,59 +13,62 @@ import {
   ProductContent,
   ProductTextContent,
   TextContainer,
-  ProductTitle,
-  ProductPrice,
+  Text,
   InStockInfo,
   ButtonContainer,
   LineBreak,
   Description
 } from './ProductTileElements.js';
+import ResponsiveTileWrapper from '../ResponsiveTileWrapper.js';
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
-const ProductTile = ({ product, linkTo, viewAsSingleProduct, handleAddToCart, itemsInCart }) => {
+const ProductTile = ({ product, linkTo, viewAsSingleProduct, ...rest }) => {
   const { name, price, image, numInStock, description } = product;
 
   return (
-    <OuterContainer>
-      <ProductContent>
-        <Image src={image} alt={name} />
-        <ProductTextContent>
-          <TextContainer>
-            <ProductTitle>{name}</ProductTitle>
-            <ProductPrice>£{price}</ProductPrice>
-          </TextContainer>
-          <InStockInfo>{numInStock > 0 ? 'Product in Stock' : 'Out of Stock'}</InStockInfo>
-        </ProductTextContent>
-      </ProductContent>
-      {
-        viewAsSingleProduct &&
-          <>
-            <LineBreak />
-            <Description>{description}</Description>
-          </>
-      }
-      <ButtonContainer>
+    <ResponsiveTileWrapper productTile viewAsSingleProduct={viewAsSingleProduct}>
+      <OuterContainer>
+        <ProductContent>
+          <Image src={image} alt={name} />
+          <ProductTextContent>
+            <TextContainer>
+              <Text>{name}</Text>
+              <Text>£{price}</Text>
+            </TextContainer>
+            <InStockInfo>{numInStock > 0 ? 'In Stock' : 'Out of Stock'}</InStockInfo>
+          </ProductTextContent>
+        </ProductContent>
         {
-          !viewAsSingleProduct &&
-            <ActionButton
-              text='Item Description'
-              linkTo={linkTo}
-              customStyles={{ width: '100%' }}
-            />
+          viewAsSingleProduct &&
+            <>
+              <LineBreak />
+              <Description>{description}</Description>
+            </>
         }
-        <AddToCart product={product} handleAddToCart={handleAddToCart} itemsInCart={itemsInCart} />
-      </ButtonContainer>
-    </OuterContainer>
+        <ButtonContainer>
+          {
+            !viewAsSingleProduct &&
+              <ActionButton
+                text='Item Description'
+                linkTo={linkTo}
+                customStyles={{ width: '100%' }}
+              />
+          }
+          <AddToCart
+            product={product}
+            {...rest}
+          />
+        </ButtonContainer>
+      </OuterContainer>
+    </ResponsiveTileWrapper>
   );
 };
 
 ProductTile.propTypes = {
   product: PropTypes.object.isRequired,
   linkTo: PropTypes.string,
-  viewAsSingleProduct: PropTypes.bool,
-  handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.object
+  viewAsSingleProduct: PropTypes.bool
 };
 
 export default ProductTile;

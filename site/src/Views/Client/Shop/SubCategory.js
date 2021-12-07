@@ -10,7 +10,7 @@ import TextSection from '../../../Components/TextSection.js';
 import SingleSubCategory from '../../../Components/Queries/SingleSubCategory.js';
 
 // Return a selection of products in a specific sub-category
-const SubCategory = ({ handleAddToCart, itemsInCart }) => {
+const SubCategory = ({ handleAddToCart, itemsInCart, addingToCart }) => {
   const { url } = useRouteMatch();
   const { category, subCategory } = useParams();
 
@@ -30,6 +30,7 @@ const SubCategory = ({ handleAddToCart, itemsInCart }) => {
                       product={product}
                       handleAddToCart={handleAddToCart}
                       itemsInCart={itemsInCart}
+                      addingToCart={addingToCart}
                       linkTo={`${url}/${product._id}`}
                     />
                   );
@@ -45,7 +46,8 @@ const SubCategory = ({ handleAddToCart, itemsInCart }) => {
 
 SubCategory.propTypes = {
   handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.object
+  itemsInCart: PropTypes.object,
+  isAddingToCart: PropTypes.bool.isRequired
 };
 
 export default SubCategory;

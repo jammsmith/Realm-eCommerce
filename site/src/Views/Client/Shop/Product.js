@@ -26,7 +26,7 @@ const ButtonContainer = styled.div`
 `;
 
 // Return a single product
-const Product = ({ handleAddToCart, itemsInCart }) => {
+const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
   const { url } = useRouteMatch();
   const { subCategory, productId } = useParams();
 
@@ -43,6 +43,7 @@ const Product = ({ handleAddToCart, itemsInCart }) => {
                 product={product}
                 handleAddToCart={handleAddToCart}
                 itemsInCart={itemsInCart}
+                addingToCart={addingToCart}
                 viewAsSingleProduct
               />
               <SectionSpacer dark spaceAbove spaceBelow />
@@ -71,7 +72,8 @@ const Product = ({ handleAddToCart, itemsInCart }) => {
 
 Product.propTypes = {
   handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.object
+  itemsInCart: PropTypes.object,
+  isAddingToCart: PropTypes.bool.isRequired
 };
 
 export default Product;

@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+//
+import ResponsiveTileWrapper from './ResponsiveTileWrapper.js';
+
 // Colours
 import colours from '../../styles/colours.js';
 const { light, lightFade, dark } = colours;
 
 // Custom styled components
-export const Wrapper = styled.div`
+export const Wrapper = styled(ResponsiveTileWrapper)`
   display: flex;
   justify-content: center;
   position: relative;

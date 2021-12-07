@@ -12,8 +12,14 @@ export const OuterContainer = styled.div`
   gap: 0.5rem;
   margin: 0.5rem auto;
   padding: 0.2rem;
-  width: 95%;
-  max-width: 480px;
+`;
+
+export const Text = styled.h2`
+  font-size: 1rem;
+  margin: 0;
+  @media (min-width: 320px) {
+    font-size: 1.25rem;
+  }
 `;
 
 export const ProductContent = styled.div`
@@ -23,8 +29,11 @@ export const ProductContent = styled.div`
 `;
 
 export const ProductTextContent = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: none;
+  @media (min-width: 360px) {
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 
 export const TextContainer = styled.div`
@@ -34,17 +43,7 @@ export const TextContainer = styled.div`
   gap: 0.5rem;
 `;
 
-export const ProductTitle = styled.h2`
-  font-size: 1.5rem;
-  margin: 0;
-`;
-
-export const ProductPrice = styled.h2`
-  font-size: 1.5rem;
-  margin: 0;
-`;
-
-export const InStockInfo = styled.h6`
+export const InStockInfo = styled(Text)`
   align-self: flex-end;
   margin: 0 0.25rem 0 0;
   text-align: right;
@@ -57,8 +56,6 @@ export const ButtonContainer = styled.div`
   gap: 0.25rem;
   margin: 0.25rem;
 `;
-
-// If props.showFullProduct. Used in actual product page to include extra details -->
 
 export const Description = styled.p`
   text-align: justify;
