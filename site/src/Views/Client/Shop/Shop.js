@@ -98,7 +98,6 @@ const Shop = () => {
             orders: [...currentUserOrderIds, newOrderId]
           }
         });
-
         setActiveOrder(response.data.insertOneOrder);
         setAddingToCart({ isLoading: false });
       } catch (err) {
