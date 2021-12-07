@@ -63,7 +63,7 @@ const CartProduct = ({ order, orderItem }) => {
       });
       setIsSaveDisabled(true);
     } catch (err) {
-      console.log('Failed to update item in order');
+      throw new Error('Failed to update item in order');
     }
   };
 
@@ -73,10 +73,6 @@ const CartProduct = ({ order, orderItem }) => {
   const handleRemoveItem = async () => {
     const updatedOrderItems = order.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
     const orderItemIds = updatedOrderItems.map(item => item.orderItem_id);
-
-    console.log('order.orderItems', order.orderItems);
-    console.log('updatedOrderItems', updatedOrderItems);
-    console.log('orderItemIds', orderItemIds);
 
     try {
       await deleteOrderItem({
@@ -91,7 +87,7 @@ const CartProduct = ({ order, orderItem }) => {
         }
       });
     } catch (err) {
-      console.log('Failed to delete item from order');
+      throw new Error('Failed to delete item from order');
     }
   };
 

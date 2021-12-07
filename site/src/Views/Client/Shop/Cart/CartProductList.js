@@ -40,7 +40,7 @@ const CartProductList = ({ activeOrder }) => {
           <h6>Subtotal</h6>
           <h6>£{cartSubTotal}</h6>
         </TotalsLine>
-      </ProductListWrapper>
+        </ProductListWrapper>
       : <>
         <SectionSpacer />
         <h6>Your cart is empty!</h6>

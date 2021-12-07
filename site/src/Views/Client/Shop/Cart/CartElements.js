@@ -78,6 +78,7 @@ export const TotalsLine = styled(CartLine)`
   border-bottom: none;
   justify-content: flex-end;
   gap: 2rem;
+  padding-top: 1rem;
 `;
 
 export const ProductListWrapper = styled.div`
