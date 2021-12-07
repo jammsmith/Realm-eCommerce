@@ -1,23 +1,13 @@
 // External imports
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 
 // Components
-import CartProduct, { CartLine } from './CartProduct.js';
+import CartProduct from './CartProduct.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 
-// Styled components
-const TotalsLine = styled(CartLine)`
-  flex-direction: row;
-  border-bottom: none;
-  justify-content: space-between;
-`;
-
-const ProductListWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+// Styled Components
+import { TotalsLine, ProductListWrapper } from './CartElements.js';
 
 // A view of all products that have been added to basket
 const CartProductList = ({ activeOrder }) => {

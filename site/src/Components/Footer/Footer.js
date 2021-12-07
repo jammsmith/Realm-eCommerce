@@ -35,9 +35,7 @@ const Footer = () => {
             />
             <TopSectionInner>
               <TopSectionLinks>
-                <Link to='/shop'>
-                  Online Shop
-                </Link>
+
                 <Link to='/testimonials'>
                   Testimonials
                 </Link>

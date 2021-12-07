@@ -18,8 +18,9 @@ const Cart = () => {
         {
           order =>
             <>
-              <SectionSpacer dark />
+              <SectionSpacer dark spaceBelow />
               <CartProductList activeOrder={order} />
+              <SectionSpacer spaceBelow />
             </>
         }
         </SingleOrderDetailed>

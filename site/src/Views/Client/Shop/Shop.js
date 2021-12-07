@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import uniqueString from 'unique-string';
 
 // Views
 import Category from './Category';
@@ -14,7 +15,6 @@ import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
 import useCurrentUser from '../../../hooks/useCurrentUser.js';
 import useActiveOrder from '../../../hooks/useActiveOrder.js';
-import useCurrentRefId from '../../../hooks/useCurrentRefId.js';
 
 const Shop = () => {
   const [currentUser, setCurrentUser] = useCurrentUser();
@@ -24,37 +24,6 @@ const Shop = () => {
     isLoading: false,
     productId: ''
   });
-
-  // Set the next ref ID to be used as part of order mutations
-  const currentRefIds = useCurrentRefId();
-  const [nextDBCollectionRef, setNextDBCollectionRef] = useState({
-    userRef: '',
-    orderRef: '',
-    orderItemRef: ''
-  });
-  const getNextRefId = (currentId) => {
-    const sections = currentId.split('-');
-    const next = Number(sections[1]) + 1;
-    return `${sections[0]}-00${next}`;
-  };
-  useEffect(() => {
-    if (
-      currentRefIds &&
-      currentRefIds.userRef &&
-      currentRefIds.orderRef &&
-      currentRefIds.orderItemRef &&
-      !nextDBCollectionRef.userRef &&
-      !nextDBCollectionRef.orderRef &&
-      !nextDBCollectionRef.orderItemRef
-    ) {
-      setNextDBCollectionRef(() => {
-        const userRef = getNextRefId(currentRefIds.userRef);
-        const orderRef = getNextRefId(currentRefIds.orderRef);
-        const orderItemRef = getNextRefId(currentRefIds.orderItemRef);
-        return { userRef, orderRef, orderItemRef };
-      });
-    }
-  }, [currentRefIds, nextDBCollectionRef]);
 
   // Get items currently in cart and send down to product tiles
   useEffect(() => {
@@ -81,26 +50,23 @@ const Shop = () => {
           isLoading: true,
           productId: productId
         });
+        const newOrderItemId = `orderItem-${await uniqueString()}`;
         await createNewOrderItem({
           variables: {
-            orderItem_id: nextDBCollectionRef.orderItemRef,
+            orderItem_id: newOrderItemId,
             order_id: activeOrder.order_id,
             product_id: productId
           }
         });
         const orderItemIds = activeOrder.orderItems.map(item => item.orderItem_id);
-        orderItemIds.push(nextDBCollectionRef.orderItemRef);
+        orderItemIds.push(newOrderItemId);
         const response = await updateOrderItemsInOrder({
           variables: {
             order_id: activeOrder.order_id,
             orderItems: orderItemIds
           }
         });
-        setActiveOrder(response.data.updateOneOrder);
-        setNextDBCollectionRef(prev => {
-          const orderItemRef = getNextRefId(nextDBCollectionRef.orderItemRef);
-          return { ...prev, orderItemRef };
-        });
+        setActiveOrder(response.data.updateOneOrder.customer.orders[0]);
         setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to add item to existing order. Error: ${err}`);
@@ -114,28 +80,26 @@ const Shop = () => {
           isLoading: true,
           productId: productId
         });
+        const newOrderId = `order-${await uniqueString()}`;
+        const newOrderItemId = `orderItem-${await uniqueString()}`;
         const response = await createOrderForExistingCustomer({
           variables: {
-            order_id: nextDBCollectionRef.orderRef,
+            order_id: newOrderId,
             user_id: currentUser.user_id,
-            orderItem_id: nextDBCollectionRef.orderItemRef,
+            orderItem_id: newOrderItemId,
             product_id: productId
           }
         });
-        const currentUserOrders =
+        const currentUserOrderIds =
           response.data.insertOneOrder.customer.orders.map(order => order.order_id);
         await updateUserOrders({
           variables: {
             user_id: currentUser.user_id,
-            orders: [...currentUserOrders, nextDBCollectionRef.orderRef]
+            orders: [...currentUserOrderIds, newOrderId]
           }
         });
+
         setActiveOrder(response.data.insertOneOrder);
-        setNextDBCollectionRef(prev => {
-          const orderItemRef = getNextRefId(nextDBCollectionRef.orderItemRef);
-          const orderRef = getNextRefId(nextDBCollectionRef.orderItemRef);
-          return { ...prev, orderItemRef, orderRef };
-        });
         setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to add new order for existing customer. Error: ${err}`);
@@ -149,23 +113,20 @@ const Shop = () => {
           isLoading: true,
           productId: productId
         });
+        const newOrderId = `order-${await uniqueString()}`;
+        const newOrderItemId = `orderItem-${await uniqueString()}`;
+        const newUserId = `user-${await uniqueString()}`;
         const response = await createGuestOrder({
           variables: {
-            order_id: nextDBCollectionRef.orderRef,
+            order_id: newOrderId,
             user_ObjectId: currentUser.id,
-            user_id: nextDBCollectionRef.userRef,
-            orderItem_id: nextDBCollectionRef.orderItemRef,
+            user_id: newUserId,
+            orderItem_id: newOrderItemId,
             product_id: productId
           }
         });
         setActiveOrder(response.data.insertOneOrder.customer.orders[0]);
         setCurrentUser(response.data.insertOneOrder.customer);
-        setNextDBCollectionRef(() => {
-          const userRef = getNextRefId(nextDBCollectionRef.userRef);
-          const orderItemRef = getNextRefId(nextDBCollectionRef.orderItemRef);
-          const orderRef = getNextRefId(nextDBCollectionRef.orderRef);
-          return { userRef, orderItemRef, orderRef };
-        });
         setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to create guest order. Error: ${err}`);

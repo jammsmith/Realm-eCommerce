@@ -292,11 +292,15 @@ const mutations = {
         set: {
           orderItems: { link: $orderItems }
         } ) {
-        ...OrderDetails
-        orderItems {
-          ...OrderItemDetails
-          product {
-            ...ProductDetails
+          customer {
+            orders {
+              ...OrderDetails
+              orderItems {
+                ...OrderItemDetails
+                product {
+                  ...ProductDetails
+                }
+            }
           }
         }
       }

@@ -74,6 +74,10 @@ export const NavbarCart = styled.li`
 export const NavbarToggleIcon = styled(FaBars)`
   color: ${primary};
   display: block;
+  :hover,
+  :active {
+    cursor: pointer;
+  }
 
   @media (min-width: 1024px) {
     display: none;

@@ -1,9 +1,6 @@
 // External imports
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { IoAddCircleOutline, IoRemoveCircleSharp, IoTrashOutline } from 'react-icons/io5';
 
 // GraphQL
 import useDDMutation from '../../../../hooks/useDDMutation.js';
@@ -13,52 +10,19 @@ import mutations from '../../../../graphql/mutations.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 
-// Colours
-import colours from '../../../../styles/colours.js';
-const { darkFade, dark } = colours;
-
-// Styled components
-export const CartLine = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-bottom: 1px solid ${darkFade};
-  width: 100%;
-  margin: auto;
-`;
-
-const DetailsWrapper = styled.div`
-  display: flex;
-`;
-
-const ProductDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0.25rem;
-`;
-
-const CartDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 5rem;
-  padding: 0.25rem 0.25rem 0.25rem 0.75rem;
-`;
-
-const Divider = styled.div`
-  border-right: 0.05rem solid black;
-  flex: 1;
-`;
-
-const EditButtons = styled.div`
-  display: flex;
-  gap: 1rem;
-  padding: 0.5rem;
-  align-self: center;
-  align-items: center;
-`;
-
-const ProductLink = styled(Link)`
-  color: ${dark};
-`;
+// Styled Components
+import {
+  CartLine,
+  DetailsWrapper,
+  ProductDetailsWrapper,
+  CartDetailsWrapper,
+  Divider,
+  EditButtonsWrapper,
+  IncreaseQuantityButton,
+  DecreaseQuantityButton,
+  RemoveItemButton,
+  ProductLink
+} from './CartElements.js';
 
 const CartProduct = ({ order, orderItem }) => {
   // Track quantity changes
@@ -110,6 +74,10 @@ const CartProduct = ({ order, orderItem }) => {
     const updatedOrderItems = order.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
     const orderItemIds = updatedOrderItems.map(item => item.orderItem_id);
 
+    console.log('order.orderItems', order.orderItems);
+    console.log('updatedOrderItems', updatedOrderItems);
+    console.log('orderItemIds', orderItemIds);
+
     try {
       await deleteOrderItem({
         variables: {
@@ -146,24 +114,12 @@ const CartProduct = ({ order, orderItem }) => {
           </CartDetailsWrapper>
         </DetailsWrapper>
         <CartLine>
-          <EditButtons>
-            <IoAddCircleOutline
-              name='increase-quantity'
-              style={{ fontSize: '1.75rem' }}
-              onClick={handleIncreaseQuantityClick}
-            />
-            <IoRemoveCircleSharp
-              name='descrease-quantity'
-              style={{ fontSize: '1.75rem' }}
-              onClick={handleDecreaseQuantityClick}
-            />
-            <IoTrashOutline
-              name='remove-item'
-              onClick={handleRemoveItem}
-              style={{ fontSize: '1.75rem' }}
-            />
+          <EditButtonsWrapper>
+            <IncreaseQuantityButton onClick={handleIncreaseQuantityClick} />
+            <DecreaseQuantityButton onClick={handleDecreaseQuantityClick} />
+            <RemoveItemButton onClick={handleRemoveItem} />
             <ActionButton text='Save' onClick={handleSave} disabled={isSaveDisabled} />
-          </EditButtons>
+          </EditButtonsWrapper>
         </CartLine>
         </CartLine>
       : null
