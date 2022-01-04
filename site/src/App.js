@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Apollo / Realm
 import { ApolloProvider } from '@apollo/client';
-import client, { RealmAppProvider } from './realmApolloClient.js';
+import client, { RealmAppProvider, RealmAppContext } from './realmApolloClient.js';
 
 // Main views
 import Home from './Views/Client/Home/Home.js';
@@ -20,24 +20,19 @@ import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
 
-// Stripe Instance
-// import { Elements } from '@stripe/react-stripe-js';
-// import { loadStripe } from '@stripe/stripe-js';
-// const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZheUc4MkBtGeMj9ZrqNd3mQebbi9nnLcGkLjqDaCMFwtT5KyjuBmN00M3I7Ekl1');
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZheUc4MkBtGeMj9ZrqNd3mQebbi9nnLcGkLjqDaCMFwtT5KyjuBmN00M3I7Ekl1');
 
 const App = () => {
   // Small screen menu toggle -->
   const [menuInView, setMenuInView] = useState(false);
   const toggleHandler = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
-  // Stripe setup -->
-  // const options = {
-  //   clientSecret: 'sk_test_51JssHLK4OzaV2zFU3rKfTerqgOHjFTOf71gAedWEzLRTWg5ukgHA00xXyrH31uiiKPZ3EgZ2NiaxtsMRsgJkas1Z00yIQqdI20'
-  // };
+
   return (
     <RealmAppProvider>
       <ApolloProvider client={client}>
-        {/* <Elements stripe={stripePromise} options={options}> */}
         <Router>
           <Navbar handleToggleClick={toggleHandler} />
           {
@@ -58,7 +53,6 @@ const App = () => {
           </Switch>
           <Footer />
         </Router>
-        {/* </Elements> */}
       </ApolloProvider>
     </RealmAppProvider>
   );

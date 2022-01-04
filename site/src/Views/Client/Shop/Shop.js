@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import uniqueString from 'unique-string';
 
@@ -6,15 +6,19 @@ import uniqueString from 'unique-string';
 import Category from './Category';
 import SubCategory from './SubCategory';
 import Product from './Product';
+import Checkout from './Checkout/Checkout.js';
 
 // Components
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 
 // Other
+import { RealmAppContext } from '../../../realmApolloClient.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
 import useCurrentUser from '../../../hooks/useCurrentUser.js';
 import useActiveOrder from '../../../hooks/useActiveOrder.js';
+
+import Stripe from '../../../integrations/stripe.js';
 
 const Shop = () => {
   const [currentUser, setCurrentUser] = useCurrentUser();
@@ -24,6 +28,10 @@ const Shop = () => {
     isLoading: false,
     productId: ''
   });
+
+  // Setup Stripe
+  const app = useContext(RealmAppContext);
+  const stripe = new Stripe(app.currentUser);
 
   // Get items currently in cart and send down to product tiles
   useEffect(() => {
@@ -42,6 +50,8 @@ const Shop = () => {
   // Handler
   const handleAddToCart = async (event) => {
     const productId = event.currentTarget.value;
+    const user = await stripe.stripeFunc('success');
+    console.log('user', user);
 
     // -- Current user with an active order -- //
     if (currentUser && currentUser.user_id && activeOrder) {
@@ -160,13 +170,16 @@ const Shop = () => {
   }
 
   return (
+
     <>
       <SectionSpacer dark spaceBelow />
+
       {
         shopView || <h4>Sorry - there's nothing here.  Please go back to the homepage and try again. </h4>
       }
       <SectionSpacer spaceBelow />
     </>
+
   );
 };
 
