@@ -3,11 +3,11 @@ class Stripe {
     this.user = currentUser;
   }
 
-  async stripeFunc (args) {
+  async getPaymentIntent () {
     try {
-      return await this.user.functions.stripe(args);
+      return await this.user.functions.getPaymentIntent();
     } catch (err) {
-      console.log('error in useRealmFunction', err);
+      console.log('error in getPaymentIntent', err);
     }
   }
 }

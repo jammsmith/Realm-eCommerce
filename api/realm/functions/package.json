@@ -1,14 +1,15 @@
 {
-  "name": "realm",
+  "name": "functions",
   "version": "1.0.0",
-  "description": "realm api",
-  "main": "index.js",
+  "description": "realm functions",
+  "main": "config.json",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "James Smith",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "stripe": "^8.194.0"
+    "axios": "^0.24.0",
+    "qs": "^6.10.2"
   }
 }

@@ -1,0 +1,5 @@
+{
+    "name": "STRIPE_SK_TEST",
+    "value": "stripeSK_Test",
+    "from_secret": true
+}

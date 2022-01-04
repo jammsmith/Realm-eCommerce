@@ -22,7 +22,7 @@ import {
   DecreaseQuantityButton,
   RemoveItemButton,
   ProductLink
-} from './CartElements.js';
+} from './CartStyled.js';
 
 const CartProduct = ({ order, orderItem }) => {
   // Track quantity changes

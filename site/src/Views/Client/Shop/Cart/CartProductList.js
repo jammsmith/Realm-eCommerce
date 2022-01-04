@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 // Components
 import CartProduct from './CartProduct.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
+import ActionButton from '../../../../Components/ActionButton.js';
 
 // Styled Components
-import { TotalsLine, ProductListWrapper } from './CartElements.js';
+import { TotalsLine, ProductListWrapper } from './CartStyled.js';
 
 // A view of all products that have been added to basket
-const CartProductList = ({ activeOrder }) => {
+const CartProductList = ({ activeOrder, handleGoToCheckout }) => {
   const [cartSubTotal, setCartSubTotal] = useState(0);
 
   useEffect(() => {
@@ -40,6 +41,10 @@ const CartProductList = ({ activeOrder }) => {
           <h6>Subtotal</h6>
           <h6>£{cartSubTotal}</h6>
         </TotalsLine>
+        <ActionButton
+          text='Go to checkout'
+          linkTo='/checkout'
+        />
         </ProductListWrapper>
       : <>
         <SectionSpacer />

@@ -39,11 +39,11 @@ const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, valu
 
 ActionButton.propTypes = {
   text: PropTypes.node.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
-  ]).isRequired,
+  ]),
   linkTo: PropTypes.string,
   variant: PropTypes.string,
   customStyles: PropTypes.object,

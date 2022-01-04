@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Apollo / Realm
 import { ApolloProvider } from '@apollo/client';
-import client, { RealmAppProvider, RealmAppContext } from './realmApolloClient.js';
+import client, { RealmAppProvider } from './realmApolloClient.js';
 
 // Main views
 import Home from './Views/Client/Home/Home.js';
@@ -20,7 +20,6 @@ import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
 
-import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZheUc4MkBtGeMj9ZrqNd3mQebbi9nnLcGkLjqDaCMFwtT5KyjuBmN00M3I7Ekl1');
 
@@ -44,11 +43,15 @@ const App = () => {
           }
           <Switch>
             <Route exact path='/' component={Home} />
-            <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
-            <Route exact path='/cart' component={Cart} />
-            <Route exact path='/checkout' component={Checkout} />
             <Route exact path='/about-us' component={AboutUs} />
             <Route exact path='/contact-us' component={ContactUs} />
+            <Route exact path='/shop/:category/:subCategory?/:productId?' component={Shop} />
+            <Route exact path='/cart' component={Cart} />
+            <Route
+              exact
+              path='/checkout'
+              render={() => <Checkout stripePromise={stripePromise} />}
+            />
             <Route path='/' component={Error404} />
           </Switch>
           <Footer />
