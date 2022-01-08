@@ -314,7 +314,8 @@ const mutations = {
       $isOrderConfirmed: Boolean,
       $isPaidFor: Boolean,
       $isPendingInCheckout: Boolean,
-      $extraInfo: String
+      $extraInfo: String,
+      $paymentIntentId: String
     ) {
       updateOneOrder(
         query: { _id: $id },
@@ -323,7 +324,8 @@ const mutations = {
           isPaidFor: $isPaidFor,
           isOrderConfirmed: $isOrderConfirmed,
           isDelivered: $isDelivered,
-          extraInfo: $extraInfo
+          extraInfo: $extraInfo,
+          paymentIntentId: $paymentIntentId
         } ) {
         ...OrderDetails
       }

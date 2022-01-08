@@ -22,6 +22,7 @@ export const USER_DETAILED = gql`
   ${USER_DETAILS}
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}
+  ${PRODUCT_DETAILS}
   query($id: ObjectId!) {
     user(query: { _id: $id }) {
       ...UserDetails
@@ -30,8 +31,7 @@ export const USER_DETAILED = gql`
         orderItems {
           ...OrderItemDetails
           product {
-            _id
-            name
+            ...ProductDetails
           }
         }
       }

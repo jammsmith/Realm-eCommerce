@@ -55,6 +55,7 @@ export const ORDER_DETAILS = gql`
     isPaidFor
     isPendingInCheckout
     extraInfo
+    paymentIntentId
   }
 `;
 
