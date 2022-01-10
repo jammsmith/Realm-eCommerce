@@ -15,7 +15,7 @@ exports = async (order) => {
   const prices = await Promise.all(pricesPromise);
 
   const reducer = (a, b) => a + b;
-  const orderTotal = prices.reduce(reducer);
+  const orderTotal = (prices.reduce(reducer)) * 100;
 
   const purchaseData = {
     amount: orderTotal,

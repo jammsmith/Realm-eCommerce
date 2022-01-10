@@ -6,35 +6,26 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "order_id": {
+            "bsonType": "string"
+        },
         "customer": {
             "bsonType": "string"
         },
         "extraInfo": {
             "bsonType": "string"
         },
-        "isDelivered": {
-            "bsonType": "bool"
+        "status": {
+          "bsonType": "string"
         },
-        "isOrderConfirmed": {
-            "bsonType": "bool"
-        },
-        "isPaidFor": {
-            "bsonType": "bool"
-        },
-        "isPendingInCheckout": {
-            "bsonType": "bool"
+        "paymentIntentId": {
+          "bsonType": "string"
         },
         "orderItems": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
-        },
-        "order_id": {
-            "bsonType": "string"
-        },
-        "paymentIntentId": {
-          "bsonType": "string"
         }
     },
     "title": "Order"

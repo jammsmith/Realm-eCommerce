@@ -7,9 +7,12 @@ const useActiveOrder = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.orders && currentUser.orders.length) {
-      const response = currentUser.orders.find(order => order.isPendingInCheckout === true);
-      if (!response) return;
-      setActiveOrder(response);
+      const response = currentUser.orders.find(order => order.status === 'pendingInCart');
+      if (response) {
+        setActiveOrder(response);
+      } else {
+        throw new Error(`User ID "${currentUser._id}" has no active orders`);
+      }
     }
   }, [currentUser]);
 

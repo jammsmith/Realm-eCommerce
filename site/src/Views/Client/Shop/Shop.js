@@ -90,12 +90,12 @@ const Shop = () => {
             product_id: productId
           }
         });
-        const currentUserOrderIds =
+        const existingOrderIds =
           response.data.insertOneOrder.customer.orders.map(order => order.order_id);
         await updateUserOrders({
           variables: {
             user_id: currentUser.user_id,
-            orders: [...currentUserOrderIds, newOrderId]
+            orders: [...existingOrderIds, newOrderId]
           }
         });
         setActiveOrder(response.data.insertOneOrder);
@@ -163,7 +163,6 @@ const Shop = () => {
 
     <>
       <SectionSpacer dark spaceBelow />
-
       {
         shopView || <h4>Sorry - there's nothing here.  Please go back to the homepage and try again. </h4>
       }

@@ -156,10 +156,7 @@ const mutations = {
     ) {
       insertOneOrder(data: {
         order_id: $order_id,
-        isDelivered: false,
-        isOrderConfirmed: false,
-        isPaidFor: false,
-        isPendingInCheckout: true,
+        status: "pendingInCart"
         customer: {
           link: "user_id",
           create: {
@@ -213,10 +210,7 @@ const mutations = {
     ) {
       insertOneOrder(data: {
         order_id: $order_id,
-        isDelivered: false,
-        isOrderConfirmed: false,
-        isPaidFor: false,
-        isPendingInCheckout: true,
+        status: "pendingInCart"
         customer: {
           link: $user_id,
         },
@@ -310,20 +304,14 @@ const mutations = {
     ${ORDER_DETAILS}
     mutation(
       $id: ObjectId!,
-      $isDelivered: Boolean,
-      $isOrderConfirmed: Boolean,
-      $isPaidFor: Boolean,
-      $isPendingInCheckout: Boolean,
+      $status: String,
       $extraInfo: String,
       $paymentIntentId: String
     ) {
       updateOneOrder(
         query: { _id: $id },
         set: {
-          isPendingInCheckout: $isPendingInCheckout,
-          isPaidFor: $isPaidFor,
-          isOrderConfirmed: $isOrderConfirmed,
-          isDelivered: $isDelivered,
+          status: $status,
           extraInfo: $extraInfo,
           paymentIntentId: $paymentIntentId
         } ) {

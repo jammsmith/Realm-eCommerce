@@ -50,10 +50,7 @@ export const ORDER_DETAILS = gql`
   fragment OrderDetails on Order {
     _id
     order_id
-    isDelivered
-    isOrderConfirmed
-    isPaidFor
-    isPendingInCheckout
+    status
     extraInfo
     paymentIntentId
   }
