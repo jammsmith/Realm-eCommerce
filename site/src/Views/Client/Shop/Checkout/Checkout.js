@@ -17,11 +17,12 @@ const Checkout = ({ stripePromise }) => {
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
   const app = useContext(RealmAppContext);
   const [paymentIntent, setPaymentIntent] = useState(null);
+  const [stripeTransactionHasCompleted, setStripeTransactionHasCompleted] = useState(false);
 
   // Get a new payment intent if one does not already exist, or retrieve the existing one if it does -->
   useEffect(() => {
     if (activeOrder && !activeOrder.paymentIntentId) {
-      const getNewPaymentIntent = async () => {
+      const createPaymentIntent = async () => {
         const intent = await app.currentUser.functions.createPaymentIntent(activeOrder);
         updateOrder({
           variables: {
@@ -31,7 +32,7 @@ const Checkout = ({ stripePromise }) => {
         });
         setPaymentIntent(intent);
       };
-      getNewPaymentIntent();
+      createPaymentIntent();
     } else if (activeOrder && activeOrder.paymentIntentId) {
       const retrievePaymentIntent = async () => {
         const intent = await app.currentUser.functions.retrievePaymentIntent(activeOrder.paymentIntentId);
@@ -41,16 +42,28 @@ const Checkout = ({ stripePromise }) => {
     }
   }, [activeOrder, app.currentUser]);
 
+  useEffect(() => {
+    // Get the client secret from the url params, this gets added by stripe when redirected
+    // here after payment. If client secret isn't available then no payment has happened yet.
+    const clientSecret = new URLSearchParams(window.location.search).get(
+      'payment_intent_client_secret'
+    );
+    if (clientSecret) {
+      setStripeTransactionHasCompleted(true);
+    }
+  }, [paymentIntent]);
+
   return (
     paymentIntent
       ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret }}>
-        <PaymentForm paymentIntent={paymentIntent} user={app.currentUser} />
-        <PaymentSummary />
+        {
+          stripeTransactionHasCompleted
+            ? <PaymentSummary paymentIntent={paymentIntent} />
+            : <PaymentForm paymentIntent={paymentIntent} user={app.currentUser} />
+        }
         </Elements>
-      : <>
-        <h2>Preparing your order</h2>
-        <CircularProgress />
-        </>
+      : <CircularProgress />
+
   );
 };
 

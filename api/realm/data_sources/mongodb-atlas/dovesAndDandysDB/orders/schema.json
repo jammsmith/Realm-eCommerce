@@ -6,26 +6,44 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "order_id": {
-            "bsonType": "string"
-        },
         "customer": {
             "bsonType": "string"
         },
         "extraInfo": {
             "bsonType": "string"
         },
-        "status": {
-          "bsonType": "string"
-        },
-        "paymentIntentId": {
-          "bsonType": "string"
-        },
         "orderItems": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
+        },
+        "order_id": {
+            "bsonType": "string"
+        },
+        "paymentIntentId": {
+            "bsonType": "string"
+        },
+        "orderStatus": {
+            "bsonType": "string"
+        },
+        "paymentStatus": {
+            "bsonType": "string"
+        },
+        "dateCreated": {
+            "bsonType": "date"
+        },
+        "datePaid": {
+            "bsonType": "date"
+        },
+        "dateRefunded": {
+            "bsonType": "date"
+        },
+        "dateSent": {
+            "bsonType": "date"
+        },
+        "dateReceived": {
+            "bsonType": "date"
         }
     },
     "title": "Order"

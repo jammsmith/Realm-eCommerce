@@ -154,23 +154,3 @@ export const ALL_ORDERS = gql`
     }
   }
 `;
-
-export const LAST_REF_IDS = gql`
-  query {
-    users(limit: 1, sortBy: USER_ID_DESC) {
-      user_id
-    }
-    orders(limit: 1, sortBy: ORDER_ID_DESC) {
-      order_id
-    }
-    orderItems(limit: 1, sortBy: ORDERITEM_ID_DESC) {
-      orderItem_id
-    }
-    subCategories(limit: 1, sortBy: SUBCATEGORY_ID_DESC) {
-      subCategory_id
-    }
-    products(limit: 1, sortBy: PRODUCT_ID_DESC) {
-      product_id
-    }
-  }
-`;

@@ -87,7 +87,8 @@ const Shop = () => {
             order_id: newOrderId,
             user_id: currentUser.user_id,
             orderItem_id: newOrderItemId,
-            product_id: productId
+            product_id: productId,
+            dateCreated: new Date(Date.now())
           }
         });
         const existingOrderIds =
@@ -121,7 +122,8 @@ const Shop = () => {
             user_ObjectId: currentUser.id,
             user_id: newUserId,
             orderItem_id: newOrderItemId,
-            product_id: productId
+            product_id: productId,
+            dateCreated: new Date(Date.now())
           }
         });
         setActiveOrder(response.data.insertOneOrder.customer.orders[0]);

@@ -6,8 +6,14 @@ const orderSchema = new Schema({
   order_id: { type: String, required: true },
   extraInfo: String,
   orderItems: { type: [String], required: true },
-  status: { type: String, required: true, default: 'pendingInCheckout' },
-  paymentIntentId: String
+  paymentIntentId: String,
+  orderStatus: { type: String, required: true, default: 'pendingInCheckout' },
+  paymentStatus: { type: String, required: true, default: 'notPaid' },
+  dateCreated: { type: String, required: true },
+  datePaid: String,
+  dateRefunded: String,
+  dateSent: String,
+  dateReceived: String
 });
 
 module.exports = model('Order', orderSchema);
