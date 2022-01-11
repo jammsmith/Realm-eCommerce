@@ -158,7 +158,7 @@ const mutations = {
       insertOneOrder(data: {
         order_id: $order_id,
         orderStatus: "pendingInCart",
-        paymentStatus: "notPaid"
+        paymentStatus: "notAttempted"
         dateCreated: $dateCreated
         customer: {
           link: "user_id",
@@ -215,7 +215,7 @@ const mutations = {
       insertOneOrder(data: {
         order_id: $order_id,
         orderStatus: "pendingInCart",
-        paymentStatus: "notPaid"
+        paymentStatus: "notAttempted"
         dateCreated: $dateCreated
         customer: {
           link: $user_id,
@@ -314,11 +314,11 @@ const mutations = {
       $paymentIntentId: String,
       $orderStatus: String,
       $paymentStatus: String,
-      $dateCreated: String,
-      $datePaid: String,
-      $dateRefunded: String,
-      $dateSent: String,
-      $dateReceived: String
+      $dateCreated: DateTime,
+      $datePaid: DateTime,
+      $dateRefunded: DateTime,
+      $dateSent: DateTime,
+      $dateReceived: DateTime
     ) {
       updateOneOrder(
         query: { _id: $id },

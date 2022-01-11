@@ -5,21 +5,28 @@ exports = async (payload, response) => {
 
   //
   const orders = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('orders');
-  const updateOrderStatus = async (status) => {
+
+  const updateOrderStatus = async (options) => {
     await orders.updateOne(
       { paymentIntentId: paymentIntent.id },
-      { $set: { status } }
+      { $set: options }
     );
   };
 
   const handlePaymentSucceeded = async () => {
-    await updateOrderStatus('paymentSuccessful');
+    await updateOrderStatus({
+      orderStatus: 'awaitingConfirmation',
+      paymentStatus: 'successful',
+      datePaid: new Date(Date.now())
+    });
     // add google analytics sales
     // send confirmation email
     // send order notification to admin
   };
   const handlePaymentFailed = async () => {
-    await updateOrderStatus('paymentFailed');
+    await updateOrderStatus({
+      paymentStatus: 'failed'
+    });
   };
 
   // Handle the event
