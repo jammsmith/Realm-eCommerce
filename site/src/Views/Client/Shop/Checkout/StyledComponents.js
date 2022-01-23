@@ -1,20 +1,28 @@
 import styled from 'styled-components';
+import colours from '../../../../styles/colours.js';
+
+const { dark } = colours;
 
 export const CheckoutFormsWrapper = styled.div`
+  border: 0.05rem solid ${dark};
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
+  margin-bottom: 2rem;
+  min-height: 600px;
   padding: 0 0.15rem;
   width: 100%;
-  min-height: 600px;
+  @media (min-width: 1024px) {
+    width: 48%;
+  }
 `;
 
 export const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 1rem;
   height: 100%;
+  margin: 1rem;
   max-width: 500px;
-  
 `;
 
 export const FormHeader = styled.h6`
@@ -28,7 +36,6 @@ export const Warning = styled.p`
 `;
 
 export const SelectAddressWrapper = styled.div`
-  position: absolute:
   bottom: 0;
   display: flex;
   flex-direction: column;

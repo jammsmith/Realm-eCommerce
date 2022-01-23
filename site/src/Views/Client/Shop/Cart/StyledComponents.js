@@ -15,6 +15,13 @@ export const CartLine = styled.div`
   margin: auto;
 `;
 
+export const CartWrapper = styled.div`
+  width: 100%;
+  @media (min-width: 1024px) {
+    width: ${props => props.isMinimised && '350px'};
+  }
+`;
+
 // Cart Product
 export const DetailsWrapper = styled.div`
   display: flex;

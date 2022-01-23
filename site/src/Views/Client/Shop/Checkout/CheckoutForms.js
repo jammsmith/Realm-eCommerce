@@ -10,6 +10,7 @@ import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import LoadingView from '../../../../Components/LoadingView.js';
 import PaymentForm from './PaymentForm.js';
 import DeliveryForm from './DeliveryForm.js';
+import Cart from '../Cart/Cart.js';
 
 // Helpers/hooks
 import useActiveOrder from '../../../../hooks/useActiveOrder.js';
@@ -93,11 +94,14 @@ const Payment = ({ stripePromise }) => {
       {
         paymentIntent
           ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, appearance }}>
-            <CheckoutFormsWrapper>
-              <DeliveryForm />
-              <SectionSpacer dark spaceBelow spaceAbove />
-              <PaymentForm />
-            </CheckoutFormsWrapper>
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <CheckoutFormsWrapper>
+                <DeliveryForm />
+                <SectionSpacer dark spaceBelow spaceAbove />
+                <PaymentForm />
+              </CheckoutFormsWrapper>
+              <Cart isMinimised />
+            </div>
             </Elements>
           : <LoadingView />
       }

@@ -25,7 +25,7 @@ import {
 } from './StyledComponents.js';
 
 // A single product item inside the cart
-const CartProduct = ({ order, orderItem }) => {
+const CartProduct = ({ order, orderItem, isMinimised }) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
@@ -109,14 +109,17 @@ const CartProduct = ({ order, orderItem }) => {
             <h6>£{productTotal}</h6>
           </CartDetailsWrapper>
         </DetailsWrapper>
-        <CartLine>
-          <EditButtonsWrapper>
-            <IncreaseQuantityButton onClick={handleIncreaseQuantityClick} />
-            <DecreaseQuantityButton onClick={handleDecreaseQuantityClick} />
-            <RemoveItemButton onClick={handleRemoveItem} />
-            <ActionButton text='Save' onClick={handleSave} disabled={isSaveDisabled} />
-          </EditButtonsWrapper>
-        </CartLine>
+        {
+          !isMinimised &&
+            <CartLine>
+              <EditButtonsWrapper>
+                <IncreaseQuantityButton onClick={handleIncreaseQuantityClick} />
+                <DecreaseQuantityButton onClick={handleDecreaseQuantityClick} />
+                <RemoveItemButton onClick={handleRemoveItem} />
+                <ActionButton text='Save' onClick={handleSave} disabled={isSaveDisabled} />
+              </EditButtonsWrapper>
+            </CartLine>
+        }
         </CartLine>
       : null
   );
@@ -124,7 +127,8 @@ const CartProduct = ({ order, orderItem }) => {
 
 CartProduct.propTypes = {
   order: PropTypes.object.isRequired,
-  orderItem: PropTypes.object.isRequired
+  orderItem: PropTypes.object.isRequired,
+  isMinimised: PropTypes.bool
 };
 
 export default CartProduct;

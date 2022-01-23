@@ -1,5 +1,6 @@
 // External imports
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Components
 import CartProduct from './CartProduct.js';
@@ -10,16 +11,16 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import useActiveOrder from '../../../../hooks/useActiveOrder.js';
 
 // Styled Components
-import { TotalsLine, ProductListWrapper } from './StyledComponents.js';
+import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
 
 // A view of all products that have been added to basket
-const Cart = () => {
+const Cart = ({ isMinimised }) => {
   const [activeOrder] = useActiveOrder();
 
   return (
     activeOrder
-      ? <>
-        <SectionSpacer dark spaceBelow />
+      ? <CartWrapper isMinimised={isMinimised}>
+        {!isMinimised && <SectionSpacer dark spaceBelow />}
         {
           activeOrder.orderItems && activeOrder.orderItems.length
             ? <ProductListWrapper>
@@ -30,6 +31,7 @@ const Cart = () => {
                     id={item._id}
                     order={activeOrder}
                     orderItem={item}
+                    isMinimised={isMinimised}
                   />
                 );
               })}
@@ -37,10 +39,13 @@ const Cart = () => {
                 <h6>Subtotal</h6>
                 <h6>£{activeOrder.subTotal}</h6>
               </TotalsLine>
-              <ActionButton
-                text='Go to checkout'
-                linkTo='/checkout'
-              />
+              {
+                !isMinimised &&
+                  <ActionButton
+                    text='Go to checkout'
+                    linkTo='/checkout'
+                  />
+              }
               </ProductListWrapper>
             : <>
               <SectionSpacer />
@@ -49,9 +54,13 @@ const Cart = () => {
               </>
         }
         <SectionSpacer spaceBelow />
-        </>
+        </CartWrapper>
       : null
   );
+};
+
+Cart.propTypes = {
+  isMinimised: PropTypes.bool
 };
 
 export default Cart;
