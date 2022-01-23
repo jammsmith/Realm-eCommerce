@@ -24,8 +24,8 @@ import {
   ProductLink
 } from './StyledComponents.js';
 
+// A single product item inside the cart
 const CartProduct = ({ order, orderItem }) => {
-  // Track quantity changes
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
