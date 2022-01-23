@@ -1,0 +1,29 @@
+{
+    "properties": {
+        "__v": {
+            "bsonType": "int"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "address_id": {
+            "bsonType": "string"
+        },
+        "user": {
+            "bsonType": "string"
+        },
+        "addressPart1": {
+            "bsonType": "string"
+        },
+        "addressPart2": {
+            "bsonType": "string"
+        },
+        "postcode": {
+            "bsonType": "string"
+        },
+        "country": {
+            "bsonType": "string"
+        }
+    },
+    "title": "DeliveryAddress"
+}
