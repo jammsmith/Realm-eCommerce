@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   margin: 1rem 0;
 `;
 
-const TextHeading = styled.h2`
+export const Heading = styled.h2`
   font-size: 1.5rem;
   text-align: center;
   padding-bottom: 1rem;
@@ -29,7 +29,7 @@ const TextHeading = styled.h2`
   }
 `;
 
-const TextBody = styled.p`
+const Body = styled.p`
   text-align: center;
   font-size: 1.15rem;
   letter-spacing: 1.5px
@@ -47,9 +47,9 @@ const TextBody = styled.p`
 const TextSection = ({ heading, text, secondaryText }) => {
   return (
     <Wrapper>
-      <TextHeading>{heading}</TextHeading>
-      <TextBody>{text}</TextBody>
-      {secondaryText && <TextBody>{secondaryText}</TextBody>}
+      <Heading>{heading}</Heading>
+      <Body>{text}</Body>
+      {secondaryText && <Body>{secondaryText}</Body>}
     </Wrapper>
   );
 };

@@ -8,7 +8,7 @@ import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 
 // Styled Components
-import { TotalsLine, ProductListWrapper } from './CartStyled.js';
+import { TotalsLine, ProductListWrapper } from './StyledComponents.js';
 
 // A view of all products that have been added to basket
 const CartProductList = ({ activeOrder, handleGoToCheckout }) => {

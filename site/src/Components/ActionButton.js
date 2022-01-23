@@ -9,9 +9,10 @@ import fonts from '../styles/fonts.js';
 const { standard } = fonts;
 
 //
-const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, value, disabled }) => {
+const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, value, disabled, fullWidth }) => {
   const basicStyles = {
-    fontFamily: standard
+    fontFamily: standard,
+    width: fullWidth && '100%'
   };
 
   if (customStyles) {
@@ -21,20 +22,19 @@ const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, valu
     };
   }
 
-  return (
-    <Link to={linkTo}>
-      <Button
-        onClick={onClick}
-        name={name}
-        value={value}
-        variant={variant || 'outlined'}
-        style={customStyles || basicStyles}
-        disabled={disabled || false}
-      >
-        {text}
-      </Button>
-    </Link>
-  );
+  const button =
+    <Button
+      onClick={onClick}
+      name={name}
+      value={value}
+      variant={variant || 'outlined'}
+      style={customStyles || basicStyles}
+      disabled={disabled || false}
+    >
+      {text}
+    </Button>;
+
+  return linkTo ? <Link to={linkTo}>{button}</Link> : button;
 };
 
 ActionButton.propTypes = {

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 
 // Components / Views
-import Payment from './Payment.js';
+import CheckoutForms from './CheckoutForms.js';
 import Summary from './Summary.js';
 
 const Checkout = ({ stripePromise }) => {
@@ -27,12 +28,16 @@ const Checkout = ({ stripePromise }) => {
       // re-direct back to checkout removes client secret etc from url
       history.push('/checkout');
     }
-  }, []);
+  }, [history]);
   return (
     urlParams.paymentIntentId
       ? <Summary urlParams={urlParams} />
-      : <Payment stripePromise={stripePromise} />
+      : <CheckoutForms stripePromise={stripePromise} />
   );
+};
+
+Checkout.propTypes = {
+  stripePromise: PropTypes.object.isRequired
 };
 
 export default Checkout;

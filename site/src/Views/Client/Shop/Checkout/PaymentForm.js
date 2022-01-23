@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import {
-  PaymentElement,
-  useStripe,
-  useElements
-} from '@stripe/react-stripe-js';
+import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 // Components
 import ActionButton from '../../../../Components/ActionButton.js';
-import CircularProgress from '@mui/material/CircularProgress';
+import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 
-const PaymentForm = ({ paymentIntent, user }) => {
+// Styled components
+import { FormWrapper, FormHeader, Warning } from './StyledComponents.js';
+
+const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
@@ -38,26 +36,26 @@ const PaymentForm = ({ paymentIntent, user }) => {
     }
     setIsLoading(false);
   };
+
   return (
-    <form>
-      <PaymentElement />
-      {
-        isLoading
-          ? <CircularProgress />
-          : <ActionButton
-            text='Pay Now'
+    <FormWrapper>
+      <FormHeader>Please provide your billing details</FormHeader>
+      <form>
+        <PaymentElement />
+        {message && <div>{message}</div>}
+        <div style={{ marginBottom: '2rem' }}>
+          <Warning>Clicking 'pay now' will submit your payment</Warning>
+          <ActionButton
+            text={isLoading ? <ProgressSpinner /> : 'Pay Now'}
             onClick={handleSubmitPayment}
             disabled={!stripe || !elements}
-            />
-      }
-      {message && <div>{message}</div>}
-    </form>
+            fullWidth
+            customStyles={{ top: '1rem' }}
+          />
+        </div>
+      </form>
+    </FormWrapper>
   );
-};
-
-PaymentForm.propTypes = {
-  paymentIntent: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
 };
 
 export default PaymentForm;
