@@ -5,19 +5,16 @@ export const CheckoutFormsWrapper = styled.div`
   flex-direction: column;
   padding: 0 0.15rem;
   width: 100%;
-  @media (min-width: 600px) {
-    max-width: 900px;
-    flex-direction: row;
-    margin: auto;
-  }
+  min-height: 600px;
 `;
 
 export const FormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   margin: 1rem;
-  @media (min-width: 600px) {
-    width: 50%;
-    margin: 2rem;
-  }
+  height: 100%;
+  max-width: 500px;
+  
 `;
 
 export const FormHeader = styled.h6`
@@ -30,7 +27,9 @@ export const Warning = styled.p`
   margin-top: 1rem;
 `;
 
-export const AddressWrapper = styled.div`
+export const SelectAddressWrapper = styled.div`
+  position: absolute:
+  bottom: 0;
   display: flex;
   flex-direction: column;
 `;

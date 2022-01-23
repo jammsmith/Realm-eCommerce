@@ -6,7 +6,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 
 // Styled components
-import { FormWrapper, FormHeader, Warning } from './StyledComponents.js';
+import { FormWrapper, FormHeader, FormAction, Warning } from './StyledComponents.js';
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -39,18 +39,19 @@ const PaymentForm = () => {
 
   return (
     <FormWrapper>
-      <FormHeader>Please provide your billing details</FormHeader>
-      <form>
-        <PaymentElement />
-        {message && <div>{message}</div>}
-        <div style={{ marginBottom: '2rem' }}>
+      <form style={{ height: '100%' }}>
+        <FormHeader>Please provide your billing details</FormHeader>
+        <div>
+          <PaymentElement />
+          {message && <div>{message}</div>}
+        </div>
+        <div>
           <Warning>Clicking 'pay now' will submit your payment</Warning>
           <ActionButton
-            text={isLoading ? <ProgressSpinner /> : 'Pay Now'}
+            text={isLoading ? <ProgressSpinner /> : 'pay now'}
             onClick={handleSubmitPayment}
             disabled={!stripe || !elements}
             fullWidth
-            customStyles={{ top: '1rem' }}
           />
         </div>
       </form>

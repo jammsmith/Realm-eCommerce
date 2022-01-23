@@ -7,7 +7,14 @@ import RowGroup from '../../../../Components/Forms/RowGroup.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 
 // Styled components
-import { FormWrapper, FormHeader, AddressWrapper, PersonalDetailsWrapper } from './StyledComponents.js';
+import {
+  FormWrapper,
+  FormHeader,
+  FormAction,
+  SelectAddressWrapper,
+  PersonalDetailsWrapper,
+  Warning
+} from './StyledComponents.js';
 
 // Helpers
 import { validateAddress, getAddressesFromPostcode } from '../../../../helpers/address.js';
@@ -74,76 +81,75 @@ const DeliveryForm = () => {
   ];
 
   return (
-    <FormWrapper>
-      <FormHeader>{header}</FormHeader>
-      {
-        formStatus === 'user-selection-required'
-          ? <>
-            <PersonalDetailsWrapper>
-              <div>
-                <p>First Name:</p>
-                <p>Last Name:</p>
-                <p>Email:</p>
-                <p>Phone:</p>
-              </div>
-              <div>
-                <p>{inputFields.firstName}</p>
-                <p>{inputFields.lastName}</p>
-                <p>{inputFields.email}</p>
-                <p>{inputFields.phone || ''}</p>
-              </div>
-            </PersonalDetailsWrapper>
-            <AddressWrapper>
-              <SelectInput
-                name='addressSelect'
-                value={address || ''}
-                label='Please select your address'
-                required
-                helperText='Choose your address from the dropdown menu or choose "input address" to add a different address'
-                handleChange={handleSelectAddress}
-                options={addressOptions}
-              />
-            </AddressWrapper>
-            </>
-          : <>
-            <form>
-              {
-                inputOptions.map((option, index) => {
-                  if (Array.isArray(option)) {
-                    return (
-                      <RowGroup key={index}>
-                        {option.map((item, index) =>
-                          <TextInput
-                            key={`${index}-${item.name}`}
-                            name={item.name}
-                            label={item.label}
-                            value={inputFields.name}
-                            handleChange={handleInputChange}
-                            required={item.required && item.required}
-                          />
-                        )}
-                      </RowGroup>
-                    );
-                  } else {
-                    return (
+    formStatus === 'user-selection-required'
+      ? <FormWrapper>
+        <FormHeader>{header}</FormHeader>
+        <PersonalDetailsWrapper>
+          <div>
+            <p>First Name:</p>
+            <p>Last Name:</p>
+            <p>Email:</p>
+            <p>Phone:</p>
+          </div>
+          <div>
+            <p>{inputFields.firstName}</p>
+            <p>{inputFields.lastName}</p>
+            <p>{inputFields.email}</p>
+            <p>{inputFields.phone || ''}</p>
+          </div>
+        </PersonalDetailsWrapper>
+        <SelectAddressWrapper style={{ marginTop: '5.5rem' }}>
+          <SelectInput
+            name='addressSelect'
+            value={address || ''}
+            label='Please select your address'
+            required
+            helperText='Choose your address from the dropdown menu or choose "input address" to add a different address'
+            handleChange={handleSelectAddress}
+            options={addressOptions}
+          />
+        </SelectAddressWrapper>
+        </FormWrapper>
+      : <FormWrapper>
+        <FormHeader>{header}</FormHeader>
+        <form>
+          {
+            inputOptions.map((option, index) => {
+              if (Array.isArray(option)) {
+                return (
+                  <RowGroup key={index}>
+                    {option.map((item, index) =>
                       <TextInput
-                        key={`${index}-${option.name}`}
-                        name={option.name}
-                        label={option.label}
+                        key={`${index}-${item.name}`}
+                        name={item.name}
+                        label={item.label}
                         value={inputFields.name}
                         handleChange={handleInputChange}
-                        required={option.required && option.required}
+                        required={item.required && item.required}
                       />
-                    );
-                  }
-                })
+                    )}
+                  </RowGroup>
+                );
+              } else {
+                return (
+                  <TextInput
+                    key={`${index}-${option.name}`}
+                    name={option.name}
+                    label={option.label}
+                    value={inputFields.name}
+                    handleChange={handleInputChange}
+                    required={option.required && option.required}
+                  />
+                );
               }
-            </form>
-            <ActionButton text='find address' onClick={handleValidateAddress} />
-            {message && <div>{message}</div>}
-            </>
-      }
-    </FormWrapper>
+            })
+          }
+        </form>
+        <div>
+          {message && <Warning>{message}</Warning>}
+          <ActionButton text='find address' onClick={handleValidateAddress} />
+        </div>
+        </FormWrapper>
   );
 };
 
