@@ -11,47 +11,54 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import useActiveOrder from '../../../../hooks/useActiveOrder.js';
 
 // Styled Components
-import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
+import { CartWrapper, TotalsLine, ProductListWrapper, AnimateScroll } from './StyledComponents.js';
 
 // A view of all products that have been added to basket
 const Cart = ({ isMinimised }) => {
   const [activeOrder] = useActiveOrder();
 
+  const cartBody =
+    activeOrder && activeOrder.orderItems && activeOrder.orderItems.length
+      ? <ProductListWrapper>
+        {activeOrder.orderItems.map((item, index) => {
+          return (
+            <CartProduct
+              key={index}
+              id={item._id}
+              order={activeOrder}
+              orderItem={item}
+              isMinimised={isMinimised}
+            />
+          );
+        })}
+        <TotalsLine>
+          <h6>Subtotal</h6>
+          <h6>£{activeOrder.subTotal}</h6>
+        </TotalsLine>
+        {
+          !isMinimised &&
+            <ActionButton
+              text='Go to checkout'
+              linkTo='/checkout'
+            />
+        }
+        </ProductListWrapper>
+      : <>
+        <SectionSpacer />
+        <h6>Your cart is empty!</h6>
+        <SectionSpacer />
+        </>;
+
   return (
     activeOrder
       ? <CartWrapper isMinimised={isMinimised}>
-        {!isMinimised && <SectionSpacer dark spaceBelow />}
         {
-          activeOrder.orderItems && activeOrder.orderItems.length
-            ? <ProductListWrapper>
-              {activeOrder.orderItems.map((item, index) => {
-                return (
-                  <CartProduct
-                    key={index}
-                    id={item._id}
-                    order={activeOrder}
-                    orderItem={item}
-                    isMinimised={isMinimised}
-                  />
-                );
-              })}
-              <TotalsLine>
-                <h6>Subtotal</h6>
-                <h6>£{activeOrder.subTotal}</h6>
-              </TotalsLine>
-              {
-                !isMinimised &&
-                  <ActionButton
-                    text='Go to checkout'
-                    linkTo='/checkout'
-                  />
-              }
-              </ProductListWrapper>
+          isMinimised
+            ? cartBody
             : <>
-              <SectionSpacer />
-              <h6>Your cart is empty!</h6>
-              <SectionSpacer />
-              </>
+              <SectionSpacer dark spaceBelow />
+              {cartBody}
+            </>
         }
         <SectionSpacer spaceBelow />
         </CartWrapper>

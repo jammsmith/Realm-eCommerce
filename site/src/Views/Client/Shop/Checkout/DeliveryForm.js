@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 // Components
@@ -21,7 +22,7 @@ import {
 // Helpers
 import { validateInputFields, getAddressesFromPostcode } from '../../../../helpers/address.js';
 
-const DeliveryForm = ({ selectedAddressState }) => {
+const DeliveryForm = ({ deliveryDetailsState }) => {
   // Form state
   const [inputFields, setInputFields] = useState({
     firstName: '',
@@ -36,7 +37,7 @@ const DeliveryForm = ({ selectedAddressState }) => {
   const [pickUpInStore, setPickUpInStore] = useState(false);
 
   // Address state
-  const [selectedAddress, setSelectedAddress] = selectedAddressState;
+  const [deliveryDetails, setDeliveryDetails] = deliveryDetailsState;
   const [addressOptions, setAddressOptions] = useState({});
 
   // Event handlers
@@ -57,9 +58,21 @@ const DeliveryForm = ({ selectedAddressState }) => {
 
       if (result.isValid === true) {
         setFormStatus('validation-passed');
+        setDeliveryDetails(prev => (
+          {
+            ...prev,
+            firstName: _.startCase(inputFields.firstName),
+            lastName: _.startCase(inputFields.lastName),
+            email: inputFields.email.toLowerCase(),
+            phone: parseInt(inputFields.phone)
+          }
+        ));
 
         // End function here if picking up in-store
-        if (pickUpInStore) return;
+        if (pickUpInStore) {
+          setDeliveryDetails(prev => ({ ...prev, address: 'n/a' }));
+          return;
+        }
 
         // Otherwise, get the address from postcode lookup API
         const addresses = await getAddressesFromPostcode(inputFields.postcode);
@@ -120,11 +133,11 @@ const DeliveryForm = ({ selectedAddressState }) => {
                 <SelectAddressWrapper style={{ marginTop: '5.5rem' }}>
                   <SelectInput
                     name='addressSelect'
-                    value={selectedAddress || ''}
+                    value={deliveryDetails.address}
                     label='Please select your address'
                     required
                     helperText='Choose your address from the dropdown menu or choose "Pick up In-Store"'
-                    handleChange={e => setSelectedAddress(e.target.value)}
+                    handleChange={e => setDeliveryDetails(prev => ({ ...prev, address: e.target.value }))}
                     options={addressOptions}
                   />
                 </SelectAddressWrapper>
@@ -194,6 +207,10 @@ const DeliveryForm = ({ selectedAddressState }) => {
       }
     </FormWrapper>
   );
+};
+
+DeliveryForm.propTypes = {
+  deliveryDetailsState: PropTypes.array.isRequired
 };
 
 export default DeliveryForm;

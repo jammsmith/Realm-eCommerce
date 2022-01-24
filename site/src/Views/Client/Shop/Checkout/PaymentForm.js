@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 // Components
@@ -8,16 +9,21 @@ import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 // Styled components
 import { FormWrapper, FormHeader, Warning } from './StyledComponents.js';
 
-const PaymentForm = ({ isDeliveryFormCompleted }) => {
+// Hooks / helpers
+import useDDMutation from '../../../../hooks/useDDMutation.js';
+import mutations from '../../../../graphql/mutations.js';
+
+const PaymentForm = ({ deliveryDetails }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [addDeliveryDetailsToOrder] = useDDMutation(mutations.AddDeliveryDetailsToOrder);
 
   const handleSubmitPayment = async (event) => {
     event.preventDefault();
 
-    if (!isDeliveryFormCompleted) {
+    if (deliveryDetails && deliveryDetails.address === '') {
       setMessage('Please complete delivery details before submitting payment');
       return;
     }
@@ -25,7 +31,11 @@ const PaymentForm = ({ isDeliveryFormCompleted }) => {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const { data, error } = await addDeliveryDetailsToOrder({ variables: deliveryDetails });
+    console.log('data', data);
+    console.log('error', error);
+
+    const { error: stripeError } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: 'http://localhost:3000/checkout'
@@ -34,7 +44,7 @@ const PaymentForm = ({ isDeliveryFormCompleted }) => {
 
     // This will only be reached if an error has occurred.  Show the error
     // in a message for the customer. Otherwise, customer is redirected to 'return_url'
-    if (error.type === 'card_error' || error.type === 'validation_error') {
+    if (stripeError.type === 'card_error' || stripeError.type === 'validation_error') {
       setMessage(error.message);
     } else {
       setMessage('An unexpected error occured.');
@@ -62,6 +72,10 @@ const PaymentForm = ({ isDeliveryFormCompleted }) => {
       </form>
     </FormWrapper>
   );
+};
+
+PaymentForm.propTypes = {
+  deliveryDetails: PropTypes.object.isRequired
 };
 
 export default PaymentForm;

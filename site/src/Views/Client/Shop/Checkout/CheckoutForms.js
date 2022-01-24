@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Elements } from '@stripe/react-stripe-js';
+import uniqueString from 'unique-string';
 
 // Styled components
 import { CheckoutFormsWrapper } from './StyledComponents.js';
@@ -23,7 +24,21 @@ const CheckoutForms = ({ stripePromise }) => {
   const [activeOrder] = useActiveOrder();
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
   const [paymentIntent, setPaymentIntent] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState();
+  const [deliveryDetails, setDeliveryDetails] = useState({
+    order_id: '',
+    delivery_id: `delivery-${uniqueString()}`,
+    address: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: null
+  });
+
+  useEffect(() => {
+    if (activeOrder) {
+      setDeliveryDetails(prev => ({ ...prev, order_id: activeOrder.order_id }));
+    }
+  }, [activeOrder]);
 
   // Payment Element styling
   const appearance = {
@@ -97,9 +112,9 @@ const CheckoutForms = ({ stripePromise }) => {
           ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, appearance }}>
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <CheckoutFormsWrapper>
-                <DeliveryForm selectedAddressState={[selectedAddress, setSelectedAddress]} />
+                <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
                 <SectionSpacer dark spaceBelow spaceAbove />
-                <PaymentForm isDeliveryFormCompleted={!!selectedAddress} />
+                <PaymentForm deliveryDetails={deliveryDetails} />
               </CheckoutFormsWrapper>
               <Cart isMinimised />
             </div>

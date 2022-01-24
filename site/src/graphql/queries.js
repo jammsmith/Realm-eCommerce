@@ -6,7 +6,8 @@ import {
   SUBCATEGORY_DETAILS,
   PRODUCT_DETAILS,
   ORDER_DETAILS,
-  ORDER_ITEM_DETAILS
+  ORDER_ITEM_DETAILS,
+  DELIVERY_DETAILS
 } from './fragments.js';
 
 // Users
@@ -122,9 +123,13 @@ export const SINGLE_ORDER_DETAILED = gql`
   ${ORDER_ITEM_DETAILS}
   ${PRODUCT_DETAILS}
   ${USER_DETAILS}
+  ${DELIVERY_DETAILS}
   query($id: ObjectId!) {
     order(query: { _id: $id }) {
       ...OrderDetails
+      delivery {
+        ...DeliveryDetails
+      }
       customer {
         ...UserDetails
       }

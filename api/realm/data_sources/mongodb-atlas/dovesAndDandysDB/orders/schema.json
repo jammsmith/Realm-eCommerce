@@ -24,7 +24,7 @@
         "dateSent": {
             "bsonType": "date"
         },
-        "deliveryAddress": {
+        "delivery": {
             "bsonType": "string"
         },
         "extraInfo": {
