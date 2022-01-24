@@ -8,7 +8,7 @@ import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 // Styled components
 import { FormWrapper, FormHeader, Warning } from './StyledComponents.js';
 
-const PaymentForm = () => {
+const PaymentForm = ({ isDeliveryFormCompleted }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
@@ -17,7 +17,12 @@ const PaymentForm = () => {
   const handleSubmitPayment = async (event) => {
     event.preventDefault();
 
+    if (!isDeliveryFormCompleted) {
+      setMessage('Please complete delivery details before submitting payment');
+      return;
+    }
     if (!stripe || !elements) return;
+
     setIsLoading(true);
 
     const { error } = await stripe.confirmPayment({
@@ -39,11 +44,11 @@ const PaymentForm = () => {
 
   return (
     <FormWrapper>
-      <form style={{ height: '100%' }}>
+      <form>
         <FormHeader>Please provide your billing details</FormHeader>
         <div>
           <PaymentElement />
-          {message && <div>{message}</div>}
+          {message && <Warning>{message}</Warning>}
         </div>
         <div>
           <Warning>Clicking 'pay now' will submit your payment</Warning>

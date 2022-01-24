@@ -5,12 +5,6 @@
         "foreign_key": "user_id",
         "is_list": false
     },
-    "deliveryAddress": {
-        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/deliveryAddresses",
-        "source_key": "deliveryAddress",
-        "foreign_key": "address_id",
-        "is_list": false
-    },
     "orderItems": {
         "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/orderitems",
         "source_key": "orderItems",

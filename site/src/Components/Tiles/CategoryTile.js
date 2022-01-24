@@ -23,6 +23,8 @@ const Image = styled.img`
   border-radius: 10px;
   max-width: 100%;
   height: auto;
+  -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2); 
+  box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
 `;
 
 export const CategoryCaption = styled.h1`

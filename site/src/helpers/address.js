@@ -1,18 +1,16 @@
 import _ from 'lodash';
 import axios from 'axios';
 
-export const validateAddress = (address) => {
+export const validateInputFields = (inputFields, requiredFields) => {
   // no address provided -->
-  if (!address) {
+  if (!inputFields) {
     return { isValid: false, message: 'Must provide delivery details' };
   }
 
   // Check to make sure at least some value has been passed for the required fields -->
   let tests = [];
-  const requiredFields = ['firstName', 'lastName', 'email', 'postcode', 'houseNum'];
-
   requiredFields.forEach(field => {
-    if (address[field]) {
+    if (inputFields[field]) {
       tests.push({ field, result: true });
     } else {
       tests.push({ field, result: false });
@@ -52,8 +50,8 @@ export const validateAddress = (address) => {
   };
 
   personalDetails.forEach(key => {
-    if (address[key]) {
-      regexCheck(key, address[key]);
+    if (inputFields[key]) {
+      regexCheck(key, inputFields[key]);
     }
   });
   failedTests = tests.filter(t => t.result === false);

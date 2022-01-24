@@ -1,12 +1,9 @@
 import gql from 'graphql-tag';
 import {
   USER_DETAILS,
-  // CATEGORY_DETAILS,
-  // SUBCATEGORY_DETAILS,
   PRODUCT_DETAILS,
   ORDER_DETAILS,
-  ORDER_ITEM_DETAILS,
-  DELIVERY_ADDRESS_DETAILS
+  ORDER_ITEM_DETAILS
 } from './fragments.js';
 
 const mutations = {
@@ -309,7 +306,6 @@ const mutations = {
   `,
   UpdateOrder: gql`
     ${ORDER_DETAILS}
-    ${DELIVERY_ADDRESS_DETAILS}
     mutation(
       $id: ObjectId!,
       $extraInfo: String,
@@ -338,9 +334,6 @@ const mutations = {
           deliveryAddress: $deliveryAddress
         } ) {
         ...OrderDetails
-        deliveryAddress {
-          ...DeliveryAddressDetails
-        }
       }
     }
   `,
@@ -400,40 +393,44 @@ const mutations = {
         ...OrderDetails
       }
     }
-  `,
-  AddDeliveryDetailsToOrder: gql`
-    ${ORDER_DETAILS}
-    ${DELIVERY_ADDRESS_DETAILS}
-    mutation(
-      $order_id: String!,
-      $address_id: String!,
-      $addressPart1: String!,
-      $addressPart2: String!,
-      $postcode: String!,
-      $country: String!
-    ) {
-      updateOneOrder(
-        query: { order_id: $order_id },
-        set: {
-          deliveryAddress: {
-            link: "address_id",
-            create: {
-              address_id: $address_id
-              addressPart1: $addressPart1
-              addressPart2: $addressPart2
-              postcode: $postcode
-              country: $country
-            }
-          }
-        }
-      ) {
-        ...OrderDetails,
-        deliveryAddress {
-          ...DeliveryAddressDetails
-        }
-      }
-    }
   `
+  /*
+    Not using this anymore.
+    Keep in case we want to add in the future.
+  */
+  // AddDeliveryDetailsToOrder: gql`
+  //   ${ORDER_DETAILS}
+  //   ${DELIVERY_ADDRESS_DETAILS}
+  //   mutation(
+  //     $order_id: String!,
+  //     $address_id: String!,
+  //     $addressPart1: String!,
+  //     $addressPart2: String!,
+  //     $postcode: String!,
+  //     $country: String!
+  //   ) {
+  //     updateOneOrder(
+  //       query: { order_id: $order_id },
+  //       set: {
+  //         deliveryAddress: {
+  //           link: "address_id",
+  //           create: {
+  //             address_id: $address_id
+  //             addressPart1: $addressPart1
+  //             addressPart2: $addressPart2
+  //             postcode: $postcode
+  //             country: $country
+  //           }
+  //         }
+  //       }
+  //     ) {
+  //       ...OrderDetails,
+  //       deliveryAddress {
+  //         ...DeliveryAddressDetails
+  //       }
+  //     }
+  //   }
+  // `
 };
 
 export default mutations;

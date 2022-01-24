@@ -7,13 +7,16 @@ export const CheckoutFormsWrapper = styled.div`
   border: 0.05rem solid ${dark};
   border-radius: 5px;
   display: flex;
+  justify-content: center;
   flex-direction: column;
   margin-bottom: 2rem;
   min-height: 600px;
   padding: 0 0.15rem;
   width: 100%;
+  -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2); 
+  box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
   @media (min-width: 1024px) {
-    width: 48%;
+    width: 40%;
   }
 `;
 
@@ -22,7 +25,6 @@ export const FormWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   margin: 1rem;
-  max-width: 500px;
 `;
 
 export const FormHeader = styled.h6`
@@ -44,4 +46,9 @@ export const SelectAddressWrapper = styled.div`
 export const PersonalDetailsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+export const CheckboxWrapper = styled.div`
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
 `;

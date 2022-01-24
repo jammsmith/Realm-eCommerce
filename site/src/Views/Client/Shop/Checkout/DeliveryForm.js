@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import _ from 'lodash';
 
 // Components
 import TextInput from '../../../../Components/Forms/TextInput.js';
 import SelectInput from '../../../../Components/Forms/SelectInput.js';
 import RowGroup from '../../../../Components/Forms/RowGroup.js';
+import Checkbox from '../../../../Components/Forms/Checkbox.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 
 // Styled components
@@ -12,13 +14,14 @@ import {
   FormHeader,
   SelectAddressWrapper,
   PersonalDetailsWrapper,
-  Warning
+  Warning,
+  CheckboxWrapper
 } from './StyledComponents.js';
 
 // Helpers
-import { validateAddress, getAddressesFromPostcode } from '../../../../helpers/address.js';
+import { validateInputFields, getAddressesFromPostcode } from '../../../../helpers/address.js';
 
-const DeliveryForm = () => {
+const DeliveryForm = ({ selectedAddressState }) => {
   // Form state
   const [inputFields, setInputFields] = useState({
     firstName: '',
@@ -30,26 +33,38 @@ const DeliveryForm = () => {
   });
   const [formStatus, setFormStatus] = useState('');
   const [message, setMessage] = useState('');
+  const [pickUpInStore, setPickUpInStore] = useState(false);
 
   // Address state
-  const [address, setAddress] = useState();
+  const [selectedAddress, setSelectedAddress] = selectedAddressState;
   const [addressOptions, setAddressOptions] = useState({});
 
-  // event handlers
+  // Event handlers
   const handleInputChange = (e) => {
     setInputFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleValidateAddress = async () => {
+  const handleValidateInputFields = async () => {
     try {
       setFormStatus('validation-requested');
+
       // Check required fields are filled and run some validation on name/email/phone
-      const result = validateAddress(inputFields);
+      let requiredFields = ['firstName', 'lastName', 'email'];
+      if (!pickUpInStore) {
+        requiredFields = [...requiredFields, 'postcode', 'houseNum'];
+      }
+      const result = validateInputFields(inputFields, requiredFields);
+
       if (result.isValid === true) {
         setFormStatus('validation-passed');
-        // Get the address from postcode lookup API
+
+        // End function here if picking up in-store
+        if (pickUpInStore) return;
+
+        // Otherwise, get the address from postcode lookup API
         const addresses = await getAddressesFromPostcode(inputFields.postcode);
-        // Show the customer the suggested addresses, allow them to choose between or input their own
+
+        // Show the customer the suggested addresses and allow to select theirs from a dropdown
         setAddressOptions(addresses);
         setFormStatus('user-selection-required');
       } else {
@@ -60,95 +75,124 @@ const DeliveryForm = () => {
     }
   };
 
-  const handleSelectAddress = (e) => {
-    setAddress(e.target.value);
-  };
-
+  // Set relevant header
   const header = formStatus === 'user-confirmation-required' || formStatus === 'user-selection-required'
     ? 'Please confirm your delivery details'
     : 'Please enter your delivery details';
 
-  const inputOptions = [
+  // Set relevant input fields
+  const personalDetails = [
     [
       { name: 'firstName', label: 'First Name' },
       { name: 'lastName', label: 'Last Name' }
     ],
     { name: 'email', label: 'Email' },
-    { name: 'phone', label: 'Phone', required: false },
+    { name: 'phone', label: 'Phone', required: false }
+  ];
+  const addressDetails = [
     { name: 'houseNum', label: 'House Number/Name' },
     { name: 'postcode', label: 'Postcode' }
   ];
+  const inputOptions = pickUpInStore ? personalDetails : [...personalDetails, ...addressDetails];
 
   return (
-    formStatus === 'user-selection-required'
-      ? <FormWrapper>
-        <FormHeader>{header}</FormHeader>
-        <PersonalDetailsWrapper>
-          <div>
-            <p>First Name:</p>
-            <p>Last Name:</p>
-            <p>Email:</p>
-            <p>Phone:</p>
-          </div>
-          <div>
-            <p>{inputFields.firstName}</p>
-            <p>{inputFields.lastName}</p>
-            <p>{inputFields.email}</p>
-            <p>{inputFields.phone || ''}</p>
-          </div>
-        </PersonalDetailsWrapper>
-        <SelectAddressWrapper style={{ marginTop: '5.5rem' }}>
-          <SelectInput
-            name='addressSelect'
-            value={address || ''}
-            label='Please select your address'
-            required
-            helperText='Choose your address from the dropdown menu or choose "input address" to add a different address'
-            handleChange={handleSelectAddress}
-            options={addressOptions}
-          />
-        </SelectAddressWrapper>
-        </FormWrapper>
-      : <FormWrapper>
-        <FormHeader>{header}</FormHeader>
-        <form>
-          {
-            inputOptions.map((option, index) => {
-              if (Array.isArray(option)) {
-                return (
-                  <RowGroup key={index}>
-                    {option.map((item, index) =>
+    <FormWrapper>
+      {
+        (formStatus === 'validation-passed' && pickUpInStore) || formStatus === 'user-selection-required'
+          ? <>
+            <FormHeader>{header}</FormHeader>
+            <PersonalDetailsWrapper>
+              <div>
+                <p>First Name:</p>
+                <p>Last Name:</p>
+                <p>Email:</p>
+                <p>Phone:</p>
+              </div>
+              <div>
+                <p>{_.startCase(inputFields.firstName)}</p>
+                <p>{_.startCase(inputFields.lastName)}</p>
+                <p>{inputFields.email.toLowerCase()}</p>
+                <p>{inputFields.phone || ''}</p>
+              </div>
+            </PersonalDetailsWrapper>
+            {
+              formStatus === 'user-selection-required' &&
+                <SelectAddressWrapper style={{ marginTop: '5.5rem' }}>
+                  <SelectInput
+                    name='addressSelect'
+                    value={selectedAddress || ''}
+                    label='Please select your address'
+                    required
+                    helperText='Choose your address from the dropdown menu or choose "Pick up In-Store"'
+                    handleChange={e => setSelectedAddress(e.target.value)}
+                    options={addressOptions}
+                  />
+                </SelectAddressWrapper>
+            }
+            <div>
+              <ActionButton
+                text='back'
+                onClick={() => {
+                  setPickUpInStore(false);
+                  setFormStatus('');
+                }}
+                customStyles={{ marginTop: '1rem' }}
+              />
+            </div>
+          </>
+          : <>
+            <FormHeader>{header}</FormHeader>
+            <form>
+              {
+                inputOptions.map((option, index) => {
+                  if (Array.isArray(option)) {
+                    return (
+                      <RowGroup key={index}>
+                        {option.map((item, index) =>
+                          <TextInput
+                            key={`${index}-${item.name}`}
+                            name={item.name}
+                            label={item.label}
+                            value={inputFields.name}
+                            handleChange={handleInputChange}
+                            required={item.required && item.required}
+                          />
+                        )}
+                      </RowGroup>
+                    );
+                  } else {
+                    return (
                       <TextInput
-                        key={`${index}-${item.name}`}
-                        name={item.name}
-                        label={item.label}
+                        key={`${index}-${option.name}`}
+                        name={option.name}
+                        label={option.label}
                         value={inputFields.name}
                         handleChange={handleInputChange}
-                        required={item.required && item.required}
+                        required={option.required && option.required}
                       />
-                    )}
-                  </RowGroup>
-                );
-              } else {
-                return (
-                  <TextInput
-                    key={`${index}-${option.name}`}
-                    name={option.name}
-                    label={option.label}
-                    value={inputFields.name}
-                    handleChange={handleInputChange}
-                    required={option.required && option.required}
-                  />
-                );
+                    );
+                  }
+                })
               }
-            })
-          }
-        </form>
-        <div>
-          {message && <Warning>{message}</Warning>}
-          <ActionButton text='find address' onClick={handleValidateAddress} />
-        </div>
-        </FormWrapper>
+            </form>
+            <div>
+              {message && <Warning>{message}</Warning>}
+              <ActionButton
+                text={pickUpInStore ? 'confirm' : 'find address'}
+                customStyles={{ marginTop: '0.5rem' }}
+                onClick={handleValidateInputFields}
+              />
+            </div>
+            <CheckboxWrapper>
+              <Checkbox
+                label='Pick up in-store'
+                handleChange={() => setPickUpInStore(prev => !prev)}
+                value={pickUpInStore}
+              />
+            </CheckboxWrapper>
+          </>
+      }
+    </FormWrapper>
   );
 };
 

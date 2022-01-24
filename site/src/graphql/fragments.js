@@ -59,6 +59,7 @@ export const ORDER_DETAILS = gql`
     dateRefunded
     dateSent
     dateReceived
+    deliveryAddress
   }
 `;
 
@@ -71,13 +72,17 @@ export const ORDER_ITEM_DETAILS = gql`
   }
 `;
 
-export const DELIVERY_ADDRESS_DETAILS = gql`
-  fragment DeliveryAddressDetails on DeliveryAddress {
-    _id
-    address_id
-    addressPart1
-    addressPart2
-    postcode
-    country
-  }
-`;
+/*
+  Not using this anymore (in favour of deliveryAddress as a single string on Order Type).
+  Keep in case we want to add in the future.
+*/
+// export const DELIVERY_ADDRESS_DETAILS = gql`
+//   fragment DeliveryAddressDetails on DeliveryAddress {
+//     _id
+//     address_id
+//     addressPart1
+//     addressPart2
+//     postcode
+//     country
+//   }
+// `;

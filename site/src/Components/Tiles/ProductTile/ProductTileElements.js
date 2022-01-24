@@ -12,6 +12,8 @@ export const OuterContainer = styled.div`
   gap: 0.5rem;
   margin: 0.5rem auto;
   padding: 0.2rem;
+  -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2); 
+  box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
 `;
 
 export const Text = styled.h2`
