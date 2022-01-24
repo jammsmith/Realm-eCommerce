@@ -70,3 +70,14 @@ export const ORDER_ITEM_DETAILS = gql`
     quantity
   }
 `;
+
+export const DELIVERY_ADDRESS_DETAILS = gql`
+  fragment DeliveryAddressDetails on DeliveryAddress {
+    _id
+    address_id
+    addressPart1
+    addressPart2
+    postcode
+    country
+  }
+`;

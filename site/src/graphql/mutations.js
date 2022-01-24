@@ -5,7 +5,8 @@ import {
   // SUBCATEGORY_DETAILS,
   PRODUCT_DETAILS,
   ORDER_DETAILS,
-  ORDER_ITEM_DETAILS
+  ORDER_ITEM_DETAILS,
+  DELIVERY_ADDRESS_DETAILS
 } from './fragments.js';
 
 const mutations = {
@@ -221,7 +222,7 @@ const mutations = {
           link: $user_id,
         },
         orderItems: {
-          link: [$orderItem_id],
+          link: [$orderItem_id], 
           create: [{
             orderItem_id: $orderItem_id,
             quantity: 1
@@ -256,7 +257,7 @@ const mutations = {
       $order_id: String!,
       $product_id: String!,
       $size: String,
-      $quantity: Int = 1,
+      $quantity: Int = 1
     ) {
       insertOneOrderItem(data: {
         orderItem_id: $orderItem_id,
@@ -308,6 +309,7 @@ const mutations = {
   `,
   UpdateOrder: gql`
     ${ORDER_DETAILS}
+    ${DELIVERY_ADDRESS_DETAILS}
     mutation(
       $id: ObjectId!,
       $extraInfo: String,
@@ -318,7 +320,8 @@ const mutations = {
       $datePaid: DateTime,
       $dateRefunded: DateTime,
       $dateSent: DateTime,
-      $dateReceived: DateTime
+      $dateReceived: DateTime,
+      $deliveryAddress: String
     ) {
       updateOneOrder(
         query: { _id: $id },
@@ -331,9 +334,13 @@ const mutations = {
           datePaid: $datePaid,
           dateRefunded: $dateRefunded,
           dateSent: $dateSent,
-          dateReceived: $dateReceived
+          dateReceived: $dateReceived,
+          deliveryAddress: $deliveryAddress
         } ) {
         ...OrderDetails
+        deliveryAddress {
+          ...DeliveryAddressDetails
+        }
       }
     }
   `,
@@ -385,12 +392,44 @@ const mutations = {
       $updatedOrderItemsArray: [String!]
     ) {
       updateOneOrder(
-        query: { order_id:$order_id },
+        query: { order_id: $order_id },
         set: {
           orderItems: { link: $updatedOrderItemsArray }
         }
       ) {
         ...OrderDetails
+      }
+    }
+  `,
+  AddDeliveryDetailsToOrder: gql`
+  ${ORDER_DETAILS}
+  ${DELIVERY_ADDRESS_DETAILS}
+  mutation(
+    $order_id: String!,
+    $address_id: String!,
+    $addressPart1: String!,
+    $addressPart2: String!,
+    $postcode: String!,
+    $country: String!
+  ) {
+    updateOneOrder(
+      query: { order_id: $order_id },
+      set: {
+        deliveryAddress: {
+          link: "address_id",
+          create: {
+            address_id: $address_id
+            addressPart1: $addressPart1
+            addressPart2: $addressPart2
+            postcode: $postcode
+            country: $country
+          }
+        }
+      }
+    ) {
+      ...OrderDetails,
+      deliveryAddress {
+        ...DeliveryAddressDetails
       }
     }
   `

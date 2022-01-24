@@ -6,7 +6,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 
 // Styled components
-import { FormWrapper, FormHeader, FormAction, Warning } from './StyledComponents.js';
+import { FormWrapper, FormHeader, Warning } from './StyledComponents.js';
 
 const PaymentForm = () => {
   const stripe = useStripe();

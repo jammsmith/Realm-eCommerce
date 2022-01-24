@@ -13,7 +13,8 @@ const orderSchema = new Schema({
   datePaid: String,
   dateRefunded: String,
   dateSent: String,
-  dateReceived: String
+  dateReceived: String,
+  deliveryAddress: String
 });
 
 module.exports = model('Order', orderSchema);

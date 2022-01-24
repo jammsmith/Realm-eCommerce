@@ -6,22 +6,19 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "address_id": {
-            "bsonType": "string"
-        },
-        "user": {
-            "bsonType": "string"
-        },
         "addressPart1": {
             "bsonType": "string"
         },
         "addressPart2": {
             "bsonType": "string"
         },
-        "postcode": {
+        "address_id": {
             "bsonType": "string"
         },
         "country": {
+            "bsonType": "string"
+        },
+        "postcode": {
             "bsonType": "string"
         }
     },
