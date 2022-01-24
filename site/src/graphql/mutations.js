@@ -402,34 +402,35 @@ const mutations = {
     }
   `,
   AddDeliveryDetailsToOrder: gql`
-  ${ORDER_DETAILS}
-  ${DELIVERY_ADDRESS_DETAILS}
-  mutation(
-    $order_id: String!,
-    $address_id: String!,
-    $addressPart1: String!,
-    $addressPart2: String!,
-    $postcode: String!,
-    $country: String!
-  ) {
-    updateOneOrder(
-      query: { order_id: $order_id },
-      set: {
-        deliveryAddress: {
-          link: "address_id",
-          create: {
-            address_id: $address_id
-            addressPart1: $addressPart1
-            addressPart2: $addressPart2
-            postcode: $postcode
-            country: $country
+    ${ORDER_DETAILS}
+    ${DELIVERY_ADDRESS_DETAILS}
+    mutation(
+      $order_id: String!,
+      $address_id: String!,
+      $addressPart1: String!,
+      $addressPart2: String!,
+      $postcode: String!,
+      $country: String!
+    ) {
+      updateOneOrder(
+        query: { order_id: $order_id },
+        set: {
+          deliveryAddress: {
+            link: "address_id",
+            create: {
+              address_id: $address_id
+              addressPart1: $addressPart1
+              addressPart2: $addressPart2
+              postcode: $postcode
+              country: $country
+            }
           }
         }
-      }
-    ) {
-      ...OrderDetails,
-      deliveryAddress {
-        ...DeliveryAddressDetails
+      ) {
+        ...OrderDetails,
+        deliveryAddress {
+          ...DeliveryAddressDetails
+        }
       }
     }
   `
