@@ -25,10 +25,11 @@ import {
 } from './StyledComponents.js';
 
 // A single product item inside the cart
-const CartProduct = ({ order, orderItem, isMinimised }) => {
+const CartProduct = ({ activeOrderState, orderItem, isMinimised }) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
+  const [activeOrder, setActiveOrder] = activeOrderState;
 
   useEffect(() => {
     if (orderItem && orderItem.quantity) {
@@ -48,30 +49,17 @@ const CartProduct = ({ order, orderItem, isMinimised }) => {
   };
   const handleDecreaseQuantityClick = () => {
     setIsSaveDisabled(false);
-    setQuantity(quantity - 1);
-  };
-
-  const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
-  const handleSave = async (event) => {
-    try {
-      event.preventDefault();
-      await updateItemInOrder({
-        variables: {
-          id: orderItem._id,
-          quantity
-        }
-      });
-      setIsSaveDisabled(true);
-    } catch (err) {
-      throw new Error('Failed to update item in order');
+    if (quantity !== 0) {
+      setQuantity(quantity - 1);
     }
   };
 
   const [deleteOrderItem] = useDDMutation(mutations.DeleteOrderItem);
-  const [updateOrderItemsArrayInOrder] = useDDMutation(mutations.UpdateOrderItemsArrayInOrder);
+  const [updateOrderItemsInOrder] = useDDMutation(mutations.UpdateOrderItemsInOrder);
+  const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
 
   const handleRemoveItem = async () => {
-    const updatedOrderItems = order.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
+    const updatedOrderItems = activeOrder.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
     const orderItemIds = updatedOrderItems.map(item => item.orderItem_id);
 
     try {
@@ -80,26 +68,47 @@ const CartProduct = ({ order, orderItem, isMinimised }) => {
           orderItem_id: orderItem.orderItem_id
         }
       });
-      await updateOrderItemsArrayInOrder({
+      const { data } = await updateOrderItemsInOrder({
         variables: {
-          order_id: order.order_id,
-          updatedOrderItemsArray: orderItemIds
+          order_id: activeOrder.order_id,
+          orderItems: orderItemIds
         }
       });
+      setActiveOrder(data.updateOneOrder);
     } catch (err) {
       throw new Error('Failed to delete item from order');
     }
   };
 
+  const handleSave = async (e) => {
+    try {
+      e.preventDefault();
+      if (quantity !== 0) {
+        const { data } = await updateItemInOrder({
+          variables: {
+            id: orderItem._id,
+            quantity
+          }
+        });
+        setActiveOrder(data.updateOneOrderItem.order);
+      } else {
+        handleRemoveItem();
+      }
+      setIsSaveDisabled(true);
+    } catch (err) {
+      throw new Error('Failed to update item in order');
+    }
+  };
+
   const { product } = orderItem;
   return (
-    orderItem.product
+    product
       ? <CartLine>
         <SectionSpacer light />
         <DetailsWrapper>
           <ProductDetailsWrapper>
             <ProductLink to={`/shop/${product.category}/${product.subCategory}/${product._id}`}>
-              <h6>{orderItem.product.name}</h6>
+              <h6>{product.name}</h6>
             </ProductLink>
             <h6 style={{ fontSize: '0.75rem' }}>Unit Price: £{product.price}</h6>
           </ProductDetailsWrapper>
@@ -126,7 +135,7 @@ const CartProduct = ({ order, orderItem, isMinimised }) => {
 };
 
 CartProduct.propTypes = {
-  order: PropTypes.object.isRequired,
+  activeOrderState: PropTypes.array.isRequired,
   orderItem: PropTypes.object.isRequired,
   isMinimised: PropTypes.bool
 };

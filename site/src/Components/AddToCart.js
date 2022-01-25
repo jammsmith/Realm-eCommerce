@@ -19,7 +19,7 @@ const { dark, light } = colours;
 const AddToCart = ({ product, handleAddToCart, itemsInCart, addingToCart }) => {
   const history = useHistory();
   const [productInCart, setProductInCart] = useState(false);
-  const [buttonText, setButtonText] = useState();
+  const [buttonText, setButtonText] = useState('');
 
   useEffect(() => {
     if (itemsInCart) {
@@ -78,8 +78,8 @@ const AddToCart = ({ product, handleAddToCart, itemsInCart, addingToCart }) => {
 AddToCart.propTypes = {
   product: PropTypes.object.isRequired,
   handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.object,
-  addingToCart: PropTypes.bool.isRequired
+  itemsInCart: PropTypes.array,
+  addingToCart: PropTypes.object.isRequired
 };
 
 export default AddToCart;

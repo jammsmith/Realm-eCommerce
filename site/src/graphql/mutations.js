@@ -278,33 +278,6 @@ const mutations = {
       }
     }
   `,
-  UpdateOrderItemsInOrder: gql`
-    ${ORDER_ITEM_DETAILS}
-    ${ORDER_DETAILS}
-    ${PRODUCT_DETAILS}
-    mutation(
-      $order_id: String!,
-      $orderItems: [String!]
-    ) {
-      updateOneOrder(
-        query: { order_id: $order_id},
-        set: {
-          orderItems: { link: $orderItems }
-        } ) {
-          customer {
-            orders {
-              ...OrderDetails
-              orderItems {
-                ...OrderItemDetails
-                product {
-                  ...ProductDetails
-                }
-            }
-          }
-        }
-      }
-    }
-  `,
   UpdateOrder: gql`
     ${ORDER_DETAILS}
     mutation(
@@ -346,6 +319,7 @@ const mutations = {
   `,
   UpdateItemInOrder: gql`
     ${ORDER_ITEM_DETAILS}
+    ${ORDER_DETAILS}
     ${PRODUCT_DETAILS}
     mutation(
       $id: ObjectId!,
@@ -359,8 +333,14 @@ const mutations = {
           quantity: $quantity
         } ) {
         ...OrderItemDetails
-        product {
-          ...ProductDetails
+        order {
+          ...OrderDetails
+          orderItems {
+            ...OrderItemDetails
+            product {
+              ...ProductDetails
+            }
+          }
         }
       }
     }
@@ -377,19 +357,26 @@ const mutations = {
       }
     }
   `,
-  UpdateOrderItemsArrayInOrder: gql`
+  UpdateOrderItemsInOrder: gql`
+    ${ORDER_ITEM_DETAILS}
     ${ORDER_DETAILS}
+    ${PRODUCT_DETAILS}
     mutation(
       $order_id: String!,
-      $updatedOrderItemsArray: [String!]
+      $orderItems: [String!]
     ) {
       updateOneOrder(
-        query: { order_id: $order_id },
+        query: { order_id: $order_id},
         set: {
-          orderItems: { link: $updatedOrderItemsArray }
-        }
-      ) {
-        ...OrderDetails
+          orderItems: { link: $orderItems }
+        } ) {
+          ...OrderDetails
+          orderItems {
+            ...OrderItemDetails
+            product {
+              ...ProductDetails
+            }
+          }
       }
     }
   `,

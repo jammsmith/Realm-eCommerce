@@ -60,13 +60,13 @@ const Shop = () => {
         });
         const orderItemIds = activeOrder.orderItems.map(item => item.orderItem_id);
         orderItemIds.push(newOrderItemId);
-        const response = await updateOrderItemsInOrder({
+        const { data } = await updateOrderItemsInOrder({
           variables: {
             order_id: activeOrder.order_id,
             orderItems: orderItemIds
           }
         });
-        setActiveOrder(response.data.updateOneOrder.customer.orders[0]);
+        setActiveOrder(data.updateOneOrder);
         setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to add item to existing order. Error: ${err}`);
@@ -82,7 +82,7 @@ const Shop = () => {
         });
         const newOrderId = `order-${await uniqueString()}`;
         const newOrderItemId = `orderItem-${await uniqueString()}`;
-        const response = await createOrderForExistingCustomer({
+        const { data } = await createOrderForExistingCustomer({
           variables: {
             order_id: newOrderId,
             user_id: currentUser.user_id,
@@ -92,14 +92,14 @@ const Shop = () => {
           }
         });
         const existingOrderIds =
-          response.data.insertOneOrder.customer.orders.map(order => order.order_id);
+          data.insertOneOrder.customer.orders.map(order => order.order_id);
         await updateUserOrders({
           variables: {
             user_id: currentUser.user_id,
             orders: [...existingOrderIds, newOrderId]
           }
         });
-        setActiveOrder(response.data.insertOneOrder);
+        setActiveOrder(data.insertOneOrder);
         setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to add new order for existing customer. Error: ${err}`);
@@ -116,7 +116,7 @@ const Shop = () => {
         const newOrderId = `order-${await uniqueString()}`;
         const newOrderItemId = `orderItem-${await uniqueString()}`;
         const newUserId = `user-${await uniqueString()}`;
-        const response = await createGuestOrder({
+        const { data } = await createGuestOrder({
           variables: {
             order_id: newOrderId,
             user_ObjectId: currentUser.id,
@@ -126,8 +126,8 @@ const Shop = () => {
             dateCreated: new Date(Date.now())
           }
         });
-        setActiveOrder(response.data.insertOneOrder.customer.orders[0]);
-        setCurrentUser(response.data.insertOneOrder.customer);
+        setActiveOrder(data.insertOneOrder.customer.orders[0]);
+        setCurrentUser(data.insertOneOrder.customer);
         setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to create guest order. Error: ${err}`);
@@ -162,15 +162,13 @@ const Shop = () => {
   }
 
   return (
-
     <>
       <SectionSpacer dark spaceBelow />
       {
-        shopView || <h4>Sorry - there's nothing here.  Please go back to the homepage and try again. </h4>
+        shopView || <h4>Sorry - something went wrong.  Please go back to the homepage and try again. </h4>
       }
       <SectionSpacer spaceBelow />
     </>
-
   );
 };
 

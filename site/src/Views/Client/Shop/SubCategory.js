@@ -46,8 +46,8 @@ const SubCategory = ({ handleAddToCart, itemsInCart, addingToCart }) => {
 
 SubCategory.propTypes = {
   handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.object,
-  isAddingToCart: PropTypes.bool.isRequired
+  itemsInCart: PropTypes.array,
+  addingToCart: PropTypes.object.isRequired
 };
 
 export default SubCategory;

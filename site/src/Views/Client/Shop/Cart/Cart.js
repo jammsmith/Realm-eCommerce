@@ -1,5 +1,5 @@
 // External imports
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
@@ -9,13 +9,25 @@ import ActionButton from '../../../../Components/ActionButton.js';
 
 // Hook / helpers
 import useActiveOrder from '../../../../hooks/useActiveOrder.js';
+import { getCartSubTotal } from '../../../../helpers/cart.js';
 
 // Styled Components
 import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
 
 // A view of all products that have been added to basket
 const Cart = ({ isMinimised }) => {
-  const [activeOrder] = useActiveOrder();
+  const [activeOrder, setActiveOrder] = useActiveOrder();
+  const [subTotal, setSubTotal] = useState();
+
+  useEffect(() => {
+    if (activeOrder && activeOrder.subTotal) {
+      setSubTotal(activeOrder.subTotal);
+    } else if (activeOrder && activeOrder.orderItems && activeOrder.orderItems.length) {
+      setSubTotal(() => getCartSubTotal(activeOrder));
+    } else {
+      setSubTotal(0);
+    }
+  }, [activeOrder]);
 
   const cartBody =
     activeOrder && activeOrder.orderItems && activeOrder.orderItems.length
@@ -25,7 +37,7 @@ const Cart = ({ isMinimised }) => {
             <CartProduct
               key={index}
               id={item._id}
-              order={activeOrder}
+              activeOrderState={[activeOrder, setActiveOrder]}
               orderItem={item}
               isMinimised={isMinimised}
             />
@@ -33,7 +45,7 @@ const Cart = ({ isMinimised }) => {
         })}
         <TotalsLine>
           <h6>Subtotal</h6>
-          <h6>£{activeOrder.subTotal}</h6>
+          <h6>£{subTotal}</h6>
         </TotalsLine>
         {
           !isMinimised &&
