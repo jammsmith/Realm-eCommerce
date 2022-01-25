@@ -11,7 +11,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import useActiveOrder from '../../../../hooks/useActiveOrder.js';
 
 // Styled Components
-import { CartWrapper, TotalsLine, ProductListWrapper, AnimateScroll } from './StyledComponents.js';
+import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
 
 // A view of all products that have been added to basket
 const Cart = ({ isMinimised }) => {

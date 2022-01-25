@@ -220,7 +220,7 @@ const mutations = {
           link: $user_id,
         },
         orderItems: {
-          link: [$orderItem_id], 
+          link: ["orderItem_id"], 
           create: [{
             orderItem_id: $orderItem_id,
             quantity: 1
