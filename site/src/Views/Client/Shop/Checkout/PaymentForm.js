@@ -7,7 +7,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 
 // Styled components
-import { FormWrapper, FormHeader, Warning } from './StyledComponents.js';
+import { CheckoutItem, CheckoutHeading, Warning } from './StyledComponents.js';
 
 // Hooks / helpers
 import useDDMutation from '../../../../hooks/useDDMutation.js';
@@ -31,9 +31,7 @@ const PaymentForm = ({ deliveryDetails }) => {
 
     setIsLoading(true);
 
-    const { data, error } = await addDeliveryDetailsToOrder({ variables: deliveryDetails });
-    console.log('data', data);
-    console.log('error', error);
+    await addDeliveryDetailsToOrder({ variables: deliveryDetails });
 
     const { error: stripeError } = await stripe.confirmPayment({
       elements,
@@ -45,7 +43,7 @@ const PaymentForm = ({ deliveryDetails }) => {
     // This will only be reached if an error has occurred.  Show the error
     // in a message for the customer. Otherwise, customer is redirected to 'return_url'
     if (stripeError.type === 'card_error' || stripeError.type === 'validation_error') {
-      setMessage(error.message);
+      setMessage(stripeError.message);
     } else {
       setMessage('An unexpected error occured.');
     }
@@ -53,9 +51,9 @@ const PaymentForm = ({ deliveryDetails }) => {
   };
 
   return (
-    <FormWrapper>
+    <CheckoutItem>
       <form>
-        <FormHeader>Please provide your billing details</FormHeader>
+        <CheckoutHeading>Payment Details</CheckoutHeading>
         <div>
           <PaymentElement />
           {message && <Warning>{message}</Warning>}
@@ -70,7 +68,7 @@ const PaymentForm = ({ deliveryDetails }) => {
           />
         </div>
       </form>
-    </FormWrapper>
+    </CheckoutItem>
   );
 };
 

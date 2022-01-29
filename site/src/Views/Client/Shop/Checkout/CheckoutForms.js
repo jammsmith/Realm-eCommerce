@@ -41,7 +41,7 @@ const CheckoutForms = ({ stripePromise }) => {
   }, [activeOrder]);
 
   // Payment Element styling
-  const appearance = {
+  const paymentElementStyles = {
     theme: 'flat',
     variables: {
       fontFamily: ' "Gill Sans", sans-serif',
@@ -109,15 +109,12 @@ const CheckoutForms = ({ stripePromise }) => {
       <SectionSpacer dark spaceBelow />
       {
         paymentIntent
-          ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, appearance }}>
-            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-              <CheckoutFormsWrapper>
-                <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
-                <SectionSpacer dark spaceBelow spaceAbove />
-                <PaymentForm deliveryDetails={deliveryDetails} />
-              </CheckoutFormsWrapper>
+          ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, paymentElementStyles }}>
+            <CheckoutFormsWrapper>
               <Cart isMinimised />
-            </div>
+              <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
+              <PaymentForm deliveryDetails={deliveryDetails} />
+            </CheckoutFormsWrapper>
             </Elements>
           : <LoadingView />
       }

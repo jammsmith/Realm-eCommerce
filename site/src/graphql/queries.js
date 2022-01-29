@@ -152,6 +152,27 @@ export const SINGLE_ORDER_BASIC = gql`
   }
 `;
 
+export const ORDER_BY_PAYMENT_INTENT = gql`
+  ${ORDER_DETAILS}
+  ${ORDER_ITEM_DETAILS}
+  ${PRODUCT_DETAILS}
+  ${DELIVERY_DETAILS}
+  query($paymentIntentId: String!) {
+    order(query: { paymentIntentId: $paymentIntentId }) {
+      ...OrderDetails,
+      delivery {
+        ...DeliveryDetails
+      }
+      orderItems {
+        ...OrderItemDetails
+        product {
+          ...ProductDetails
+        }
+      }
+    }
+  }
+`;
+
 export const ALL_ORDERS = gql`
   ${ORDER_DETAILS}
   query {

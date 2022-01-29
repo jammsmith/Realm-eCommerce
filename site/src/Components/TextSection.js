@@ -29,7 +29,7 @@ export const Heading = styled.h2`
   }
 `;
 
-const Body = styled.p`
+export const Text = styled.p`
   text-align: center;
   font-size: 1.15rem;
   letter-spacing: 1.5px
@@ -48,8 +48,8 @@ const TextSection = ({ heading, text, secondaryText }) => {
   return (
     <Wrapper>
       <Heading>{heading}</Heading>
-      <Body>{text}</Body>
-      {secondaryText && <Body>{secondaryText}</Body>}
+      <Text>{text}</Text>
+      {secondaryText && <Text>{secondaryText}</Text>}
     </Wrapper>
   );
 };

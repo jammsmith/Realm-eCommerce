@@ -11,10 +11,10 @@ import ActionButton from '../../../../Components/ActionButton.js';
 
 // Styled components
 import {
-  FormWrapper,
-  FormHeader,
-  SelectAddressWrapper,
-  PersonalDetailsWrapper,
+  CheckoutItem,
+  CheckoutHeading,
+  SelectAddress,
+  PersonalDetails,
   Warning,
   CheckboxWrapper
 } from './StyledComponents.js';
@@ -88,11 +88,6 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
     }
   };
 
-  // Set relevant header
-  const header = formStatus === 'user-confirmation-required' || formStatus === 'user-selection-required'
-    ? 'Please confirm your delivery details'
-    : 'Please enter your delivery details';
-
   // Set relevant input fields
   const personalDetails = [
     [
@@ -109,12 +104,12 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
   const inputOptions = pickUpInStore ? personalDetails : [...personalDetails, ...addressDetails];
 
   return (
-    <FormWrapper>
+    <CheckoutItem>
       {
         (formStatus === 'validation-passed' && pickUpInStore) || formStatus === 'user-selection-required'
           ? <>
-            <FormHeader>{header}</FormHeader>
-            <PersonalDetailsWrapper>
+            <CheckoutHeading>Delivery Details</CheckoutHeading>
+            <PersonalDetails>
               <div>
                 <p>First Name:</p>
                 <p>Last Name:</p>
@@ -127,10 +122,10 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
                 <p>{inputFields.email.toLowerCase()}</p>
                 <p>{inputFields.phone || ''}</p>
               </div>
-            </PersonalDetailsWrapper>
+            </PersonalDetails>
             {
               formStatus === 'user-selection-required' &&
-                <SelectAddressWrapper style={{ marginTop: '5.5rem' }}>
+                <SelectAddress style={{ marginTop: '5.5rem' }}>
                   <SelectInput
                     name='addressSelect'
                     value={deliveryDetails.address}
@@ -140,7 +135,7 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
                     handleChange={e => setDeliveryDetails(prev => ({ ...prev, address: e.target.value }))}
                     options={addressOptions}
                   />
-                </SelectAddressWrapper>
+                </SelectAddress>
             }
             <div>
               <ActionButton
@@ -154,7 +149,7 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
             </div>
           </>
           : <>
-            <FormHeader>{header}</FormHeader>
+            <CheckoutHeading>Delivery Details</CheckoutHeading>
             <form>
               {
                 inputOptions.map((option, index) => {
@@ -205,7 +200,7 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
             </CheckboxWrapper>
           </>
       }
-    </FormWrapper>
+    </CheckoutItem>
   );
 };
 

@@ -12,13 +12,17 @@ export const CartLine = styled.div`
   flex-direction: column;
   border-bottom: 1px solid ${darkFade};
   width: 100%;
-  margin: auto;
 `;
 
 export const CartWrapper = styled.div`
-  width: 100%;
-  @media (min-width: 1024px) {
-    width: ${props => props.isMinimised && '350px'};
+  ${props => props.isMinimised &&
+    ({
+      borderRadius: '5px',
+      boxShadow: '-3px -1px 10px 2px rgba(0,0,0,0.2)',
+      padding: '0.5rem',
+      marginBottom: '1rem',
+      '-webkit-box-shadow': '-3px -1px 10px 2px rgba(0,0,0,0.2)'
+    })
   }
 `;
 
@@ -82,11 +86,10 @@ export const ProductLink = styled(Link)`
 // Cart Product List
 export const TotalsLine = styled(CartLine)`
   flex-direction: row;
-  border-bottom: none;
   justify-content: flex-end;
   gap: 2rem;
-  padding-top: 1rem;
-  padding-right: 2rem;
+  padding: 0.5rem 2rem 0.5rem 0;
+  border-bottom: none;
 `;
 
 export const ProductListWrapper = styled.div`
