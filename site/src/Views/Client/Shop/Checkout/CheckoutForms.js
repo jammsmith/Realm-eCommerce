@@ -34,6 +34,10 @@ const CheckoutForms = ({ stripePromise }) => {
     phone: null
   });
 
+  if (!activeOrder) {
+    console.log('no');
+  }
+
   useEffect(() => {
     if (activeOrder) {
       setDeliveryDetails(prev => ({ ...prev, order_id: activeOrder.order_id }));
@@ -116,7 +120,10 @@ const CheckoutForms = ({ stripePromise }) => {
               <PaymentForm deliveryDetails={deliveryDetails} />
             </CheckoutFormsWrapper>
             </Elements>
-          : <LoadingView />
+          : <LoadingView
+            redirect='cart'
+            initialMessage='Preparing your order for checkout'
+            />
       }
     </>
   );
