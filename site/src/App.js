@@ -12,6 +12,7 @@ import Cart from './Views/Client/Shop/Cart/Cart.js';
 import Checkout from './Views/Client/Shop/Checkout/Checkout.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
+import AccountDialog from './Views/Account/AccountDialog.js';
 import Error404 from './Views/Error/Error404.js';
 
 // Global components
@@ -29,17 +30,27 @@ const App = () => {
   const toggleHandler = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
 
+  // Login / register dialog
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const handleOpenLoginDialog = () => setDialogOpen(true);
+
   return (
     <RealmAppProvider>
       <ApolloProvider client={client}>
         <Router>
-          <Navbar handleToggleClick={toggleHandler} />
+          <Navbar
+            handleToggleClick={toggleHandler}
+            handleOpenLoginDialog={handleOpenLoginDialog}
+          />
           {
             menuInView &&
               <>
                 <SideDrawer show={menuInView} handleDrawerLinkClick={closeMenu} />
                 <BackgroundShadow handleBackgroundClick={closeMenu} />
               </>
+          }
+          {
+            dialogOpen && <AccountDialog dialogState={[dialogOpen, setDialogOpen]} />
           }
           <Switch>
             <Route exact path='/' component={Home} />

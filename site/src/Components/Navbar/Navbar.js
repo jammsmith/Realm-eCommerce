@@ -13,10 +13,11 @@ import {
   NavbarLinkList,
   NavbarLinkItem,
   NavbarLink,
-  NavbarToggleIcon
+  NavbarToggleIcon,
+  LoginIcon
 } from './NavbarElements';
 
-const Navbar = ({ handleToggleClick }) => {
+const Navbar = ({ handleToggleClick, handleOpenLoginDialog }) => {
   return (
     <NavbarContainer>
       <NavbarNavigation>
@@ -49,9 +50,10 @@ const Navbar = ({ handleToggleClick }) => {
           <NavbarLinkList>
             <NavbarCart>
               <NavbarLink className='link' to='/cart'>
-                Cart <IoCartOutline />
+                Cart <IoCartOutline size={25} />
               </NavbarLink>
             </NavbarCart>
+            <LoginIcon size={25} onClick={handleOpenLoginDialog} />
           </NavbarLinkList>
         </NavbarLinksContainer>
         <NavbarToggleIcon size={25} onClick={handleToggleClick} />
