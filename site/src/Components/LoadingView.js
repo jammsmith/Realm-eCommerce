@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -19,12 +19,13 @@ const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
   const [message, setMessage] = useState(initialMessage || 'Page Loading');
   const waitTime = timeout || 6000;
 
-  const retry = () => {
+  const retry = useCallback(() => {
     setTimeout(() => setWaitPhase(waitPhase + 1), waitTime);
-  };
-  const redirect = () => {
+  }, [waitPhase, waitTime]);
+
+  const redirect = useCallback(() => {
     setTimeout(() => history.push(`/${redirectTo}`), 1000);
-  };
+  }, [redirectTo, history]);
 
   useEffect(() => {
     switch (waitPhase) {
@@ -44,7 +45,7 @@ const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
       clearTimeout(retry);
       clearTimeout(redirect);
     };
-  }, [waitPhase]);
+  }, [waitPhase, redirectTo, retry, redirect]);
 
   return (
     <Skeleton>

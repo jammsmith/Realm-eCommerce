@@ -41,6 +41,7 @@ export const SelectAddress = styled.div`
   bottom: 0;
   display: flex;
   flex-direction: column;
+  marginTop: 5.5rem;
 `;
 
 export const PersonalDetails = styled.div`

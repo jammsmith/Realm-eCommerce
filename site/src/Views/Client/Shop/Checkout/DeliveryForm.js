@@ -125,7 +125,7 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
             </PersonalDetails>
             {
               formStatus === 'user-selection-required' &&
-                <SelectAddress style={{ marginTop: '5.5rem' }}>
+                <SelectAddress>
                   <SelectInput
                     name='addressSelect'
                     value={deliveryDetails.address}
@@ -156,15 +156,17 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
                   if (Array.isArray(option)) {
                     return (
                       <RowGroup key={index}>
-                        {option.map((item, index) =>
-                          <TextInput
-                            key={`${index}-${item.name}`}
-                            name={item.name}
-                            label={item.label}
-                            value={inputFields.name}
-                            handleChange={handleInputChange}
-                            required={item.required && item.required}
-                          />
+                        {option.map((item, index) => {
+                          return (
+                            <TextInput
+                              key={`${index}-${item.name}`}
+                              name={item.name}
+                              label={item.label}
+                              value={inputFields[item.name]}
+                              handleChange={handleInputChange}
+                              required={item.required && item.required}
+                            />);
+                        }
                         )}
                       </RowGroup>
                     );
@@ -174,7 +176,7 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
                         key={`${index}-${option.name}`}
                         name={option.name}
                         label={option.label}
-                        value={inputFields.name}
+                        value={inputFields[option.name]}
                         handleChange={handleInputChange}
                         required={option.required && option.required}
                       />
