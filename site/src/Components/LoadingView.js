@@ -13,27 +13,37 @@ const Skeleton = styled.div`
   gap: 3rem;
 `;
 
-const LoadingView = ({ timeout, redirect, initialMessage }) => {
+const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
   const history = useHistory();
   const [waitPhase, setWaitPhase] = useState(0);
   const [message, setMessage] = useState(initialMessage || 'Page Loading');
   const waitTime = timeout || 6000;
 
+  const retry = () => {
+    setTimeout(() => setWaitPhase(waitPhase + 1), waitTime);
+  };
+  const redirect = () => {
+    setTimeout(() => history.push(`/${redirectTo}`), 1000);
+  };
+
   useEffect(() => {
-    const retry = () => {
-      setTimeout(() => setWaitPhase(waitPhase + 1), waitTime);
-    };
     switch (waitPhase) {
       case 1:
         setMessage('It\'s taking longer than usual, please be patient');
         retry();
         break;
       case 2:
-        setMessage(`Redirecting back to ${redirect}`);
-        setTimeout(() => history.push(`/${redirect}`), 1000);
+        setMessage(`Redirecting back to ${redirectTo}`);
+        redirect();
         break;
       default: retry();
     }
+
+    // Cancel timeouts
+    return () => {
+      clearTimeout(retry);
+      clearTimeout(redirect);
+    };
   }, [waitPhase]);
 
   return (
@@ -45,7 +55,7 @@ const LoadingView = ({ timeout, redirect, initialMessage }) => {
 };
 
 LoadingView.propTypes = {
-  redirect: PropTypes.string.isRequired,
+  redirectTo: PropTypes.string.isRequired,
   timeout: PropTypes.number,
   initialMessage: PropTypes.string
 };

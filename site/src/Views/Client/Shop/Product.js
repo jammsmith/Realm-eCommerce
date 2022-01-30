@@ -72,8 +72,8 @@ const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
 
 Product.propTypes = {
   handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.object,
-  isAddingToCart: PropTypes.bool.isRequired
+  addingToCart: PropTypes.object.isRequired,
+  itemsInCart: PropTypes.array
 };
 
 export default Product;

@@ -121,7 +121,7 @@ const CheckoutForms = ({ stripePromise }) => {
             </CheckoutFormsWrapper>
             </Elements>
           : <LoadingView
-            redirect='cart'
+            redirectTo='cart'
             initialMessage='Preparing your order for checkout'
             />
       }
