@@ -104,7 +104,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
       };
       retrievePaymentIntent();
     }
-  }, [activeOrder, app.currentUser, updateOrder]);
+  }, [activeOrder, updateActiveOrder, app.currentUser, updateOrder]);
 
   return (
     paymentIntent
