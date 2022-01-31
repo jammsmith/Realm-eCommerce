@@ -27,30 +27,38 @@ const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZh
 const App = () => {
   // Small screen menu toggle -->
   const [menuInView, setMenuInView] = useState(false);
-  const toggleHandler = () => setMenuInView(prevValue => !prevValue);
+  const handleToggle = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
 
   // Login / register dialog
   const [dialogOpen, setDialogOpen] = useState(false);
-  const handleOpenLoginDialog = () => setDialogOpen(true);
+  const handleOpenAccountDialog = () => setDialogOpen(true);
+  const handleCloseAccountDialog = () => setDialogOpen(false);
 
   return (
     <RealmAppProvider>
       <ApolloProvider client={client}>
         <Router>
           <Navbar
-            handleToggleClick={toggleHandler}
-            handleOpenLoginDialog={handleOpenLoginDialog}
+            handleToggle={handleToggle}
+            handleOpenAccountDialog={handleOpenAccountDialog}
           />
           {
             menuInView &&
               <>
-                <SideDrawer show={menuInView} handleDrawerLinkClick={closeMenu} />
+                <SideDrawer
+                  show={menuInView}
+                  handleDrawerLinkClick={closeMenu}
+                />
                 <BackgroundShadow handleBackgroundClick={closeMenu} />
               </>
           }
           {
-            dialogOpen && <AccountDialog dialogState={[dialogOpen, setDialogOpen]} />
+            dialogOpen &&
+              <AccountDialog
+                open={dialogOpen}
+                handleClose={handleCloseAccountDialog}
+              />
           }
           <Switch>
             <Route exact path='/' component={Home} />

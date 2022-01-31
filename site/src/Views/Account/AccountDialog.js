@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 import {
   Dialog,
   DialogActions,
@@ -9,19 +10,14 @@ import {
 } from '@mui/material';
 import { RealmAppContext } from '../../realmApolloClient.js';
 
-const AccountDialog = ({ dialogState }) => {
+const AccountDialog = ({ open, handleClose }) => {
   const app = useContext(RealmAppContext);
-  const [dialogOpen, setDialogOpen] = dialogState;
   const [formFields, setFormFields] = useState({
     email: '',
     password: ''
   });
 
-  useEffect(() => setDialogOpen(true), [dialogState, setDialogOpen]);
-
   // Event handlers
-  const handleCloseDialog = () => setDialogOpen(false);
-
   const handleFormChange = (e) => {
     setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -38,7 +34,7 @@ const AccountDialog = ({ dialogState }) => {
 
   return (
     <div>
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Register/login</DialogTitle>
         <DialogContent>
           <TextField
@@ -65,13 +61,18 @@ const AccountDialog = ({ dialogState }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
+          <Button onClick={handleClose}>Close</Button>
           <Button onClick={handleLogin}>Login</Button>
           <Button onClick={handleRegister}>Register</Button>
         </DialogActions>
       </Dialog>
     </div>
   );
+};
+
+AccountDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired
 };
 
 export default AccountDialog;
