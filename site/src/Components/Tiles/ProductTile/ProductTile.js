@@ -23,7 +23,7 @@ import ResponsiveTileWrapper from '../ResponsiveTileWrapper.js';
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
-const ProductTile = ({ product, linkTo, viewAsSingleProduct, ...rest }) => {
+const ProductTile = ({ product, linkTo, viewAsSingleProduct, ...other }) => {
   const { name, price, image, numInStock, description } = product;
 
   return (
@@ -57,7 +57,7 @@ const ProductTile = ({ product, linkTo, viewAsSingleProduct, ...rest }) => {
           }
           <AddToCart
             product={product}
-            {...rest}
+            {...other}
           />
         </ButtonContainer>
       </OuterContainer>
@@ -67,8 +67,11 @@ const ProductTile = ({ product, linkTo, viewAsSingleProduct, ...rest }) => {
 
 ProductTile.propTypes = {
   product: PropTypes.object.isRequired,
+  handleAddToCart: PropTypes.func.isRequired,
+  addingToCart: PropTypes.object.isRequired,
   linkTo: PropTypes.string,
-  viewAsSingleProduct: PropTypes.bool
+  viewAsSingleProduct: PropTypes.bool,
+  itemsInCart: PropTypes.array
 };
 
 export default ProductTile;

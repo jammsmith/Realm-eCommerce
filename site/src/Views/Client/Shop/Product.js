@@ -26,7 +26,7 @@ const ButtonContainer = styled.div`
 `;
 
 // Return a single product
-const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
+const Product = (props) => {
   const { url } = useRouteMatch();
   const { subCategory, productId } = useParams();
 
@@ -41,10 +41,8 @@ const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
             <>
               <ProductTile
                 product={product}
-                handleAddToCart={handleAddToCart}
-                itemsInCart={itemsInCart}
-                addingToCart={addingToCart}
                 viewAsSingleProduct
+                {...props}
               />
               <SectionSpacer dark spaceAbove spaceBelow />
               <TextSection
