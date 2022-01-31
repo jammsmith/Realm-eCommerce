@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import CheckoutForms from './CheckoutForms.js';
 import Summary from './Summary.js';
 
-const Checkout = ({ stripePromise }) => {
+const Checkout = (props) => {
   const [urlParams, setUrlParams] = useState({});
   const history = useHistory();
 
@@ -26,18 +26,20 @@ const Checkout = ({ stripePromise }) => {
       });
 
       // re-direct back to checkout removes client secret etc from url
-      history.push('/checkout');
+      history.push('/shop/checkout');
     }
   }, [history]);
   return (
     urlParams.paymentIntentId
       ? <Summary urlParams={urlParams} />
-      : <CheckoutForms stripePromise={stripePromise} />
+      : <CheckoutForms {...props} />
   );
 };
 
 Checkout.propTypes = {
-  stripePromise: PropTypes.object.isRequired
+  stripePromise: PropTypes.object.isRequired,
+  activeOrder: PropTypes.object.isRequired,
+  updateActiveOrder: PropTypes.func.isRequired
 };
 
 export default Checkout;

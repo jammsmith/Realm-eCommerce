@@ -36,7 +36,7 @@ const PaymentForm = ({ deliveryDetails }) => {
     const { error: stripeError } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000/checkout'
+        return_url: 'http://localhost:3000/shop/checkout'
       }
     });
 

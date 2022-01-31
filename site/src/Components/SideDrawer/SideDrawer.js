@@ -60,7 +60,7 @@ const SideDrawer = ({ handleDrawerLinkClick }) => {
             </DrawerLink>
           </LinkContainer>
           <LinkContainer>
-            <DrawerLink to='/cart' onClick={handleDrawerLinkClick}>
+            <DrawerLink to='/shop/cart' onClick={handleDrawerLinkClick}>
               Cart
             </DrawerLink>
           </LinkContainer>

@@ -26,7 +26,7 @@ const ButtonContainer = styled.div`
 `;
 
 // Return a single product
-const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
+const Product = (props) => {
   const { url } = useRouteMatch();
   const { subCategory, productId } = useParams();
 
@@ -41,10 +41,8 @@ const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
             <>
               <ProductTile
                 product={product}
-                handleAddToCart={handleAddToCart}
-                itemsInCart={itemsInCart}
-                addingToCart={addingToCart}
                 viewAsSingleProduct
+                {...props}
               />
               <SectionSpacer dark spaceAbove spaceBelow />
               <TextSection
@@ -71,8 +69,12 @@ const Product = ({ handleAddToCart, itemsInCart, addingToCart }) => {
 };
 
 Product.propTypes = {
-  handleAddToCart: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
+  updateAddingToCart: PropTypes.func.isRequired,
+  activeOrder: PropTypes.object,
+  updateActiveOrder: PropTypes.func.isRequired,
   itemsInCart: PropTypes.array
 };
 

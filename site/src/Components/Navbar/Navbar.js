@@ -49,8 +49,8 @@ const Navbar = ({ handleToggle, handleOpenAccountDialog }) => {
         <NavbarLinksContainer>
           <NavbarLinkList>
             <NavbarCart>
-              <NavbarLink className='link' to='/cart'>
-                Cart <IoCartOutline size={25} />
+              <NavbarLink className='link' to='/shop/cart'>
+                Cart <IoCartOutline />
               </NavbarLink>
             </NavbarCart>
             <LoginIcon size={25} onClick={handleOpenAccountDialog} />

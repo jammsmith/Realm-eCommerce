@@ -13,7 +13,7 @@ const Skeleton = styled.div`
   gap: 3rem;
 `;
 
-const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
+const LoadingView = ({ timeout, redirectUrl, redirectName, initialMessage }) => {
   const history = useHistory();
   const [waitPhase, setWaitPhase] = useState(0);
   const [message, setMessage] = useState(initialMessage || 'Page Loading');
@@ -24,8 +24,8 @@ const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
   }, [waitPhase, waitTime]);
 
   const redirect = useCallback(() => {
-    setTimeout(() => history.push(`/${redirectTo}`), 1000);
-  }, [redirectTo, history]);
+    setTimeout(() => history.push(redirectUrl), 1000);
+  }, [redirectUrl, history]);
 
   useEffect(() => {
     switch (waitPhase) {
@@ -34,7 +34,7 @@ const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
         retry();
         break;
       case 2:
-        setMessage(`Redirecting back to ${redirectTo}`);
+        setMessage(`Redirecting back to ${redirectName}`);
         redirect();
         break;
       default: retry();
@@ -45,7 +45,7 @@ const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
       clearTimeout(retry);
       clearTimeout(redirect);
     };
-  }, [waitPhase, redirectTo, retry, redirect]);
+  }, [waitPhase, redirectName, retry, redirect]);
 
   return (
     <Skeleton>
@@ -56,7 +56,8 @@ const LoadingView = ({ timeout, redirectTo, initialMessage }) => {
 };
 
 LoadingView.propTypes = {
-  redirectTo: PropTypes.string.isRequired,
+  redirectUrl: PropTypes.string.isRequired,
+  redirectName: PropTypes.string.isRequired,
   timeout: PropTypes.number,
   initialMessage: PropTypes.string
 };

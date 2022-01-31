@@ -22,7 +22,7 @@ import {
 // Helpers
 import { validateInputFields, getAddressesFromPostcode } from '../../../../helpers/address.js';
 
-const DeliveryForm = ({ deliveryDetailsState }) => {
+const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
   // Form state
   const [inputFields, setInputFields] = useState({
     firstName: '',
@@ -35,9 +35,6 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
   const [formStatus, setFormStatus] = useState('');
   const [message, setMessage] = useState('');
   const [pickUpInStore, setPickUpInStore] = useState(false);
-
-  // Address state
-  const [deliveryDetails, setDeliveryDetails] = deliveryDetailsState;
   const [addressOptions, setAddressOptions] = useState({});
 
   // Event handlers
@@ -58,19 +55,16 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
 
       if (result.isValid === true) {
         setFormStatus('validation-passed');
-        setDeliveryDetails(prev => (
-          {
-            ...prev,
-            firstName: _.startCase(inputFields.firstName),
-            lastName: _.startCase(inputFields.lastName),
-            email: inputFields.email.toLowerCase(),
-            phone: parseInt(inputFields.phone)
-          }
-        ));
+        updateDeliveryDetails({
+          firstName: _.startCase(inputFields.firstName),
+          lastName: _.startCase(inputFields.lastName),
+          email: inputFields.email.toLowerCase(),
+          phone: parseInt(inputFields.phone)
+        });
 
         // End function here if picking up in-store
         if (pickUpInStore) {
-          setDeliveryDetails(prev => ({ ...prev, address: 'n/a' }));
+          updateDeliveryDetails({ address: 'n/a' });
           return;
         }
 
@@ -132,7 +126,7 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
                     label='Please select your address'
                     required
                     helperText='Choose your address from the dropdown menu or choose "Pick up In-Store"'
-                    handleChange={e => setDeliveryDetails(prev => ({ ...prev, address: e.target.value }))}
+                    handleChange={e => updateDeliveryDetails({ address: e.target.value })}
                     options={addressOptions}
                   />
                 </SelectAddress>
@@ -207,7 +201,8 @@ const DeliveryForm = ({ deliveryDetailsState }) => {
 };
 
 DeliveryForm.propTypes = {
-  deliveryDetailsState: PropTypes.array.isRequired
+  deliveryDetails: PropTypes.object.isRequired,
+  updateDeliveryDetails: PropTypes.func.isRequired
 };
 
 export default DeliveryForm;

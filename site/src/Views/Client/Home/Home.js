@@ -27,7 +27,7 @@ const Home = (props) => {
                 key={index}
                 title={_.startCase(name)}
                 image={`/images/${name}-landing-page.jpg`}
-                linkTo={`/shop/${name}`}
+                linkTo={`/shop/browse/${name}`}
               />
             );
           })}
