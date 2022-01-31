@@ -8,7 +8,6 @@ import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 
 // Hook / helpers
-import useActiveOrder from '../../../../hooks/useActiveOrder.js';
 import useBreakpoints from '../../../../hooks/useBreakpoints.js';
 import { getCartSubTotal } from '../../../../helpers/cart.js';
 
@@ -17,42 +16,40 @@ import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.
 import { CheckoutHeading } from '../Checkout/StyledComponents.js';
 
 // A view of all products that have been added to basket
-const Cart = ({ order, isMinimised }) => {
-  const [activeOrder, setActiveOrder] = useActiveOrder();
+const Cart = ({ activeOrder, updateOrder, altOrder, isMinimised }) => {
   const [subTotal, setSubTotal] = useState();
   const { isXs } = useBreakpoints();
 
-  useEffect(() => {
-    // Alternative order can be passed in to show the cart component with an order of choice
-    if (order && order !== activeOrder) {
-      setActiveOrder(order);
-    }
+  // Alternative order can be passed in to show the cart component with an order of choice
+  const order = altOrder || activeOrder;
 
+  useEffect(() => {
     // Add subtotal to order object if there isnt one already
-    if (activeOrder && activeOrder.subTotal) {
-      setSubTotal(activeOrder.subTotal);
-    } else if (activeOrder && activeOrder.orderItems && activeOrder.orderItems.length) {
-      setSubTotal(() => getCartSubTotal(activeOrder));
+    if (order && order.subTotal) {
+      setSubTotal(order.subTotal);
+    } else if (order && order.orderItems && order.orderItems.length) {
+      setSubTotal(() => getCartSubTotal(order));
     } else {
       setSubTotal(0);
     }
-  }, [activeOrder, setActiveOrder, order]);
+  }, [order]);
 
   return (
-    activeOrder
+    order
       ? <CartWrapper isMinimised={isMinimised}>
         <ProductListWrapper>
           <CheckoutHeading>Cart</CheckoutHeading>
           <SectionSpacer />
           {
-            activeOrder && activeOrder.orderItems && activeOrder.orderItems.length
+            order && order.orderItems && order.orderItems.length
               ? <>
-                {activeOrder.orderItems.map((item, index) => {
+                {order.orderItems.map((item, index) => {
                   return (
                     <CartProduct
                       key={index}
                       id={item._id}
-                      activeOrderState={[activeOrder, setActiveOrder]}
+                      order={order}
+                      updateOrder={updateOrder}
                       orderItem={item}
                       isMinimised={isMinimised}
                     />
@@ -86,7 +83,9 @@ const Cart = ({ order, isMinimised }) => {
 };
 
 Cart.propTypes = {
-  order: PropTypes.object,
+  activeOrder: PropTypes.object.isRequired,
+  updateOrder: PropTypes.func,
+  altOrder: PropTypes.object,
   isMinimised: PropTypes.bool
 };
 

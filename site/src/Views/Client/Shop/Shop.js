@@ -83,10 +83,22 @@ const Shop = () => {
         />
         <Route
           exact
-          path='/shop/checkout'
-          render={() => <Checkout stripePromise={stripePromise} />}
+          path='/shop/cart'
+          render={() =>
+            <Cart
+              activeOrder={activeOrder}
+              updateOrder={updateActiveOrder}
+            />}
         />
-        <Route exact path='/shop/cart' component={Cart} />
+        <Route
+          exact
+          path='/shop/checkout'
+          render={() =>
+            <Checkout
+              stripePromise={stripePromise}
+              activeOrder={activeOrder}
+            />}
+        />
       </Switch>
       <SectionSpacer spaceBelow />
     </>

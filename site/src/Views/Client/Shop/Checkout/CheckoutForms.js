@@ -18,9 +18,8 @@ import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 
-const CheckoutForms = ({ stripePromise }) => {
+const CheckoutForms = ({ stripePromise, activeOrder }) => {
   const app = useContext(RealmAppContext);
-  const [activeOrder] = useActiveOrder();
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [deliveryDetails, setDeliveryDetails] = useState({
@@ -107,7 +106,7 @@ const CheckoutForms = ({ stripePromise }) => {
     paymentIntent
       ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, paymentElementStyles }}>
         <CheckoutFormsWrapper>
-          <Cart isMinimised />
+          <Cart isMinimised activeOrder={activeOrder} />
           <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
           <PaymentForm deliveryDetails={deliveryDetails} />
         </CheckoutFormsWrapper>
@@ -121,7 +120,8 @@ const CheckoutForms = ({ stripePromise }) => {
 };
 
 CheckoutForms.propTypes = {
-  stripePromise: PropTypes.object.isRequired
+  stripePromise: PropTypes.object.isRequired,
+  activeOrder: PropTypes.object.isRequired
 };
 
 export default CheckoutForms;

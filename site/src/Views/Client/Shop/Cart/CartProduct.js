@@ -25,11 +25,10 @@ import {
 } from './StyledComponents.js';
 
 // A single product item inside the cart
-const CartProduct = ({ activeOrderState, orderItem, isMinimised }) => {
+const CartProduct = ({ order, updateOrder, orderItem, isMinimised }) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
-  const [activeOrder, setActiveOrder] = activeOrderState;
 
   useEffect(() => {
     if (orderItem && orderItem.quantity) {
@@ -59,7 +58,7 @@ const CartProduct = ({ activeOrderState, orderItem, isMinimised }) => {
   const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
 
   const handleRemoveItem = async () => {
-    const updatedOrderItems = activeOrder.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
+    const updatedOrderItems = order.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
     const orderItemIds = updatedOrderItems.map(item => item.orderItem_id);
 
     try {
@@ -70,11 +69,11 @@ const CartProduct = ({ activeOrderState, orderItem, isMinimised }) => {
       });
       const { data } = await updateOrderItemsInOrder({
         variables: {
-          order_id: activeOrder.order_id,
+          order_id: order.order_id,
           orderItems: orderItemIds
         }
       });
-      setActiveOrder(data.updateOneOrder);
+      updateOrder(data.updateOneOrder);
     } catch (err) {
       throw new Error('Failed to delete item from order');
     }
@@ -90,7 +89,7 @@ const CartProduct = ({ activeOrderState, orderItem, isMinimised }) => {
             quantity
           }
         });
-        setActiveOrder(data.updateOneOrderItem.order);
+        updateOrder(data.updateOneOrderItem.order);
       } else {
         handleRemoveItem();
       }
@@ -135,7 +134,8 @@ const CartProduct = ({ activeOrderState, orderItem, isMinimised }) => {
 };
 
 CartProduct.propTypes = {
-  activeOrderState: PropTypes.array.isRequired,
+  order: PropTypes.object.isRequired,
+  updateOrder: PropTypes.func.isRequired,
   orderItem: PropTypes.object.isRequired,
   isMinimised: PropTypes.bool
 };
