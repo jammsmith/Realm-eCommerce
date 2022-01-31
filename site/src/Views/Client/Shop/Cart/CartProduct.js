@@ -25,7 +25,7 @@ import {
 } from './StyledComponents.js';
 
 // A single product item inside the cart
-const CartProduct = ({ order, updateOrder, orderItem, isMinimised }) => {
+const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised }) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
@@ -73,7 +73,7 @@ const CartProduct = ({ order, updateOrder, orderItem, isMinimised }) => {
           orderItems: orderItemIds
         }
       });
-      updateOrder(data.updateOneOrder);
+      updateActiveOrder(data.updateOneOrder);
     } catch (err) {
       throw new Error('Failed to delete item from order');
     }
@@ -89,7 +89,7 @@ const CartProduct = ({ order, updateOrder, orderItem, isMinimised }) => {
             quantity
           }
         });
-        updateOrder(data.updateOneOrderItem.order);
+        updateActiveOrder(data.updateOneOrderItem.order);
       } else {
         handleRemoveItem();
       }
@@ -135,7 +135,7 @@ const CartProduct = ({ order, updateOrder, orderItem, isMinimised }) => {
 
 CartProduct.propTypes = {
   order: PropTypes.object.isRequired,
-  updateOrder: PropTypes.func.isRequired,
+  updateActiveOrder: PropTypes.func.isRequired,
   orderItem: PropTypes.object.isRequired,
   isMinimised: PropTypes.bool
 };

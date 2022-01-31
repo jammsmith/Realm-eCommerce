@@ -280,6 +280,8 @@ const mutations = {
   `,
   UpdateOrder: gql`
     ${ORDER_DETAILS}
+    ${ORDER_ITEM_DETAILS}
+    ${PRODUCT_DETAILS}
     mutation(
       $id: ObjectId!,
       $extraInfo: String,
@@ -306,6 +308,12 @@ const mutations = {
           dateReceived: $dateReceived
         } ) {
         ...OrderDetails
+        orderItems {
+          ...OrderItemDetails
+          product {
+            ...ProductDetails
+          }
+        }
       }
     }
   `,

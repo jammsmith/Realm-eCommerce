@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import OrderByPaymentIntent from '../../../../Components/Queries/OrderByPaymentIntent.js';
 import Cart from '../Cart/Cart.js';
-import SectionSpacer from '../../../../Components/SectionSpacer.js';
 
 // Styled Components
 import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponents.js';
@@ -46,28 +45,25 @@ const Summary = ({ urlParams }) => {
       ? <OrderByPaymentIntent paymentIntentId={paymentIntent.id}>
         {
           order =>
-            <>
-              <SectionSpacer dark spaceBelow />
-              <SummaryWrapper>
-                <Cart order={order} isMinimised />
-                <SummaryItem>
-                  <h4 style={{ margin: '1rem 0' }}>{message}</h4>
-                </SummaryItem>
-                {
-                  paymentIntent.status === 'succeeded' &&
-                    <SummaryItem>
-                      <SummaryRow>
-                        <Text>Order Reference Number:</Text>
-                        <strong>{order.order_id}</strong>
-                      </SummaryRow>
-                      <SummaryRow>
-                        <Text>You will receive a confirmation of your payment by email to:</Text>
-                        <strong>{order.delivery.email}</strong>
-                      </SummaryRow>
-                    </SummaryItem>
-                }
-              </SummaryWrapper>
-            </>
+            <SummaryWrapper>
+              <Cart altOrder={order} isMinimised />
+              <SummaryItem>
+                <h4 style={{ margin: '1rem 0' }}>{message}</h4>
+              </SummaryItem>
+              {
+                paymentIntent.status === 'succeeded' &&
+                  <SummaryItem>
+                    <SummaryRow>
+                      <Text>Order Reference Number:</Text>
+                      <strong>{order.order_id}</strong>
+                    </SummaryRow>
+                    <SummaryRow>
+                      <Text>You will receive a confirmation of your payment by email to:</Text>
+                      <strong>{order.delivery.email}</strong>
+                    </SummaryRow>
+                  </SummaryItem>
+              }
+            </SummaryWrapper>
         }
       </OrderByPaymentIntent>
       : null

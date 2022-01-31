@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import CheckoutForms from './CheckoutForms.js';
 import Summary from './Summary.js';
 
-const Checkout = ({ stripePromise, activeOrder }) => {
+const Checkout = (props) => {
   const [urlParams, setUrlParams] = useState({});
   const history = useHistory();
 
@@ -32,13 +32,14 @@ const Checkout = ({ stripePromise, activeOrder }) => {
   return (
     urlParams.paymentIntentId
       ? <Summary urlParams={urlParams} />
-      : <CheckoutForms stripePromise={stripePromise} activeOrder={activeOrder} />
+      : <CheckoutForms {...props} />
   );
 };
 
 Checkout.propTypes = {
   stripePromise: PropTypes.object.isRequired,
-  activeOrder: PropTypes.object.isRequired
+  activeOrder: PropTypes.object.isRequired,
+  updateActiveOrder: PropTypes.func.isRequired
 };
 
 export default Checkout;

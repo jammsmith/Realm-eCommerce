@@ -13,12 +13,11 @@ import DeliveryForm from './DeliveryForm.js';
 import Cart from '../Cart/Cart.js';
 
 // Helpers/hooks
-import useActiveOrder from '../../../../hooks/useActiveOrder.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 
-const CheckoutForms = ({ stripePromise, activeOrder }) => {
+const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const app = useContext(RealmAppContext);
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
   const [paymentIntent, setPaymentIntent] = useState(null);
@@ -37,6 +36,10 @@ const CheckoutForms = ({ stripePromise, activeOrder }) => {
       setDeliveryDetails(prev => ({ ...prev, order_id: activeOrder.order_id }));
     }
   }, [activeOrder]);
+
+  const updateDeliveryDetails = (update) => {
+    setDeliveryDetails(prev => ({ ...prev, ...update }));
+  };
 
   // Payment Element styling
   const paymentElementStyles = {
@@ -84,13 +87,14 @@ const CheckoutForms = ({ stripePromise, activeOrder }) => {
     if (activeOrder && !activeOrder.paymentIntentId) {
       const createPaymentIntent = async () => {
         const intent = await app.currentUser.functions.createPaymentIntent(activeOrder);
-        updateOrder({
+        const { data } = await updateOrder({
           variables: {
             id: activeOrder._id,
             paymentIntentId: intent.id
           }
         });
         setPaymentIntent(intent);
+        updateActiveOrder(data.updateOneOrder);
       };
       createPaymentIntent();
     } else if (activeOrder && activeOrder.paymentIntentId) {
@@ -104,15 +108,28 @@ const CheckoutForms = ({ stripePromise, activeOrder }) => {
 
   return (
     paymentIntent
-      ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, paymentElementStyles }}>
+      ? <Elements
+        stripe={stripePromise}
+        options={{
+          clientSecret: paymentIntent.client_secret,
+          appearance: paymentElementStyles
+        }}
+      >
         <CheckoutFormsWrapper>
-          <Cart isMinimised activeOrder={activeOrder} />
-          <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
+          <Cart
+            isMinimised
+            activeOrder={activeOrder}
+            updateActiveOrder={updateActiveOrder}
+          />
+          <DeliveryForm
+            deliveryDetails={deliveryDetails}
+            updateDeliveryDetails={updateDeliveryDetails}
+          />
           <PaymentForm deliveryDetails={deliveryDetails} />
         </CheckoutFormsWrapper>
         </Elements>
       : <LoadingView
-        redirectPath='/shop/cart'
+        redirectUrl='/shop/cart'
         redirectName='cart'
         initialMessage='Preparing your order for checkout'
         />
@@ -121,7 +138,8 @@ const CheckoutForms = ({ stripePromise, activeOrder }) => {
 
 CheckoutForms.propTypes = {
   stripePromise: PropTypes.object.isRequired,
-  activeOrder: PropTypes.object.isRequired
+  activeOrder: PropTypes.object.isRequired,
+  updateActiveOrder: PropTypes.func.isRequired
 };
 
 export default CheckoutForms;

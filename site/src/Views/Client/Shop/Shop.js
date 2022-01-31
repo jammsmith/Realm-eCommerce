@@ -87,7 +87,7 @@ const Shop = () => {
           render={() =>
             <Cart
               activeOrder={activeOrder}
-              updateOrder={updateActiveOrder}
+              updateActiveOrder={updateActiveOrder}
             />}
         />
         <Route
@@ -97,6 +97,7 @@ const Shop = () => {
             <Checkout
               stripePromise={stripePromise}
               activeOrder={activeOrder}
+              updateActiveOrder={updateActiveOrder}
             />}
         />
       </Switch>
