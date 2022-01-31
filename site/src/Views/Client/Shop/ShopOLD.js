@@ -1,75 +1,36 @@
-// External imports
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { IoCartOutline, IoMailOutline } from 'react-icons/io5';
-import { useHistory } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import uniqueString from 'unique-string';
 
+// Views
+import Category from './Category';
+import SubCategory from './SubCategory';
+import Product from './Product';
+
 // Components
-import ActionButton from './ActionButton.js';
-import ProgressSpinner from './ProgressSpinner.js';
+import SectionSpacer from '../../../Components/SectionSpacer.js';
 
-//
-import mutations from '../graphql/mutations.js';
-import useDDMutation from '../hooks/useDDMutation.js';
+// Other
+import mutations from '../../../graphql/mutations.js';
+import useDDMutation from '../../../hooks/useDDMutation.js';
+import useCurrentUser from '../../../hooks/useCurrentUser.js';
+import useActiveOrder from '../../../hooks/useActiveOrder.js';
 
-// Styles
-import fonts from '../styles/fonts.js';
-import colours from '../styles/colours.js';
+const Shop = () => {
+  const [currentUser, setCurrentUser] = useCurrentUser();
+  const [activeOrder, setActiveOrder] = useActiveOrder();
+  const [itemsInCart, setItemsInCart] = useState();
+  const [addingToCart, setAddingToCart] = useState({
+    isLoading: false,
+    productId: ''
+  });
 
-const { standard } = fonts;
-const { dark, light } = colours;
-
-//
-const AddToCart = ({
-  product,
-  itemsInCart,
-  activeOrder,
-  updateActiveOrder,
-  addingToCart,
-  updateAddingToCart,
-  currentUser,
-  updateCurrentUser
-}) => {
-  const history = useHistory();
-  const [productInCart, setProductInCart] = useState(false);
-  const [buttonText, setButtonText] = useState('');
-
-  const isLoading = addingToCart.isLoading && addingToCart.productId === product.product_id;
-
+  // Get items currently in cart and send down to product tiles
   useEffect(() => {
-    if (itemsInCart) {
-      const found = itemsInCart.find(item => item.product._id === product._id);
-      if (found) setProductInCart(true);
+    if (activeOrder && activeOrder.orderItems && activeOrder.orderItems !== itemsInCart) {
+      setItemsInCart(activeOrder.orderItems);
     }
-  }, [itemsInCart, setProductInCart, product]);
-
-  // Custom styles for button
-  const styles = {
-    fontFamily: standard,
-    background: dark,
-    color: light,
-    width: '100%'
-  };
-  //
-
-  useEffect(() => {
-    if (productInCart) {
-      setButtonText('Added - View in Cart');
-    } else if (product.numInStock > 0) {
-      setButtonText(
-        <>
-          Add To Cart
-          <IoCartOutline />
-        </>);
-    } else {
-      setButtonText(
-        <>
-        Request this product
-          <IoMailOutline />
-        </>);
-    }
-  }, [setButtonText, productInCart, product, itemsInCart]);
+  }, [activeOrder, itemsInCart, setItemsInCart]);
 
   // Order mutations
   const [createGuestOrder] = useDDMutation(mutations.CreateGuestOrder);
@@ -78,12 +39,17 @@ const AddToCart = ({
   const [updateOrderItemsInOrder] = useDDMutation(mutations.UpdateOrderItemsInOrder);
   const [updateUserOrders] = useDDMutation(mutations.UpdateUserOrders);
 
+  // Handler
   const handleAddToCart = async (event) => {
     const productId = event.currentTarget.value;
+
     // -- Current user with an active order -- //
     if (currentUser && currentUser.user_id && activeOrder) {
       try {
-        updateAddingToCart(true, productId);
+        setAddingToCart({
+          isLoading: true,
+          productId: productId
+        });
         const newOrderItemId = `orderItem-${await uniqueString()}`;
         await createNewOrderItem({
           variables: {
@@ -100,8 +66,8 @@ const AddToCart = ({
             orderItems: orderItemIds
           }
         });
-        updateActiveOrder(data.updateOneOrder);
-        updateAddingToCart(false);
+        setActiveOrder(data.updateOneOrder);
+        setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to add item to existing order. Error: ${err}`);
       }
@@ -110,7 +76,10 @@ const AddToCart = ({
     // -- Current user with no active order -- //
     if (currentUser && currentUser.user_id && !activeOrder) {
       try {
-        updateAddingToCart(true, productId);
+        setAddingToCart({
+          isLoading: true,
+          productId: productId
+        });
         const newOrderId = `order-${await uniqueString()}`;
         const newOrderItemId = `orderItem-${await uniqueString()}`;
         const { data } = await createOrderForExistingCustomer({
@@ -130,8 +99,8 @@ const AddToCart = ({
             orders: [...existingOrderIds, newOrderId]
           }
         });
-        updateActiveOrder(data.insertOneOrder);
-        updateAddingToCart(false);
+        setActiveOrder(data.insertOneOrder);
+        setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to add new order for existing customer. Error: ${err}`);
       }
@@ -140,7 +109,10 @@ const AddToCart = ({
     // -- No current logged in user -- //
     if (currentUser && !currentUser.user_id) {
       try {
-        updateAddingToCart(true, productId);
+        setAddingToCart({
+          isLoading: true,
+          productId: productId
+        });
         const newOrderId = `order-${await uniqueString()}`;
         const newOrderItemId = `orderItem-${await uniqueString()}`;
         const newUserId = `user-${await uniqueString()}`;
@@ -154,43 +126,50 @@ const AddToCart = ({
             dateCreated: new Date(Date.now())
           }
         });
-        updateActiveOrder(data.insertOneOrder.customer.orders[0]);
-        updateCurrentUser(data.insertOneOrder.customer);
-        updateAddingToCart(false);
+        setActiveOrder(data.insertOneOrder.customer.orders[0]);
+        setCurrentUser(data.insertOneOrder.customer);
+        setAddingToCart({ isLoading: false });
       } catch (err) {
         throw new Error(`Failed to create guest order. Error: ${err}`);
       }
     }
   };
 
+  // Get the right shop view -->
+  const { category, subCategory, productId } = useParams();
+  let shopView;
+
+  if (category && subCategory === undefined) {
+    shopView = <Category />;
+  }
+  if (subCategory && productId === undefined) {
+    shopView =
+      <SubCategory
+        handleAddToCart={handleAddToCart}
+        activeOrder={activeOrder}
+        itemsInCart={itemsInCart}
+        addingToCart={addingToCart}
+      />;
+  }
+  if (productId) {
+    shopView =
+      <Product
+        handleAddToCart={handleAddToCart}
+        activeOrder={activeOrder}
+        itemsInCart={itemsInCart}
+        addingToCart={addingToCart}
+      />;
+  }
+
   return (
-    product.numInStock > 0
-      ? <ActionButton
-        text={isLoading ? <ProgressSpinner colour='light' size='1.5rem' /> : buttonText}
-        onClick={productInCart ? () => history.push('/cart') : handleAddToCart}
-        name='addToCart'
-        value={product.product_id}
-        variant='contained'
-        customStyles={styles}
-        disabled={isLoading}
-        />
-      : <ActionButton
-        text={buttonText}
-        customStyles={styles}
-        onClick={() => history.push('/contact-us')}
-        />
+    <>
+      <SectionSpacer dark spaceBelow />
+      {
+        shopView || <h4>Sorry - something went wrong.  Please go back to the homepage and try again. </h4>
+      }
+      <SectionSpacer spaceBelow />
+    </>
   );
 };
 
-AddToCart.propTypes = {
-  product: PropTypes.object.isRequired,
-  currentUser: PropTypes.object.isRequired,
-  updateCurrentUser: PropTypes.func.isRequired,
-  addingToCart: PropTypes.object.isRequired,
-  updateAddingToCart: PropTypes.func.isRequired,
-  activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.array
-};
-
-export default AddToCart;
+export default Shop;

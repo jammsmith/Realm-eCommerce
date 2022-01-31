@@ -43,9 +43,13 @@ const SubCategory = (props) => {
 };
 
 SubCategory.propTypes = {
-  handleAddToCart: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.array,
-  addingToCart: PropTypes.object.isRequired
+  currentUser: PropTypes.object.isRequired,
+  updateCurrentUser: PropTypes.func.isRequired,
+  addingToCart: PropTypes.object.isRequired,
+  updateAddingToCart: PropTypes.func.isRequired,
+  activeOrder: PropTypes.object,
+  updateActiveOrder: PropTypes.func.isRequired,
+  itemsInCart: PropTypes.array
 };
 
 export default SubCategory;
