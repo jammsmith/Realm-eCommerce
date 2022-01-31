@@ -8,8 +8,6 @@ import client, { RealmAppProvider } from './realmApolloClient.js';
 // Main views
 import Home from './Views/Client/Home/Home.js';
 import Shop from './Views/Client/Shop/Shop.js';
-import Cart from './Views/Client/Shop/Cart/Cart.js';
-import Checkout from './Views/Client/Shop/Checkout/Checkout.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
 import Error404 from './Views/Error/Error404.js';
@@ -19,9 +17,6 @@ import Navbar from './Components/Navbar/Navbar';
 import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
-
-import { loadStripe } from '@stripe/stripe-js';
-const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZheUc4MkBtGeMj9ZrqNd3mQebbi9nnLcGkLjqDaCMFwtT5KyjuBmN00M3I7Ekl1');
 
 const App = () => {
   // Small screen menu toggle -->
@@ -46,12 +41,6 @@ const App = () => {
             <Route exact path='/about-us' component={AboutUs} />
             <Route exact path='/contact-us' component={ContactUs} />
             <Route path='/shop' component={Shop} />
-            <Route exact path='/cart' component={Cart} />
-            <Route
-              exact
-              path='/checkout'
-              render={() => <Checkout stripePromise={stripePromise} />}
-            />
             <Route path='/' component={Error404} />
           </Switch>
           <Footer />

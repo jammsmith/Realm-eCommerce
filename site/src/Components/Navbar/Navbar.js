@@ -48,7 +48,7 @@ const Navbar = ({ handleToggleClick }) => {
         <NavbarLinksContainer>
           <NavbarLinkList>
             <NavbarCart>
-              <NavbarLink className='link' to='/cart'>
+              <NavbarLink className='link' to='/shop/cart'>
                 Cart <IoCartOutline />
               </NavbarLink>
             </NavbarCart>

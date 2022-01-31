@@ -26,7 +26,7 @@ const Checkout = ({ stripePromise }) => {
       });
 
       // re-direct back to checkout removes client secret etc from url
-      history.push('/checkout');
+      history.push('/shop/checkout');
     }
   }, [history]);
   return (

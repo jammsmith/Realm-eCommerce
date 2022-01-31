@@ -7,7 +7,6 @@ import uniqueString from 'unique-string';
 import { CheckoutFormsWrapper } from './StyledComponents.js';
 
 // Components
-import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import LoadingView from '../../../../Components/LoadingView.js';
 import PaymentForm from './PaymentForm.js';
 import DeliveryForm from './DeliveryForm.js';
@@ -33,10 +32,6 @@ const CheckoutForms = ({ stripePromise }) => {
     email: '',
     phone: null
   });
-
-  if (!activeOrder) {
-    console.log('no');
-  }
 
   useEffect(() => {
     if (activeOrder) {
@@ -109,23 +104,19 @@ const CheckoutForms = ({ stripePromise }) => {
   }, [activeOrder, app.currentUser, updateOrder]);
 
   return (
-    <>
-      <SectionSpacer dark spaceBelow />
-      {
-        paymentIntent
-          ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, paymentElementStyles }}>
-            <CheckoutFormsWrapper>
-              <Cart isMinimised />
-              <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
-              <PaymentForm deliveryDetails={deliveryDetails} />
-            </CheckoutFormsWrapper>
-            </Elements>
-          : <LoadingView
-            redirectTo='cart'
-            initialMessage='Preparing your order for checkout'
-            />
-      }
-    </>
+    paymentIntent
+      ? <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.client_secret, paymentElementStyles }}>
+        <CheckoutFormsWrapper>
+          <Cart isMinimised />
+          <DeliveryForm deliveryDetailsState={[deliveryDetails, setDeliveryDetails]} />
+          <PaymentForm deliveryDetails={deliveryDetails} />
+        </CheckoutFormsWrapper>
+        </Elements>
+      : <LoadingView
+        redirectPath='/shop/cart'
+        redirectName='cart'
+        initialMessage='Preparing your order for checkout'
+        />
   );
 };
 

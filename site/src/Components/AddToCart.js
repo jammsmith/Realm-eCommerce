@@ -167,7 +167,7 @@ const AddToCart = ({
     product.numInStock > 0
       ? <ActionButton
         text={isLoading ? <ProgressSpinner colour='light' size='1.5rem' /> : buttonText}
-        onClick={productInCart ? () => history.push('/cart') : handleAddToCart}
+        onClick={productInCart ? () => history.push('/shop/cart') : handleAddToCart}
         name='addToCart'
         value={product.product_id}
         variant='contained'
