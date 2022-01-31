@@ -1,16 +1,12 @@
 [
     {
-        "name": "createPaymentIntent",
-        "private": false
-    },
-    {
-        "name": "example",
-        "private": false
-    },
-    {
         "name": "incomingStripeEvents",
         "private": false,
         "run_as_system": true
+    },
+    {
+        "name": "resetPassword",
+        "private": false
     },
     {
         "name": "retrievePaymentIntent",
@@ -22,7 +18,11 @@
         "private": false
     },
     {
-        "name": "resetPassword",
+        "name": "createPaymentIntent",
+        "private": false
+    },
+    {
+        "name": "example",
         "private": false
     }
 ]

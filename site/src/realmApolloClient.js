@@ -31,22 +31,31 @@ export default new ApolloClient({
 
 // Setup Realm App context
 export const RealmAppContext = createContext();
+
 export const RealmAppProvider = ({ children }) => {
   const [realmApp] = useState(app);
   const [currentUser, setCurrentUser] = useState(app.currentUser);
 
-  async function logIn (credentials) {
-    await app.logIn(credentials);
-    setCurrentUser(app.currentUser);
-  }
-  async function logOut () {
+  const logIn = async (email, password) => {
+    const credentials = Realm.Credentials.emailPassword(email, password);
+    console.log('credentials', credentials);
+    try {
+      const user = await app.logIn(credentials);
+      console.log('Successfully logged in!', user.id);
+      setCurrentUser(app.currentUser);
+    } catch (err) {
+      console.error('Failed to log in', err.message);
+    }
+  };
+
+  const logOut = async () => {
     if (app.currentUser) {
       await app.currentUser.logout();
     }
     // If another user was logged in too, they're now the current user.
     // Otherwise, app.currentUser is null.
     setCurrentUser(app.currentUser);
-  }
+  };
 
   const wrapped = { ...realmApp, currentUser, logIn, logOut };
 

@@ -19,22 +19,27 @@ const AccountDialog = ({ dialogState }) => {
 
   useEffect(() => setDialogOpen(true), [dialogState, setDialogOpen]);
 
+  // Event handlers
   const handleCloseDialog = () => setDialogOpen(false);
+
   const handleFormChange = (e) => {
     setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  const handleRegisterAccount = async () => {
+
+  const handleRegister = async () => {
     const { email, password } = formFields;
     await app.emailPasswordAuth.registerUser(email, password);
   };
-  const handleLoginEmailPassword = async () => {
 
+  const handleLogin = async () => {
+    const { email, password } = formFields;
+    await app.logIn(email, password);
   };
 
   return (
     <div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Register an account</DialogTitle>
+        <DialogTitle>Register/login</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -61,7 +66,8 @@ const AccountDialog = ({ dialogState }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Close</Button>
-          <Button onClick={handleRegisterAccount}>Register</Button>
+          <Button onClick={handleLogin}>Login</Button>
+          <Button onClick={handleRegister}>Register</Button>
         </DialogActions>
       </Dialog>
     </div>

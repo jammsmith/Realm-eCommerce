@@ -1,3 +1,4 @@
+// This function is the endpoint's request handler.
 exports = function ({ query }, response) {
   // Query params, e.g. '?arg1=hello&arg2=world' => {arg1: "hello", arg2: "world"}
   const { arg1, arg2 } = query;
