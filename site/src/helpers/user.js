@@ -45,11 +45,3 @@ export const registerEmailPassword = async (app, email, password) => {
   }
   return { errorMessage };
 };
-
-export const linkEmailPasswordToAnonAccount = async (user, email, password) => {
-  const emailPasswordUserCredentials = Credentials.emailPassword(
-    email,
-    password
-  );
-  await user.linkCredentials(emailPasswordUserCredentials);
-};

@@ -11,12 +11,9 @@ import {
 } from '@mui/material';
 import uniqueString from 'unique-string';
 
-// Components
 import ActionButton from '../../Components/ActionButton.js';
-
-// Hook / helpers etc
 import { RealmAppContext } from '../../realmApolloClient.js';
-import { registerEmailPassword } from '../../helpers/auth.js';
+import { registerEmailPassword } from '../../helpers/user.js';
 import mutations from '../../graphql/mutations.js';
 import useDDMutation from '../../hooks/useDDMutation.js';
 import { USER_DETAILED } from '../../graphql/queries.js';
