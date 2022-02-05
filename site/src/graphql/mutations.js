@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import {
   USER_DETAILS,
-  PRODUCT_DETAILS,
   ORDER_DETAILS,
   ORDER_ITEM_DETAILS,
+  PRODUCT_DETAILS,
   DELIVERY_DETAILS
 } from './fragments.js';
 
@@ -11,25 +11,41 @@ const mutations = {
   // AUTHORS
   AddUser: gql`
     ${USER_DETAILS}
+    ${ORDER_DETAILS}
+    ${ORDER_ITEM_DETAILS}
+    ${PRODUCT_DETAILS}
     mutation(
-      $_id: ObjectId!
-      $user_id: String!
+      $_id: ObjectId!,
+      $user_id: String!,
       $firstName: String,
       $lastName: String,
       $email: String,
       $password: String,
-      $type: String!
+      $type: String!,
+      $orders: [String]
     ) {
       insertOneUser(data: {
-        _id: $_id
+        _id: $_id,
         user_id: $user_id,
         firstName: $firstName,
         lastName: $lastName,
         email: $email,
         password: $password,
-        type: $type
+        type: $type,
+        orders: { 
+          link: $orders
+        }
       } ) {
         ...UserDetails
+        orders {
+          ...OrderDetails
+          orderItems {
+            ...OrderItemDetails 
+            product {
+              ...ProductDetails
+            }
+          }
+        }
       }
     }
   `,

@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-// Apollo / Realm
-import { ApolloProvider } from '@apollo/client';
-import client, { RealmAppProvider } from './realmApolloClient.js';
-
 // Main views
 import Home from './Views/Client/Home/Home.js';
 import Shop from './Views/Client/Shop/Shop.js';
@@ -19,13 +15,17 @@ import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
 
+// Apollo / Realm
+import { ApolloProvider } from '@apollo/client';
+import client, { RealmAppProvider } from './realmApolloClient.js';
+
 const App = () => {
   // Small screen menu toggle -->
   const [menuInView, setMenuInView] = useState(false);
   const handleToggle = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
 
-  // Login / register dialog
+  // Login / register dialog -->
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleOpenAccountDialog = () => setDialogOpen(true);
   const handleCloseAccountDialog = () => setDialogOpen(false);

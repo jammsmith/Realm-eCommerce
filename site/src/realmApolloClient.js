@@ -38,11 +38,14 @@ export const RealmAppProvider = ({ children }) => {
 
   const logIn = async (email, password) => {
     const credentials = Realm.Credentials.emailPassword(email, password);
-    console.log('credentials', credentials);
     try {
+      if (app.currentUser) {
+        await app.currentUser.logOut();
+      }
       const user = await app.logIn(credentials);
-      console.log('Successfully logged in!', user.id);
       setCurrentUser(app.currentUser);
+      console.log('logged in! user.id:', user.id);
+      return user.id;
     } catch (err) {
       console.error('Failed to log in', err.message);
     }
@@ -50,14 +53,14 @@ export const RealmAppProvider = ({ children }) => {
 
   const logOut = async () => {
     if (app.currentUser) {
-      await app.currentUser.logout();
+      await app.currentUser.logOut();
     }
     // If another user was logged in too, they're now the current user.
     // Otherwise, app.currentUser is null.
     setCurrentUser(app.currentUser);
   };
 
-  const wrapped = { ...realmApp, currentUser, logIn, logOut };
+  const wrapped = { ...realmApp, currentUser, setCurrentUser, logIn, logOut };
 
   return (
     <RealmAppContext.Provider value={wrapped}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 // Views
@@ -13,16 +13,16 @@ import Checkout from './Checkout/Checkout.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 
 // Other
-import useCurrentUser from '../../../hooks/useCurrentUser.js';
 import useActiveOrder from '../../../hooks/useActiveOrder.js';
+import { RealmAppContext } from '../../../realmApolloClient.js';
 
 // Setup stripe
 import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZheUc4MkBtGeMj9ZrqNd3mQebbi9nnLcGkLjqDaCMFwtT5KyjuBmN00M3I7Ekl1');
 
 const Shop = () => {
-  const [currentUser, setCurrentUser] = useCurrentUser();
-  const [activeOrder, setActiveOrder] = useActiveOrder();
+  const app = useContext(RealmAppContext);
+  const [activeOrder, setActiveOrder] = useActiveOrder(app.currentUser);
   const [itemsInCart, setItemsInCart] = useState();
   const [addingToCart, setAddingToCart] = useState({
     isLoading: false,
@@ -38,7 +38,7 @@ const Shop = () => {
 
   // Handlers
   const updateCurrentUser = (user) => {
-    setCurrentUser(user);
+    app.setCurrentUser(user);
   };
   const updateActiveOrder = (order) => {
     setActiveOrder(order);
@@ -57,8 +57,8 @@ const Shop = () => {
     itemsInCart,
     addingToCart,
     updateAddingToCart,
-    currentUser,
-    updateCurrentUser
+    updateCurrentUser,
+    currentUser: app.currentUser
   };
 
   return (

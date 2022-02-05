@@ -20,6 +20,15 @@ export const SINGLE_USER = gql`
   }
 `;
 
+export const SINGLE_USER_BY_EMAIL = gql`
+  ${USER_DETAILS}
+  query($email: String!) {
+    user(query: { email: $email }) {
+      ...UserDetails
+    }
+  }
+`;
+
 export const USER_DETAILED = gql`
   ${USER_DETAILS}
   ${ORDER_DETAILS}

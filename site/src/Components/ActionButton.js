@@ -6,13 +6,16 @@ import Button from '@material-ui/core/Button';
 
 // Fonts
 import fonts from '../styles/fonts.js';
+import colours from '../styles/colours.js';
 const { standard } = fonts;
+const { dark } = colours;
 
 //
 const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, value, disabled, fullWidth }) => {
   const basicStyles = {
     fontFamily: standard,
-    width: fullWidth && '100%'
+    width: fullWidth && '100%',
+    color: dark
   };
 
   if (customStyles) {

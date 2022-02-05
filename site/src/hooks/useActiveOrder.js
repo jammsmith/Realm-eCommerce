@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { getCartSubTotal } from '../helpers/cart.js';
-import useCurrentUser from './useCurrentUser.js';
 
-const useActiveOrder = () => {
+const useActiveOrder = (user) => {
   const [activeOrder, setActiveOrder] = useState();
-  const [currentUser] = useCurrentUser();
 
   useEffect(() => {
-    if (currentUser && currentUser.orders && currentUser.orders.length) {
-      const order = currentUser.orders.find(order => order.orderStatus === 'pendingInCart');
+    if (user && user.orders && user.orders.length) {
+      const order = user.orders.find(order => order.orderStatus === 'pendingInCart');
 
       let subTotal;
       if (order && order.orderItems && order.orderItems.length) {
@@ -18,7 +16,7 @@ const useActiveOrder = () => {
         setActiveOrder(order);
       }
     }
-  }, [currentUser]);
+  }, [user]);
 
   return [activeOrder, setActiveOrder];
 };
