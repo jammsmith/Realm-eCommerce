@@ -15,8 +15,9 @@ const Summary = ({ urlParams }) => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    const { realmUser } = app.currentUser;
     const retrievePaymentIntent = async () => {
-      const intent = await app.currentUser.functions.retrievePaymentIntent(urlParams.paymentIntentId);
+      const intent = await realmUser.functions.retrievePaymentIntent(urlParams.paymentIntentId);
       setPaymentIntent(intent);
     };
     retrievePaymentIntent();

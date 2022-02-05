@@ -30,21 +30,27 @@ const AccountDialog = ({ open, handleClose }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [addUser] = useDDMutation(mutations.AddUser);
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
-  const [getUserFromDb, { data: userQueryData }] = useLazyQuery(USER_DETAILED);
+  const [getUserFromDb, { loading, error, data }] = useLazyQuery(USER_DETAILED);
 
-  useEffect(() => console.log('app.currentUser', app.currentUser), [app.currentUser]);
+  useEffect(() => {
+    if (error) {
+      throw new Error('Failed to find user in database');
+    }
+    if (data && data.user) {
+      app.setCurrentUser({
+        realmUser: app.currentUser,
+        dbUser: data.user
+      });
+      handleClose();
+    }
+  }, [loading, error, data]);
 
   // Event handlers
   const handleFormChange = (e) => {
     setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // TODO:
-  // 1. fix order population in new user object
-  //      a) get orders array in new user object to update properly
-  //      b) update user_id in order to new user_id
-  // 2. delete old realm guest user
-  // 3. fix duplicate key error in addToCart
+  // TODO: delete old realm guest user once registered with a new permanent account
   const handleRegister = async () => {
     try {
       const { email, password } = formFields;
@@ -76,10 +82,12 @@ const AccountDialog = ({ open, handleClose }) => {
         }
         const { data } = await addUser({ variables });
 
-        // set the current user to be the newly created user
-        app.setCurrentUser(data.insertOneUser);
+        app.setCurrentUser({
+          realmUser: app.currentUser,
+          dbUser: data.insertOneUser
+        });
 
-        // delete the old guest user from db
+        // delete the old guest user from db & anon user from realm
         await deleteUser({ variables: { id: guestUser._id } });
 
         // close the dialog
@@ -93,15 +101,10 @@ const AccountDialog = ({ open, handleClose }) => {
   };
 
   const handleLogin = async () => {
-    const { email, password } = formFields;
-    const userId = await app.logIn(email, password);
+    const userId = await app.logIn(formFields.email, formFields.password);
 
-    // look for user id in db.  if found set the current user, if not leave as is
+    // look for user id in db.  This gets handled in useEffect which is fired on loading/error/data
     getUserFromDb({ variables: { id: userId } });
-    if (userQueryData && userQueryData.user) {
-      app.setCurrentUser(userQueryData.user);
-    }
-    handleClose();
   };
 
   return (

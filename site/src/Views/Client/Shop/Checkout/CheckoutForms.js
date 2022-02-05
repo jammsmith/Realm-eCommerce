@@ -84,9 +84,10 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
 
   // Get a new payment intent if one does not already exist, or retrieve the existing one if it does -->
   useEffect(() => {
+    const { realmUser } = app.currentUser;
     if (activeOrder && !activeOrder.paymentIntentId) {
       const createPaymentIntent = async () => {
-        const intent = await app.currentUser.functions.createPaymentIntent(activeOrder);
+        const intent = await realmUser.functions.createPaymentIntent(activeOrder);
         const { data } = await updateOrder({
           variables: {
             id: activeOrder._id,
@@ -99,7 +100,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
       createPaymentIntent();
     } else if (activeOrder && activeOrder.paymentIntentId) {
       const retrievePaymentIntent = async () => {
-        const intent = await app.currentUser.functions.retrievePaymentIntent(activeOrder.paymentIntentId);
+        const intent = await realmUser.functions.retrievePaymentIntent(activeOrder.paymentIntentId);
         setPaymentIntent(intent);
       };
       retrievePaymentIntent();
