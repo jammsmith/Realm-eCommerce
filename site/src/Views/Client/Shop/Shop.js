@@ -22,7 +22,8 @@ const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZh
 
 const Shop = () => {
   const app = useContext(RealmAppContext);
-  const [activeOrder, setActiveOrder] = useActiveOrder(app.currentUser);
+  const { realmAppUser, dbUser } = app.currentUser;
+  const [activeOrder, setActiveOrder] = useActiveOrder(dbUser);
   const [itemsInCart, setItemsInCart] = useState();
   const [addingToCart, setAddingToCart] = useState({
     isLoading: false,
@@ -38,7 +39,7 @@ const Shop = () => {
 
   // Handlers
   const updateCurrentUser = (user) => {
-    app.setCurrentUser(user);
+    app.setCurrentUser({ realmAppUser, dbUser: user });
   };
   const updateActiveOrder = (order) => {
     setActiveOrder(order);

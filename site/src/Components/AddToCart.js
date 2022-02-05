@@ -78,10 +78,12 @@ const AddToCart = ({
   const [updateOrderItemsInOrder] = useDDMutation(mutations.UpdateOrderItemsInOrder);
   const [updateUserOrders] = useDDMutation(mutations.UpdateUserOrders);
 
+  const { realmAppUser, dbUser } = currentUser;
+
   const handleAddToCart = async (event) => {
     const productId = event.currentTarget.value;
-    // -- Current user with an active order -- //
-    if (currentUser && currentUser.user_id && activeOrder) {
+    // -- Logged in user with an active order -- //
+    if (dbUser && dbUser.user_id && activeOrder) {
       try {
         updateAddingToCart(true, productId);
         const newOrderItemId = `orderItem-${await uniqueString()}`;
@@ -107,8 +109,8 @@ const AddToCart = ({
       }
     }
 
-    // -- Current user with no active order -- //
-    if (currentUser && currentUser.user_id && !activeOrder) {
+    // -- Logged in user with no active order -- //
+    if (dbUser && dbUser.user_id && !activeOrder) {
       try {
         updateAddingToCart(true, productId);
         const newOrderId = `order-${await uniqueString()}`;
@@ -116,7 +118,7 @@ const AddToCart = ({
         const { data } = await createOrderForExistingCustomer({
           variables: {
             order_id: newOrderId,
-            user_id: currentUser.user_id,
+            user_id: dbUser.user_id,
             orderItem_id: newOrderItemId,
             product_id: productId,
             dateCreated: new Date(Date.now())
@@ -126,7 +128,7 @@ const AddToCart = ({
           data.insertOneOrder.customer.orders.map(order => order.order_id);
         await updateUserOrders({
           variables: {
-            user_id: currentUser.user_id,
+            user_id: dbUser.user_id,
             orders: [...existingOrderIds, newOrderId]
           }
         });
@@ -137,8 +139,8 @@ const AddToCart = ({
       }
     }
 
-    // -- No current logged in user -- //
-    if (currentUser && !currentUser.user_id) {
+    // -- Only an anonymous Realm user -- //
+    if (realmAppUser && !dbUser.user_id) {
       try {
         updateAddingToCart(true, productId);
         const newOrderId = `order-${await uniqueString()}`;
@@ -147,7 +149,7 @@ const AddToCart = ({
         const { data } = await createGuestOrder({
           variables: {
             order_id: newOrderId,
-            user_ObjectId: currentUser.id,
+            user_ObjectId: realmAppUser.id,
             user_id: newUserId,
             orderItem_id: newOrderItemId,
             product_id: productId,
