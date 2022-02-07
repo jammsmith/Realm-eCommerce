@@ -40,7 +40,7 @@ const AccountDialog = ({ open, handleClose }) => {
       });
       handleClose();
     }
-  }, [loading, error, data]);
+  }, [app, handleClose, loading, error, data]);
 
   // Event handlers
   const handleFormChange = (e) => {

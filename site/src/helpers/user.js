@@ -1,4 +1,4 @@
-import { MongoDBRealmError, Credentials } from 'realm-web';
+import { MongoDBRealmError } from 'realm-web';
 
 export const registerEmailPassword = async (app, email, password) => {
   const handleAuthenticationError = (err) => {

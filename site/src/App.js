@@ -25,13 +25,13 @@ const App = () => {
     variables: { id: app.currentUser.id }
   });
 
-  const getUser = () => {
+  const getUser = useCallback(() => {
     if (!loading && !error && !data) getDbUser();
     if (error) throw new Error('Failed to get user from database');
     if (data && data.user) {
       return data.user;
     }
-  };
+  }, [loading, error, data, getDbUser]);
 
   useEffect(() => {
     const { realmUser, dbUser } = app.currentUser;
@@ -43,7 +43,7 @@ const App = () => {
         app.setCurrentUser(user);
       }
     }
-  }, [app.currentUser, getUser, loading, error, data]);
+  }, [app, getUser, loading, error, data]);
 
   // Small screen menu toggle -->
   const [menuInView, setMenuInView] = useState(false);
