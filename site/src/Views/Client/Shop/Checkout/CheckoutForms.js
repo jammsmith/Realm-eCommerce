@@ -139,8 +139,8 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
 
 CheckoutForms.propTypes = {
   stripePromise: PropTypes.object.isRequired,
-  activeOrder: PropTypes.object.isRequired,
-  updateActiveOrder: PropTypes.func.isRequired
+  activeOrder: PropTypes.object,
+  updateActiveOrder: PropTypes.func
 };
 
 export default CheckoutForms;

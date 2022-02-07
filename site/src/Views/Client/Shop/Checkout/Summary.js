@@ -20,7 +20,9 @@ const Summary = ({ urlParams }) => {
       const intent = await realmUser.functions.retrievePaymentIntent(urlParams.paymentIntentId);
       setPaymentIntent(intent);
     };
-    retrievePaymentIntent();
+    if (realmUser) {
+      retrievePaymentIntent();
+    }
   }, [urlParams, app.currentUser]);
 
   useEffect(() => {

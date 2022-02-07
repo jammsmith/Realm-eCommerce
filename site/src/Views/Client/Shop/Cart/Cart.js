@@ -82,7 +82,7 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
 
 Cart.propTypes = {
   activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired,
+  updateActiveOrder: PropTypes.func,
   altOrder: PropTypes.object,
   isMinimised: PropTypes.bool
 };

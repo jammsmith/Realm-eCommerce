@@ -38,8 +38,8 @@ const Checkout = (props) => {
 
 Checkout.propTypes = {
   stripePromise: PropTypes.object.isRequired,
-  activeOrder: PropTypes.object.isRequired,
-  updateActiveOrder: PropTypes.func.isRequired
+  activeOrder: PropTypes.object,
+  updateActiveOrder: PropTypes.func
 };
 
 export default Checkout;

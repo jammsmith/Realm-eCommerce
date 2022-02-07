@@ -135,7 +135,7 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised }) => {
 
 CartProduct.propTypes = {
   order: PropTypes.object.isRequired,
-  updateActiveOrder: PropTypes.func.isRequired,
+  updateActiveOrder: PropTypes.func,
   orderItem: PropTypes.object.isRequired,
   isMinimised: PropTypes.bool
 };
