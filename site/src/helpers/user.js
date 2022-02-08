@@ -45,3 +45,18 @@ export const registerEmailPassword = async (app, email, password) => {
   }
   return { errorMessage };
 };
+
+export const isLoggedIn = (user) => {
+  if (!user) return;
+
+  if (user.realmUser) {
+    user = user.realmUser;
+  }
+
+  if (user.providerType === 'local-userpass') {
+    return true;
+  } else if (
+    user.providerType === 'anon-user') {
+    return false;
+  }
+};

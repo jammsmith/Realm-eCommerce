@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 
-const TextInput = ({ name, value, label, helperText, required, handleChange }) => {
+const TextInput = ({ name, value, label, helperText, required, handleChange, autoFocus, type }) => {
   return (
     <TextField
       id={name}
@@ -16,6 +16,8 @@ const TextInput = ({ name, value, label, helperText, required, handleChange }) =
       variant='filled'
       onChange={handleChange}
       fullWidth
+      autoFocus={autoFocus}
+      type={type}
       sx={{
         backgroundColor: 'transparent',
         background: 'transparent',
@@ -31,7 +33,9 @@ TextInput.propTypes = {
   label: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   helperText: PropTypes.string,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  autoFocus: PropTypes.bool,
+  type: PropTypes.string
 };
 
 export default TextInput;

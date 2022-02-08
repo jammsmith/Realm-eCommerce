@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Menu, MenuItem, MenuList } from '@mui/material';
+import { useHistory } from 'react-router-dom';
 
-import { LoginIcon, NavbarLink } from './NavbarElements';
+import { LoginIcon } from './NavbarElements';
 
-const MyAccountMenu = ({ handleOpenLoginDialog, currentUser, handleLogout }) => {
+const MyAccountMenu = ({ currentUser, handleLogout }) => {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -13,22 +16,14 @@ const MyAccountMenu = ({ handleOpenLoginDialog, currentUser, handleLogout }) => 
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  const handleMenuSelection = (selection) => {
-    switch (selection) {
-      case 'my-account':
-        handleCloseMenu();
-        break;
-      case 'login':
-      case 'register':
-        handleOpenLoginDialog();
-        handleCloseMenu();
-        break;
-      case ('logout'):
-        handleLogout();
-        handleCloseMenu();
-        break;
-      default:
+  const handleMenuSeletion = async (selection) => {
+    if (selection === 'logout') {
+      handleLogout();
+      history.push('/');
+    } else {
+      history.push(`/${selection}`);
     }
+    handleCloseMenu();
   };
 
   return (
@@ -56,19 +51,22 @@ const MyAccountMenu = ({ handleOpenLoginDialog, currentUser, handleLogout }) => 
             ? <MenuList>
               <MenuItem>{currentUser.dbUser.email}</MenuItem>
               <MenuItem divider />
-              <NavbarLink to='/my-account'>
-                <MenuItem onClick={() => handleMenuSelection('my-account')}>My Account</MenuItem>
-              </NavbarLink>
-              <MenuItem onClick={() => handleMenuSelection('logout')}>Logout</MenuItem>
+              <MenuItem onClick={() => handleMenuSeletion('my-account')}>My Account</MenuItem>
+              <MenuItem onClick={() => handleMenuSeletion('logout')}>Logout</MenuItem>
               </MenuList>
             : <MenuList>
-              <MenuItem onClick={() => handleMenuSelection('login')}>Login</MenuItem>
-              <MenuItem onClick={() => handleMenuSelection('register')}>Register</MenuItem>
+              <MenuItem onClick={() => handleMenuSeletion('login')}>Login</MenuItem>
+              <MenuItem onClick={() => handleMenuSeletion('login')}>Register</MenuItem>
               </MenuList>
         }
       </Menu>
     </div>
   );
+};
+
+MyAccountMenu.propTypes = {
+  currentUser: PropTypes.object.isRequired,
+  handleLogout: PropTypes.func.isRequired
 };
 
 export default MyAccountMenu;

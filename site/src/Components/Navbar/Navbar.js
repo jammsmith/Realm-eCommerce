@@ -14,11 +14,10 @@ import {
   NavbarLinkList,
   NavbarLinkItem,
   NavbarLink,
-  NavbarToggleIcon,
-  LoginIcon
+  NavbarToggleIcon
 } from './NavbarElements';
 
-const Navbar = ({ handleToggle, handleOpenLoginDialog, currentUser, handleLogout }) => {
+const Navbar = ({ handleToggle, currentUser, handleLogout }) => {
   return (
     <NavbarContainer>
       <NavbarNavigation>
@@ -55,7 +54,6 @@ const Navbar = ({ handleToggle, handleOpenLoginDialog, currentUser, handleLogout
               </NavbarLink>
             </NavbarCart>
             <MyAccountMenu
-              handleOpenLoginDialog={handleOpenLoginDialog}
               currentUser={currentUser}
               handleLogout={handleLogout}
             />

@@ -16,7 +16,6 @@ import Navbar from './Components/Navbar/Navbar';
 import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
-import LoginDialog from './Components/LoginDialog/LoginDialog.js';
 import PrivateRoute from './Components/PrivateRoute.js';
 import { RealmAppContext } from './realmApolloClient.js';
 import { USER_DETAILED } from './graphql/queries.js';
@@ -24,21 +23,19 @@ import { USER_DETAILED } from './graphql/queries.js';
 const App = () => {
   // Make sure app.currentUser is an object that contains both realmAppUser & dbUser
   const app = useContext(RealmAppContext);
-  const [getDbUser, { loading, error, data }] = useLazyQuery(USER_DETAILED, {
-    variables: { id: app.currentUser?.id }
-  });
-
-  useEffect(() => {
-    console.log('app.currentUser', app.currentUser);
-  }, [app.currentUser]);
+  const [getDbUser, { loading, error, data }] = useLazyQuery(USER_DETAILED);
 
   const getUser = useCallback(() => {
-    if (!loading && !error && !data) getDbUser();
-    if (error) throw new Error('Failed to get user from database');
+    if (!loading && !error && !data) {
+      getDbUser({
+        variables: { id: app.currentUser.id }
+      });
+    }
+    if (error) throw new Error('Failed to get user from database', error);
     if (data && data.user) {
       return data.user;
     }
-  }, [loading, error, data, getDbUser]);
+  }, [loading, error, data, getDbUser, app.currentUser.id]);
 
   useEffect(() => {
     if (app.currentUser) {
@@ -59,16 +56,10 @@ const App = () => {
   const handleToggle = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
 
-  // Login / register dialog -->
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const handleOpenLoginDialog = () => setDialogOpen(true);
-  const handleCloseLoginDialog = () => setDialogOpen(false);
-
   return (
     <Router>
       <Navbar
         handleToggle={handleToggle}
-        handleOpenLoginDialog={handleOpenLoginDialog}
         handleLogout={app.logOut}
         currentUser={app.currentUser}
       />
@@ -82,13 +73,6 @@ const App = () => {
             <BackgroundShadow handleBackgroundClick={closeMenu} />
           </>
       }
-      {
-        dialogOpen &&
-          <LoginDialog
-            open={dialogOpen}
-            handleClose={handleCloseLoginDialog}
-          />
-      }
       <Switch>
         <Route exact path='/' component={Home} />
         <Route exact path='/about-us' component={AboutUs} />
@@ -98,7 +82,6 @@ const App = () => {
           exact
           path='/my-account'
           component={MyAccount}
-          handleOpenLoginDialog={handleOpenLoginDialog}
         />
         <Route path='/shop' component={Shop} />
         <Route path='/' component={Error404} />
