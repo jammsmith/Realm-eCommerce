@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -19,33 +19,29 @@ const LoadingView = ({ timeout, redirectUrl, redirectName, initialMessage }) => 
   const [message, setMessage] = useState(initialMessage || 'Page Loading');
   const waitTime = timeout || 6000;
 
-  const retry = useCallback(() => {
-    setTimeout(() => setWaitPhase(waitPhase + 1), waitTime);
-  }, [waitPhase, waitTime]);
+  const retryTimer = setInterval(() => setWaitPhase(waitPhase + 1), waitTime);
+  const redirectTimer = useRef();
 
-  const redirect = useCallback(() => {
-    setTimeout(() => history.push(redirectUrl), 1000);
-  }, [redirectUrl, history]);
+  const handleLoading = useCallback(() => {
+    waitPhase === 1 &&
+    setMessage('It\'s taking longer than usual, please be patient');
+
+    waitPhase === 2 &&
+    setMessage(`Redirecting to ${redirectName}`);
+    redirectTimer.current = setTimeout(() => history.push(redirectUrl), 1000);
+  }, [waitPhase, redirectName, redirectTimer, redirectUrl, history]);
+
+  const clearTimers = useCallback(() => {
+    clearInterval(retryTimer);
+    clearTimeout(redirectTimer.current);
+  }, [retryTimer, redirectTimer]);
 
   useEffect(() => {
-    switch (waitPhase) {
-      case 1:
-        setMessage('It\'s taking longer than usual, please be patient');
-        retry();
-        break;
-      case 2:
-        setMessage(`Redirecting back to ${redirectName}`);
-        redirect();
-        break;
-      default: retry();
-    }
-
-    // Cancel timeouts
+    handleLoading();
     return () => {
-      clearTimeout(retry);
-      clearTimeout(redirect);
+      clearTimers();
     };
-  }, [waitPhase, redirectName, retry, redirect]);
+  }, [handleLoading, clearTimers]);
 
   return (
     <Skeleton>

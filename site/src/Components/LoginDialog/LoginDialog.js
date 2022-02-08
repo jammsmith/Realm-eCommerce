@@ -18,7 +18,7 @@ import mutations from '../../graphql/mutations.js';
 import useDDMutation from '../../hooks/useDDMutation.js';
 import { USER_DETAILED } from '../../graphql/queries.js';
 
-const AccountDialog = ({ open, handleClose }) => {
+const LoginDialog = ({ open, handleClose }) => {
   const app = useContext(RealmAppContext);
   const [formFields, setFormFields] = useState({
     email: '',
@@ -157,9 +157,9 @@ const AccountDialog = ({ open, handleClose }) => {
   );
 };
 
-AccountDialog.propTypes = {
+LoginDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired
 };
 
-export default AccountDialog;
+export default LoginDialog;

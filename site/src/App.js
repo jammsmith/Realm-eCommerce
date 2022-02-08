@@ -7,7 +7,6 @@ import Home from './Views/Client/Home/Home.js';
 import Shop from './Views/Client/Shop/Shop.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
-import AccountDialog from './Views/Account/AccountDialog.js';
 import Error404 from './Views/Error/Error404.js';
 
 // Other
@@ -15,6 +14,7 @@ import Navbar from './Components/Navbar/Navbar';
 import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
+import LoginDialog from './Components/LoginDialog/LoginDialog.js';
 import { RealmAppContext } from './realmApolloClient.js';
 import { USER_DETAILED } from './graphql/queries.js';
 
@@ -52,14 +52,14 @@ const App = () => {
 
   // Login / register dialog -->
   const [dialogOpen, setDialogOpen] = useState(false);
-  const handleOpenAccountDialog = () => setDialogOpen(true);
-  const handleCloseAccountDialog = () => setDialogOpen(false);
+  const handleOpenLoginDialog = () => setDialogOpen(true);
+  const handleCloseLoginDialog = () => setDialogOpen(false);
 
   return (
     <Router>
       <Navbar
         handleToggle={handleToggle}
-        handleOpenAccountDialog={handleOpenAccountDialog}
+        handleOpenLoginDialog={handleOpenLoginDialog}
       />
       {
         menuInView &&
@@ -73,9 +73,9 @@ const App = () => {
       }
       {
         dialogOpen &&
-          <AccountDialog
+          <LoginDialog
             open={dialogOpen}
-            handleClose={handleCloseAccountDialog}
+            handleClose={handleCloseLoginDialog}
           />
       }
       <Switch>
