@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IoCartOutline } from 'react-icons/io5';
 
+import MyAccountMenu from './MyAccountMenu.js';
 import {
   NavbarContainer,
   NavbarNavigation,
@@ -17,7 +18,7 @@ import {
   LoginIcon
 } from './NavbarElements';
 
-const Navbar = ({ handleToggle, handleOpenLoginDialog }) => {
+const Navbar = ({ handleToggle, handleOpenLoginDialog, currentUser, handleLogout }) => {
   return (
     <NavbarContainer>
       <NavbarNavigation>
@@ -53,7 +54,11 @@ const Navbar = ({ handleToggle, handleOpenLoginDialog }) => {
                 Cart <IoCartOutline />
               </NavbarLink>
             </NavbarCart>
-            <LoginIcon size={25} onClick={handleOpenLoginDialog} />
+            <MyAccountMenu
+              handleOpenLoginDialog={handleOpenLoginDialog}
+              currentUser={currentUser}
+              handleLogout={handleLogout}
+            />
           </NavbarLinkList>
         </NavbarLinksContainer>
         <NavbarToggleIcon size={25} onClick={handleToggle} />
@@ -64,7 +69,8 @@ const Navbar = ({ handleToggle, handleOpenLoginDialog }) => {
 
 Navbar.propsTypes = {
   handleToggle: PropTypes.func.isRequired,
-  handleOpenLoginDialog: PropTypes.func.isRequired
+  handleOpenLoginDialog: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired
 };
 
 export default Navbar;

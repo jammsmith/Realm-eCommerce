@@ -44,20 +44,28 @@ export const RealmAppProvider = ({ children }) => {
       }
       const user = await app.logIn(credentials);
       setCurrentUser(app.currentUser);
-      console.log('logged in! user.id:', user.id);
       return user.id;
     } catch (err) {
-      console.error('Failed to log in', err.message);
+      console.error('Failed to log in.', err.message);
     }
   };
 
   const logOut = async () => {
-    if (app.currentUser) {
-      await app.currentUser.logOut();
+    try {
+      if (app.currentUser) {
+        await app.currentUser.logOut();
+
+        if (app.currentUser) {
+          // If another user was logged in too, they're now the current user.
+          setCurrentUser(app.currentUser);
+        } else {
+          // Otherwise, create a new anonymous user and log them in.
+          await app.logIn(Realm.Credentials.anonymous());
+        }
+      }
+    } catch (err) {
+      console.error('Failed to log user out.', err.message);
     }
-    // If another user was logged in too, they're now the current user.
-    // Otherwise, app.currentUser is null.
-    setCurrentUser(app.currentUser);
   };
 
   const wrapped = { ...realmApp, currentUser, setCurrentUser, logIn, logOut };

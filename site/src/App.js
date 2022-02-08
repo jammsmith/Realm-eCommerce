@@ -7,6 +7,8 @@ import Home from './Views/Client/Home/Home.js';
 import Shop from './Views/Client/Shop/Shop.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
+import MyAccount from './Views/Client/Account/MyAccount.js';
+import Login from './Views/Client/Account/Login.js';
 import Error404 from './Views/Error/Error404.js';
 
 // Other
@@ -15,6 +17,7 @@ import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
 import Footer from './Components/Footer/Footer.js';
 import LoginDialog from './Components/LoginDialog/LoginDialog.js';
+import PrivateRoute from './Components/PrivateRoute.js';
 import { RealmAppContext } from './realmApolloClient.js';
 import { USER_DETAILED } from './graphql/queries.js';
 
@@ -22,8 +25,12 @@ const App = () => {
   // Make sure app.currentUser is an object that contains both realmAppUser & dbUser
   const app = useContext(RealmAppContext);
   const [getDbUser, { loading, error, data }] = useLazyQuery(USER_DETAILED, {
-    variables: { id: app.currentUser.id }
+    variables: { id: app.currentUser?.id }
   });
+
+  useEffect(() => {
+    console.log('app.currentUser', app.currentUser);
+  }, [app.currentUser]);
 
   const getUser = useCallback(() => {
     if (!loading && !error && !data) getDbUser();
@@ -34,13 +41,15 @@ const App = () => {
   }, [loading, error, data, getDbUser]);
 
   useEffect(() => {
-    const { realmUser, dbUser } = app.currentUser;
-    if (!realmUser || !dbUser) {
-      const user = {};
-      if (!realmUser) user.realmUser = app.currentUser;
-      if (!dbUser) user.dbUser = getUser();
-      if (user.realmUser && user.dbUser && user !== app.currentUser) {
-        app.setCurrentUser(user);
+    if (app.currentUser) {
+      const { realmUser, dbUser } = app.currentUser;
+      if (!realmUser || !dbUser) {
+        const user = {};
+        if (!realmUser) user.realmUser = app.currentUser;
+        if (!dbUser) user.dbUser = getUser();
+        if (user.realmUser && user.dbUser && user !== app.currentUser) {
+          app.setCurrentUser(user);
+        }
       }
     }
   }, [app, getUser, loading, error, data]);
@@ -60,6 +69,8 @@ const App = () => {
       <Navbar
         handleToggle={handleToggle}
         handleOpenLoginDialog={handleOpenLoginDialog}
+        handleLogout={app.logOut}
+        currentUser={app.currentUser}
       />
       {
         menuInView &&
@@ -82,6 +93,13 @@ const App = () => {
         <Route exact path='/' component={Home} />
         <Route exact path='/about-us' component={AboutUs} />
         <Route exact path='/contact-us' component={ContactUs} />
+        <Route exact path='/login' component={Login} />
+        <PrivateRoute
+          exact
+          path='/my-account'
+          component={MyAccount}
+          handleOpenLoginDialog={handleOpenLoginDialog}
+        />
         <Route path='/shop' component={Shop} />
         <Route path='/' component={Error404} />
       </Switch>

@@ -29,6 +29,8 @@ const LoginDialog = ({ open, handleClose }) => {
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
   const [getUserFromDb, { loading, error, data }] = useLazyQuery(USER_DETAILED);
 
+  const { dbUser, realmAppUser } = app.currentUser;
+
   useEffect(() => {
     if (error) {
       throw new Error('Failed to find user in database');
@@ -107,7 +109,7 @@ const LoginDialog = ({ open, handleClose }) => {
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Register/login</DialogTitle>
+        <DialogTitle>Login or register an account</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus

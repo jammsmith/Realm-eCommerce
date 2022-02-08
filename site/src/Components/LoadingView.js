@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ProgressSpinner from './ProgressSpinner.js';
 
-const Skeleton = styled.div`
+export const Skeleton = styled.div`
   height: 50vh;
   display: flex;
   flex-direction: column;
