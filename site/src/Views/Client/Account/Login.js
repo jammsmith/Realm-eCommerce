@@ -108,6 +108,7 @@ const Login = () => {
   }, [app, formFields, getUserFromDb, history]);
 
   const setLoggedInUser = useRef();
+
   useEffect(() => {
     const handleAsyncLogin = async () => {
       if (!error && !loading && !data && shouldLogin) {
