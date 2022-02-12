@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import uniqueString from 'unique-string';
@@ -27,9 +27,6 @@ const ButtonsWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-// TODO: Login etc works but currently doesnt update the DOM with the new user every time. Need
-// to get the app to re-render on login/logout
-
 const Login = () => {
   const app = useContext(RealmAppContext);
   const history = useHistory();
@@ -40,14 +37,14 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [addUser] = useDDMutation(mutations.AddUser);
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
-  const [getUserFromDb, { error, data }] = useLazyQuery(USER_DETAILED);
+  const [getUserFromDb, { error, loading, data }] = useLazyQuery(USER_DETAILED);
+  const [shouldLogin, setShouldLogin] = useState(false);
 
   // Event handlers
   const handleFormChange = (e) => {
     setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // TODO: delete old realm guest user once registered with a new permanent account
   const handleRegister = async () => {
     try {
       const { email, password } = formFields;
@@ -94,24 +91,34 @@ const Login = () => {
     }
   };
 
-  const handleLogin = async () => {
+  // Log user in to app and create user object with realm user and db user
+  const handleLogin = useCallback(async () => {
     try {
       const userId = await app.logIn(formFields.email, formFields.password);
       getUserFromDb({ variables: { id: userId } });
-      if (error) {
-        throw new Error('Failed to find user in database');
-      }
-      if (data && data.user) {
-        app.setCurrentUser({
-          realmUser: app.currentUser,
-          dbUser: data.user
-        });
+
+      return dbUser => {
+        if (!dbUser) return;
+        app.setCurrentUser({ realmUser: app.currentUser, dbUser });
         history.push('/my-account');
-      }
+      };
     } catch (err) {
       throw new Error('Failed to log user in. Error:', err);
     }
-  };
+  }, [app, formFields, getUserFromDb, history]);
+
+  const setLoggedInUser = useRef();
+  useEffect(() => {
+    const handleAsyncLogin = async () => {
+      if (!error && !loading && !data && shouldLogin) {
+        setLoggedInUser.current = await handleLogin();
+      }
+      if (shouldLogin && typeof setLoggedInUser.current === 'function' && data?.user) {
+        setLoggedInUser.current(data.user);
+      }
+    };
+    handleAsyncLogin();
+  }, [shouldLogin, handleLogin, data, loading, error]);
 
   return (
     <LoginWrapper>
@@ -141,7 +148,7 @@ const Login = () => {
         />
         <ActionButton
           text='login'
-          onClick={handleLogin}
+          onClick={() => setShouldLogin(true)}
         />
       </ButtonsWrapper>
       <div>{errorMessage && `*${errorMessage}`}</div>
