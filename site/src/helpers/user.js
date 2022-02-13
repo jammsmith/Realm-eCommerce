@@ -1,12 +1,11 @@
 import { MongoDBRealmError } from 'realm-web';
 
+//
 export const registerEmailPassword = async (app, email, password) => {
-  const handleAuthenticationError = (err) => {
-    let message;
+  const unknownErrorMessage = 'Something went wrong, please refresh and try again';
 
-    const handleUnknownError = () => {
-      message = 'Something went wrong, please refresh and try again';
-    };
+  const handleRegistrationError = (err) => {
+    let message;
 
     if (err instanceof MongoDBRealmError) {
       const { error, statusCode } = err;
@@ -28,11 +27,11 @@ export const registerEmailPassword = async (app, email, password) => {
         case 400:
           message = 'Invalid password - must be between 6 and 128 characters';
           break;
-        default: handleUnknownError();
+        default: message = unknownErrorMessage;
           break;
       }
     } else {
-      handleUnknownError();
+      message = unknownErrorMessage;
     }
     return message;
   };
@@ -41,11 +40,28 @@ export const registerEmailPassword = async (app, email, password) => {
   try {
     await app.emailPasswordAuth.registerUser(email, password);
   } catch (err) {
-    errorMessage = handleAuthenticationError(err);
+    errorMessage = handleRegistrationError(err);
   }
   return { errorMessage };
 };
 
+//
+export const getLoginError = (err) => {
+  let message = 'Failed to login, please try again.';
+
+  if (err instanceof MongoDBRealmError) {
+    const { error, statusCode } = err;
+    const errorType = error || statusCode;
+
+    if (errorType === 'invalid username/password' || errorType === 401) {
+      message = 'Email address or password is invalid';
+    }
+
+    return message;
+  }
+};
+
+//
 export const isLoggedIn = (user) => {
   if (!user) return;
 

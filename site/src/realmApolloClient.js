@@ -37,17 +37,19 @@ export const RealmAppProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(app.currentUser);
 
   const logIn = async (email, password) => {
-    const credentials = Realm.Credentials.emailPassword(email, password);
+    let user;
+    let error;
     try {
+      const credentials = Realm.Credentials.emailPassword(email, password);
       if (app.currentUser) {
         await app.currentUser.logOut();
       }
-      const user = await app.logIn(credentials);
+      user = await app.logIn(credentials);
       setCurrentUser(app.currentUser);
-      return user.id;
     } catch (err) {
-      console.error('Failed to log in.', err.message);
+      error = err;
     }
+    return { user, error };
   };
 
   const logOut = async () => {
@@ -61,6 +63,7 @@ export const RealmAppProvider = ({ children }) => {
         } else {
           // Otherwise, create a new anonymous user and log them in.
           await app.logIn(Realm.Credentials.anonymous());
+          setCurrentUser(app.currentUser);
         }
       }
     } catch (err) {

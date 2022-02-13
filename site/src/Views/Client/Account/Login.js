@@ -3,11 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import uniqueString from 'unique-string';
 import styled from 'styled-components';
+import md5 from 'md5';
 
 import ActionButton from '../../../Components/ActionButton.js';
 import TextInput from '../../../Components/Forms/TextInput.js';
+import ErrorMessage from '../../../Components/ErrorMessage.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
-import { registerEmailPassword } from '../../../helpers/user.js';
+import { registerEmailPassword, getLoginError } from '../../../helpers/user.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
 import { USER_DETAILED } from '../../../graphql/queries.js';
@@ -24,21 +26,26 @@ const LoginWrapper = styled.div`
   }
 `;
 const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
   margin-top: 1rem;
 `;
 
 const Login = () => {
   const app = useContext(RealmAppContext);
-  const history = useHistory();
+  const [formType, setFormType] = useState('login');
   const [formFields, setFormFields] = useState({
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [errorMessage, setErrorMessage] = useState();
+  const [shouldLogin, setShouldLogin] = useState(false);
+
   const [addUser] = useDDMutation(mutations.AddUser);
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
   const [getUserFromDb, { error, loading, data }] = useLazyQuery(USER_DETAILED);
-  const [shouldLogin, setShouldLogin] = useState(false);
+  const history = useHistory();
 
   // Event handlers
   const handleFormChange = (e) => {
@@ -46,14 +53,19 @@ const Login = () => {
   };
 
   const handleRegister = async () => {
-    try {
-      const { email, password } = formFields;
-      const { error } = await registerEmailPassword(app, email, password);
+    const { email, password, confirmPassword } = formFields;
 
-      if (!error) {
-        // If app.currentUser has been created as a guest user, save relevant details
-        // to be duplicated into new user object
-        const guestUser =
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords don\'t match');
+      return;
+    }
+
+    const { error } = await registerEmailPassword(app, email, md5(password));
+
+    if (!error) {
+      // If app.currentUser has been created as a guest user, save relevant details
+      // to be duplicated into new user object
+      const guestUser =
           app.currentUser && app.currentUser.orders && app.currentUser.orders.length &&
             {
               _id: app.currentUser._id,
@@ -61,49 +73,48 @@ const Login = () => {
               orders: app.currentUser.orders.map(order => order.order_id)
             };
 
-        // log user in, this will complete registration and create a new permenant user ID
-        const userId = await app.logIn(email, password);
+      // log user in, this will complete registration and create a new permenant user ID
+      const { user } = await app.logIn(email, password);
 
-        // create new user, include 'orders' and 'user_id' from existing guest user if they exist
-        let variables = {
-          _id: userId,
-          user_id: guestUser ? guestUser.user_id : `user-${await uniqueString()}`,
-          email: email,
-          type: 'customer'
-        };
-        if (guestUser) {
-          variables = { ...variables, orders: guestUser.orders };
-        }
-        const { data } = await addUser({ variables });
-
-        app.setCurrentUser({
-          realmUser: app.currentUser,
-          dbUser: data.insertOneUser
-        });
-
-        // delete the old guest user from db & anon user from realm
-        await deleteUser({ variables: { id: guestUser._id } });
-      } else {
-        setErrorMessage(error);
+      // create new user, include 'orders' and 'user_id' from existing guest user if they exist
+      let variables = {
+        _id: user.id,
+        user_id: guestUser ? guestUser.user_id : `user-${await uniqueString()}`,
+        email: email,
+        type: 'customer'
+      };
+      if (guestUser) {
+        variables = { ...variables, orders: guestUser.orders };
       }
-    } catch (err) {
-      throw new Error(`Failed to register a new user. Error: ${err}`);
+      const { data } = await addUser({ variables });
+
+      app.setCurrentUser({
+        realmUser: app.currentUser,
+        dbUser: data.insertOneUser
+      });
+
+      // delete the old guest user from db & anon user from realm
+      await deleteUser({ variables: { id: guestUser._id } });
+    } else {
+      setErrorMessage(error);
     }
   };
 
   // Log user in to app and create user object with realm user and db user
   const handleLogin = useCallback(async () => {
-    try {
-      const userId = await app.logIn(formFields.email, formFields.password);
-      getUserFromDb({ variables: { id: userId } });
+    const { user, error } = await app.logIn(formFields.email, formFields.password);
 
-      return dbUser => {
+    if (user) {
+      getUserFromDb({ variables: { id: user.id } });
+
+      return (dbUser) => {
         if (!dbUser) return;
         app.setCurrentUser({ realmUser: app.currentUser, dbUser });
         history.push('/my-account');
       };
-    } catch (err) {
-      throw new Error('Failed to log user in. Error:', err);
+    } else if (error) {
+      const message = getLoginError(error);
+      setErrorMessage(message);
     }
   }, [app, formFields, getUserFromDb, history]);
 
@@ -123,7 +134,7 @@ const Login = () => {
 
   return (
     <LoginWrapper>
-      <div>Login or register an account</div>
+      <div>{formType === 'login' ? 'Login to your account' : 'Register an account'}</div>
       <div>
         <TextInput
           autoFocus
@@ -141,18 +152,42 @@ const Login = () => {
           value={formFields.password}
           handleChange={handleFormChange}
         />
+        {
+          formType === 'register' &&
+            <TextInput
+              autoFocus
+              label='Confirm password'
+              name='confirmPassword'
+              type='password'
+              value={formFields.confirmPassword}
+              handleChange={handleFormChange}
+            />
+        }
       </div>
-      <ButtonsWrapper>
-        <ActionButton
-          text='register'
-          onClick={handleRegister}
-        />
-        <ActionButton
-          text='login'
-          onClick={() => setShouldLogin(true)}
-        />
-      </ButtonsWrapper>
-      <div>{errorMessage && `*${errorMessage}`}</div>
+      {
+        formType === 'login'
+          ? <ButtonsWrapper>
+            <ActionButton
+              text='login'
+              onClick={() => setShouldLogin(true)}
+            />
+            <ActionButton
+              text='register new account'
+              onClick={() => setFormType('register')}
+            />
+            </ButtonsWrapper>
+          : <ButtonsWrapper>
+            <ActionButton
+              text='register'
+              onClick={handleRegister}
+            />
+            <ActionButton
+              text='login to your account'
+              onClick={() => setFormType('login')}
+            />
+            </ButtonsWrapper>
+      }
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </LoginWrapper>
   );
 };

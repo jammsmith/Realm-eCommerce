@@ -34,8 +34,9 @@ const AddToCart = ({
   const history = useHistory();
   const [productInCart, setProductInCart] = useState(false);
   const [buttonText, setButtonText] = useState('');
-
   const isLoading = addingToCart.isLoading && addingToCart.productId === product.product_id;
+
+  console.log('currentUser in AddToCart', currentUser);
 
   useEffect(() => {
     if (itemsInCart) {

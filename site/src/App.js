@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
 
 // Main views
 import Home from './Views/Client/Home/Home.js';
@@ -19,37 +18,22 @@ import Footer from './Components/Footer/Footer.js';
 import PrivateRoute from './Components/PrivateRoute.js';
 import { RealmAppContext } from './realmApolloClient.js';
 import { USER_DETAILED } from './graphql/queries.js';
+import useLazyQueryCallback from './hooks/useLazyQueryCallback.js';
 
 const App = () => {
   // Make sure app.currentUser is an object that contains both realmAppUser & dbUser
   const app = useContext(RealmAppContext);
-  const [getDbUser, { loading, error, data }] = useLazyQuery(USER_DETAILED);
-
-  const getUser = useCallback(() => {
-    if (!loading && !error && !data) {
-      getDbUser({
-        variables: { id: app.currentUser.id }
-      });
-    }
-    if (error) throw new Error('Failed to get user from database', error);
-    if (data && data.user) {
-      return data.user;
-    }
-  }, [loading, error, data, getDbUser, app.currentUser.id]);
-
-  useEffect(() => {
+  const [callQuery] = useLazyQueryCallback(USER_DETAILED, userFromDb => {
     if (app.currentUser) {
       const { realmUser, dbUser } = app.currentUser;
-      if (!realmUser || !dbUser) {
-        const user = {};
-        if (!realmUser) user.realmUser = app.currentUser;
-        if (!dbUser) user.dbUser = getUser();
-        if (user.realmUser && user.dbUser && user !== app.currentUser) {
-          app.setCurrentUser(user);
-        }
+      if (!realmUser && !userFromDb) {
+        app.setCurrentUser({ realmUser: app.currentUser, dbUser: null });
+      } else if (userFromDb && (!realmUser || !dbUser)) {
+        app.setCurrentUser({ realmUser: app.currentUser, dbUser: userFromDb });
       }
     }
-  }, [app, getUser, loading, error, data]);
+  });
+  useEffect(() => callQuery({ id: app.currentUser.id }), [app.currentUser, callQuery]);
 
   // Small screen menu toggle -->
   const [menuInView, setMenuInView] = useState(false);
