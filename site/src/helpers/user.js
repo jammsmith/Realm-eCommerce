@@ -53,26 +53,24 @@ export const getLoginError = (err) => {
     const { error, statusCode } = err;
     const errorType = error || statusCode;
 
-    if (errorType === 'invalid username/password' || errorType === 401) {
+    if (errorType === 'invalid username/password' || errorType === 'invalid username' || errorType === 401) {
       message = 'Email address or password is invalid';
     }
-
     return message;
   }
 };
 
 //
-export const isLoggedIn = (user) => {
-  if (!user) return;
+export const isAuthenticated = (user) => {
+  if (!user) return false;
 
-  if (user.realmUser) {
-    user = user.realmUser;
-  }
-
-  if (user.providerType === 'local-userpass') {
+  if (
+    user.providerType === 'local-userpass' &&
+    user.dbUser &&
+    (user.dbUser.type === 'customer' || user.dbUser.type === 'admin')
+  ) {
     return true;
-  } else if (
-    user.providerType === 'anon-user') {
+  } else {
     return false;
   }
 };

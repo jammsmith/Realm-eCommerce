@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Menu, MenuItem, MenuList } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 
 import { LoginIcon } from './NavbarElements';
+import { RealmAppContext } from '../../realmApolloClient.js';
+import { isAuthenticated } from '../../helpers/user.js';
 
-const MyAccountMenu = ({ currentUser, handleLogout }) => {
+const MyAccountMenu = () => {
+  const app = useContext(RealmAppContext);
+
   const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -18,7 +22,7 @@ const MyAccountMenu = ({ currentUser, handleLogout }) => {
   };
   const handleMenuSeletion = async (selection) => {
     if (selection === 'logout') {
-      handleLogout();
+      await app.logOut();
       history.push('/');
     } else {
       history.push(`/${selection}`);
@@ -47,9 +51,9 @@ const MyAccountMenu = ({ currentUser, handleLogout }) => {
         }}
       >
         {
-          currentUser && currentUser.dbUser
+          app.currentUser && isAuthenticated(app.currentUser)
             ? <MenuList>
-              <MenuItem>{currentUser.dbUser.email}</MenuItem>
+              <MenuItem>{app.currentUser.dbUser.email}</MenuItem>
               <MenuItem divider />
               <MenuItem onClick={() => handleMenuSeletion('my-account')}>My Account</MenuItem>
               <MenuItem onClick={() => handleMenuSeletion('logout')}>Logout</MenuItem>
@@ -62,11 +66,6 @@ const MyAccountMenu = ({ currentUser, handleLogout }) => {
       </Menu>
     </div>
   );
-};
-
-MyAccountMenu.propTypes = {
-  currentUser: PropTypes.object.isRequired,
-  handleLogout: PropTypes.func.isRequired
 };
 
 export default MyAccountMenu;

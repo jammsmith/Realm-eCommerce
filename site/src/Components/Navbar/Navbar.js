@@ -17,7 +17,7 @@ import {
   NavbarToggleIcon
 } from './NavbarElements';
 
-const Navbar = ({ handleToggle, currentUser, handleLogout }) => {
+const Navbar = ({ handleToggle }) => {
   return (
     <NavbarContainer>
       <NavbarNavigation>
@@ -53,10 +53,7 @@ const Navbar = ({ handleToggle, currentUser, handleLogout }) => {
                 Cart <IoCartOutline />
               </NavbarLink>
             </NavbarCart>
-            <MyAccountMenu
-              currentUser={currentUser}
-              handleLogout={handleLogout}
-            />
+            <MyAccountMenu />
           </NavbarLinkList>
         </NavbarLinksContainer>
         <NavbarToggleIcon size={25} onClick={handleToggle} />
@@ -66,9 +63,7 @@ const Navbar = ({ handleToggle, currentUser, handleLogout }) => {
 };
 
 Navbar.propsTypes = {
-  handleToggle: PropTypes.func.isRequired,
-  handleOpenLoginDialog: PropTypes.func.isRequired,
-  currentUser: PropTypes.object.isRequired
+  handleToggle: PropTypes.func.isRequired
 };
 
 export default Navbar;

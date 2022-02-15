@@ -40,11 +40,9 @@ const Login = () => {
     confirmPassword: ''
   });
   const [errorMessage, setErrorMessage] = useState();
-  const [shouldLogin, setShouldLogin] = useState(false);
 
   const [addUser] = useDDMutation(mutations.AddUser);
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
-  const [getUserFromDb, { error, loading, data }] = useLazyQuery(USER_DETAILED);
   const history = useHistory();
 
   // Event handlers
@@ -89,7 +87,7 @@ const Login = () => {
       const { data } = await addUser({ variables });
 
       app.setCurrentUser({
-        realmUser: app.currentUser,
+        ...app.currentUser,
         dbUser: data.insertOneUser
       });
 
@@ -100,37 +98,16 @@ const Login = () => {
     }
   };
 
-  // Log user in to app and create user object with realm user and db user
-  const handleLogin = useCallback(async () => {
+  const handleLogin = async () => {
     const { user, error } = await app.logIn(formFields.email, formFields.password);
-
     if (user) {
-      getUserFromDb({ variables: { id: user.id } });
-
-      return (dbUser) => {
-        if (!dbUser) return;
-        app.setCurrentUser({ realmUser: app.currentUser, dbUser });
-        history.push('/my-account');
-      };
-    } else if (error) {
+      history.push('/my-account');
+    }
+    if (error) {
       const message = getLoginError(error);
       setErrorMessage(message);
     }
-  }, [app, formFields, getUserFromDb, history]);
-
-  const setLoggedInUser = useRef();
-
-  useEffect(() => {
-    const handleAsyncLogin = async () => {
-      if (!error && !loading && !data && shouldLogin) {
-        setLoggedInUser.current = await handleLogin();
-      }
-      if (shouldLogin && typeof setLoggedInUser.current === 'function' && data?.user) {
-        setLoggedInUser.current(data.user);
-      }
-    };
-    handleAsyncLogin();
-  }, [shouldLogin, handleLogin, data, loading, error]);
+  };
 
   return (
     <LoginWrapper>
@@ -169,7 +146,7 @@ const Login = () => {
           ? <ButtonsWrapper>
             <ActionButton
               text='login'
-              onClick={() => setShouldLogin(true)}
+              onClick={handleLogin}
             />
             <ActionButton
               text='register new account'

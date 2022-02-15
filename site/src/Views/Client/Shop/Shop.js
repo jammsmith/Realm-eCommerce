@@ -39,7 +39,7 @@ const Shop = () => {
 
   // Handlers
   const updateCurrentUser = (user) => {
-    app.setCurrentUser({ realmAppUser, dbUser: user });
+    app.setCurrentUser(prev => ({ ...prev, dbUser: user }));
   };
   const updateActiveOrder = (order) => {
     setActiveOrder(order);

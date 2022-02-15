@@ -41,12 +41,11 @@ export const RealmAppProvider = ({ children }) => {
     let error;
     try {
       const credentials = Realm.Credentials.emailPassword(email, password);
-      if (app.currentUser) {
-        await app.currentUser.logOut();
-      }
       user = await app.logIn(credentials);
-      setCurrentUser(app.currentUser);
+      const dbUser = await app.currentUser.functions.getDbUserData(user.id);
+      setCurrentUser({ ...user, dbUser });
     } catch (err) {
+      console.log('--- logIn -> error:', err);
       error = err;
     }
     return { user, error };
@@ -59,11 +58,13 @@ export const RealmAppProvider = ({ children }) => {
 
         if (app.currentUser) {
           // If another user was logged in too, they're now the current user.
-          setCurrentUser(app.currentUser);
+          await app.currentUser.refreshCustomData();
+          const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
+          setCurrentUser({ ...app.currentUser, dbUser });
         } else {
           // Otherwise, create a new anonymous user and log them in.
-          await app.logIn(Realm.Credentials.anonymous());
-          setCurrentUser(app.currentUser);
+          const user = await app.logIn(Realm.Credentials.anonymous());
+          setCurrentUser(user);
         }
       }
     } catch (err) {
