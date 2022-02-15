@@ -74,8 +74,7 @@ ProductTile.propTypes = {
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.array
+  updateActiveOrder: PropTypes.func.isRequired
 };
 
 export default ProductTile;

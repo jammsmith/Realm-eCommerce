@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Menu, MenuItem, MenuList } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 
@@ -9,7 +8,6 @@ import { isAuthenticated } from '../../helpers/user.js';
 
 const MyAccountMenu = () => {
   const app = useContext(RealmAppContext);
-
   const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);

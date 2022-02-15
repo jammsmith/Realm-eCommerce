@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useLazyQuery } from '@apollo/client';
 
 // Views
 import Home from '../Home/Home.js';
@@ -13,7 +14,7 @@ import Checkout from './Checkout/Checkout.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 
 // Other
-import useActiveOrder from '../../../hooks/useActiveOrder.js';
+import { getCartSubTotal } from '../../../helpers/cart.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
 
 // Setup stripe
@@ -22,20 +23,26 @@ const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZh
 
 const Shop = () => {
   const app = useContext(RealmAppContext);
-  const { realmAppUser, dbUser } = app.currentUser;
-  const [activeOrder, setActiveOrder] = useActiveOrder(dbUser);
-  const [itemsInCart, setItemsInCart] = useState();
+  const [activeOrder, setActiveOrder] = useState();
   const [addingToCart, setAddingToCart] = useState({
     isLoading: false,
     productId: ''
   });
 
-  // Get items currently in cart and send down to product tiles
   useEffect(() => {
-    if (activeOrder && activeOrder.orderItems && activeOrder.orderItems !== itemsInCart) {
-      setItemsInCart(activeOrder.orderItems);
+    const { dbUser } = app.currentUser;
+    if (dbUser && !activeOrder) {
+      if (dbUser.orders && dbUser.orders.length) {
+        const order = dbUser.orders.find(order => order.orderStatus === 'pendingInCart');
+        if (order.orderItems && order.orderItems.length) {
+          const subTotal = getCartSubTotal(order);
+          setActiveOrder({ ...order, subTotal });
+        } else {
+          setActiveOrder({});
+        }
+      }
     }
-  }, [activeOrder, itemsInCart, setItemsInCart]);
+  }, [app.currentUser, activeOrder]);
 
   // Handlers
   const updateCurrentUser = (user) => {
@@ -53,9 +60,8 @@ const Shop = () => {
 
   // Accumulate add to cart props into single object
   const props = {
-    activeOrder,
+    activeOrder: activeOrder,
     updateActiveOrder,
-    itemsInCart,
     addingToCart,
     updateAddingToCart,
     updateCurrentUser,
@@ -63,47 +69,49 @@ const Shop = () => {
   };
 
   return (
-    <>
-      <SectionSpacer dark spaceBelow />
-      <Switch>
-        <Route exact path='/shop' component={Home} />
-        <Route
-          exact
-          path='/shop/browse/:category'
-          component={Category}
-        />
-        <Route
-          exact
-          path='/shop/browse/:category/:subCategory'
-          render={() => <SubCategory {...props} />}
-        />
-        <Route
-          exact
-          path='/shop/browse/:category/:subCategory/:productId'
-          render={() => <Product {...props} />}
-        />
-        <Route
-          exact
-          path='/shop/cart'
-          render={() =>
-            <Cart
-              activeOrder={activeOrder}
-              updateActiveOrder={updateActiveOrder}
-            />}
-        />
-        <Route
-          exact
-          path='/shop/checkout'
-          render={() =>
-            <Checkout
-              stripePromise={stripePromise}
-              activeOrder={activeOrder}
-              updateActiveOrder={updateActiveOrder}
-            />}
-        />
-      </Switch>
-      <SectionSpacer spaceBelow />
-    </>
+    app.currentUser && app.currentUser.dbUser
+      ? <>
+        <SectionSpacer dark spaceBelow />
+        <Switch>
+          <Route exact path='/shop' component={Home} />
+          <Route
+            exact
+            path='/shop/browse/:category'
+            component={Category}
+          />
+          <Route
+            exact
+            path='/shop/browse/:category/:subCategory'
+            render={() => <SubCategory {...props} />}
+          />
+          <Route
+            exact
+            path='/shop/browse/:category/:subCategory/:productId'
+            render={() => <Product {...props} />}
+          />
+          <Route
+            exact
+            path='/shop/cart'
+            render={() =>
+              <Cart
+                activeOrder={activeOrder}
+                updateActiveOrder={updateActiveOrder}
+              />}
+          />
+          <Route
+            exact
+            path='/shop/checkout'
+            render={() =>
+              <Checkout
+                stripePromise={stripePromise}
+                activeOrder={activeOrder}
+                updateActiveOrder={updateActiveOrder}
+              />}
+          />
+        </Switch>
+        <SectionSpacer spaceBelow />
+        </>
+      : null
   );
 };
 

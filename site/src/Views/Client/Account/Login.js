@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
 import uniqueString from 'unique-string';
 import styled from 'styled-components';
 import md5 from 'md5';
@@ -12,7 +11,6 @@ import { RealmAppContext } from '../../../realmApolloClient.js';
 import { registerEmailPassword, getLoginError } from '../../../helpers/user.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
-import { USER_DETAILED } from '../../../graphql/queries.js';
 
 // Styled components
 const LoginWrapper = styled.div`
@@ -99,11 +97,10 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    const { user, error } = await app.logIn(formFields.email, formFields.password);
-    if (user) {
+    const { error } = await app.logIn(formFields.email, formFields.password);
+    if (!error) {
       history.push('/my-account');
-    }
-    if (error) {
+    } else {
       const message = getLoginError(error);
       setErrorMessage(message);
     }

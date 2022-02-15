@@ -9,18 +9,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const app = useContext(RealmAppContext);
 
   return (
-  // Show the component only when the user is logged in
-  // Otherwise, redirect the user to /signin page
-    <Route
-      {...rest} render={props => {
-        return (
-          <>
-            {isAuthenticated(app.currentUser) && <Component {...props} />}
-            {isAuthenticated(app.currentUser) === false && <Redirect to='/login' />}
-          </>
-        );
-      }}
-    />
+    app.currentUser && app.currentUser.dbUser
+      ? <Route
+        {...rest} render={props => {
+          return (
+            <>
+              {isAuthenticated(app.currentUser) && <Component {...props} />}
+              {isAuthenticated(app.currentUser) === false && <Redirect to='/login' />}
+            </>
+          );
+        }}
+        />
+      : null
   );
 };
 

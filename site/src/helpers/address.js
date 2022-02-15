@@ -51,7 +51,8 @@ export const validateInputFields = (inputFields, requiredFields) => {
 
   personalDetails.forEach(key => {
     if (inputFields[key]) {
-      regexCheck(key, inputFields[key]);
+      const value = inputFields[key].trim();
+      regexCheck(key, value);
     }
   });
   failedTests = tests.filter(t => t.result === false);

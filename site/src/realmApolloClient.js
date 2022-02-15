@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
@@ -36,22 +36,30 @@ export const RealmAppProvider = ({ children }) => {
   const [realmApp] = useState(app);
   const [currentUser, setCurrentUser] = useState(app.currentUser);
 
+  useEffect(() => {
+    const attachDbUser = async () => {
+      if (!currentUser.dbUser) {
+        const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
+        setCurrentUser(prev => ({ ...prev, dbUser: dbUser || {} }));
+      }
+    };
+    attachDbUser();
+  }, [currentUser]);
+
   const logIn = async (email, password) => {
-    let user;
     let error;
     try {
       const credentials = Realm.Credentials.emailPassword(email, password);
-      user = await app.logIn(credentials);
-      const dbUser = await app.currentUser.functions.getDbUserData(user.id);
-      setCurrentUser({ ...user, dbUser });
+      const user = await app.logIn(credentials);
+      setCurrentUser(user);
     } catch (err) {
-      console.log('--- logIn -> error:', err);
       error = err;
     }
-    return { user, error };
+    return { error };
   };
 
   const logOut = async () => {
+    let error;
     try {
       if (app.currentUser) {
         await app.currentUser.logOut();
@@ -59,8 +67,7 @@ export const RealmAppProvider = ({ children }) => {
         if (app.currentUser) {
           // If another user was logged in too, they're now the current user.
           await app.currentUser.refreshCustomData();
-          const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
-          setCurrentUser({ ...app.currentUser, dbUser });
+          setCurrentUser(app.currentUser);
         } else {
           // Otherwise, create a new anonymous user and log them in.
           const user = await app.logIn(Realm.Credentials.anonymous());
@@ -68,11 +75,19 @@ export const RealmAppProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      console.error('Failed to log user out.', err.message);
+      error = err;
     }
+
+    return { error };
   };
 
-  const wrapped = { ...realmApp, currentUser, setCurrentUser, logIn, logOut };
+  const wrapped = {
+    ...realmApp,
+    currentUser,
+    setCurrentUser,
+    logIn,
+    logOut
+  };
 
   return (
     <RealmAppContext.Provider value={wrapped}>

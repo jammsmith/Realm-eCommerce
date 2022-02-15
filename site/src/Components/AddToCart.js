@@ -23,7 +23,6 @@ const { dark, light } = colours;
 //
 const AddToCart = ({
   product,
-  itemsInCart,
   activeOrder,
   updateActiveOrder,
   addingToCart,
@@ -36,14 +35,12 @@ const AddToCart = ({
   const [buttonText, setButtonText] = useState('');
   const isLoading = addingToCart.isLoading && addingToCart.productId === product.product_id;
 
-  console.log('currentUser in AddToCart', currentUser);
-
   useEffect(() => {
-    if (itemsInCart) {
-      const found = itemsInCart.find(item => item.product._id === product._id);
+    if (activeOrder && activeOrder.orderItems && activeOrder.orderItems.length) {
+      const found = activeOrder.orderItems.find(item => item.product._id === product._id);
       if (found) setProductInCart(true);
     }
-  }, [itemsInCart, setProductInCart, product]);
+  }, [activeOrder, setProductInCart, product]);
 
   // Custom styles for button
   const styles = {
@@ -70,7 +67,7 @@ const AddToCart = ({
           <IoMailOutline />
         </>);
     }
-  }, [setButtonText, productInCart, product, itemsInCart]);
+  }, [setButtonText, productInCart, product, activeOrder.orderItems]);
 
   // Order mutations
   const [createGuestOrder] = useDDMutation(mutations.CreateGuestOrder);
@@ -84,7 +81,7 @@ const AddToCart = ({
   const handleAddToCart = async (event) => {
     const productId = event.currentTarget.value;
     // -- Logged in user with an active order -- //
-    if (dbUser && dbUser.user_id && activeOrder) {
+    if (dbUser && dbUser.user_id && activeOrder.order_id) {
       try {
         updateAddingToCart(true, productId);
         const newOrderItemId = `orderItem-${await uniqueString()}`;
@@ -111,7 +108,7 @@ const AddToCart = ({
     }
 
     // -- Logged in user with no active order -- //
-    if (dbUser && dbUser.user_id && !activeOrder) {
+    if (dbUser && dbUser.user_id && !activeOrder.order_id) {
       try {
         updateAddingToCart(true, productId);
         const newOrderId = `order-${await uniqueString()}`;
@@ -192,8 +189,7 @@ AddToCart.propTypes = {
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.array
+  updateActiveOrder: PropTypes.func.isRequired
 };
 
 export default AddToCart;
