@@ -42,20 +42,26 @@ export const registerEmailPassword = async (app, email, password) => {
   } catch (err) {
     errorMessage = handleRegistrationError(err);
   }
-  return { errorMessage };
+  return { error: errorMessage };
 };
 
 //
 export const getLoginError = (err) => {
-  let message = 'Failed to login, please try again.';
+  let message;
 
   if (err instanceof MongoDBRealmError) {
     const { error, statusCode } = err;
     const errorType = error || statusCode;
 
-    if (errorType === 'invalid username/password' || errorType === 'invalid username' || errorType === 401) {
-      message = 'Email address or password is invalid';
+    switch (errorType) {
+      case 'invalid username/password':
+      case 'invalid username':
+      case 401:
+        message = 'Email address or password is invalid';
+        break;
+      default: message = 'Login failed, please try again.';
     }
+
     return message;
   }
 };

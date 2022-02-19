@@ -190,3 +190,12 @@ export const ALL_ORDERS = gql`
     }
   }
 `;
+
+export const DELIVERY_BY_ID = gql`
+  ${DELIVERY_DETAILS}
+  query($delivery_id: String!) {
+    delivery(query: { delivery_id: $delivery_id }) {
+      ...DeliveryDetails
+    }
+  }
+`;

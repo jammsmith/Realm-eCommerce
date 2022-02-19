@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import CartProduct from './CartProduct.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
+import Heading from '../../../../Components/Heading.js';
 
 // Hook / helpers
 import useBreakpoints from '../../../../hooks/useBreakpoints.js';
@@ -13,7 +14,6 @@ import { getCartSubTotal } from '../../../../helpers/cart.js';
 
 // Styled Components
 import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
-import { CheckoutHeading } from '../Checkout/StyledComponents.js';
 
 // A view of all products that have been added to basket
 const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
@@ -37,7 +37,7 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
   return (
     <CartWrapper isMinimised={isMinimised}>
       <ProductListWrapper>
-        <CheckoutHeading>Cart</CheckoutHeading>
+        <Heading text='Cart' />
         <SectionSpacer />
         {
           order && order.orderItems && order.orderItems.length

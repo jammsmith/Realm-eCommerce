@@ -26,12 +26,6 @@ export const CheckoutItem = styled.div`
   padding: 0.5rem;
 `;
 
-export const CheckoutHeading = styled.h4`
-  padding: 0.5rem 0 0.25rem 0.25rem;
-  margin-bottom: 0.25rem;
-  border-bottom: 1px solid ${darkFade};
-`;
-
 export const Warning = styled.p`
   color: red;
   margin-top: 1rem;

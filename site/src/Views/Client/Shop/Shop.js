@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
 
 // Views
 import Home from '../Home/Home.js';

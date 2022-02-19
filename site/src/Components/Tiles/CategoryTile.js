@@ -20,7 +20,7 @@ export const Wrapper = styled(ResponsiveTileWrapper)`
 `;
 
 const Image = styled.img`
-  border-radius: 10px;
+  border-radius: 6px;
   max-width: 100%;
   height: auto;
   -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2); 

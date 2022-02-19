@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import uniqueString from 'unique-string';
 import styled from 'styled-components';
-import md5 from 'md5';
 
 import ActionButton from '../../../Components/ActionButton.js';
 import TextInput from '../../../Components/Forms/TextInput.js';
@@ -40,6 +39,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState();
 
   const [addUser] = useDDMutation(mutations.AddUser);
+  const [addUserWithOrders] = useDDMutation(mutations.AddUserWithOrders);
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
   const history = useHistory();
 
@@ -56,43 +56,59 @@ const Login = () => {
       return;
     }
 
-    const { error } = await registerEmailPassword(app, email, md5(password));
+    const { error: registerError } = await registerEmailPassword(app, email, password);
 
-    if (!error) {
+    if (!registerError) {
       // If app.currentUser has been created as a guest user, save relevant details
       // to be duplicated into new user object
       const guestUser =
-          app.currentUser && app.currentUser.orders && app.currentUser.orders.length &&
+          app.currentUser && app.currentUser.dbUser && app.currentUser.dbUser.orders && app.currentUser.dbUser.orders.length &&
             {
-              _id: app.currentUser._id,
-              user_id: app.currentUser.user_id,
-              orders: app.currentUser.orders.map(order => order.order_id)
+              _id: app.currentUser.dbUser._id,
+              user_id: app.currentUser.dbUser.user_id,
+              orders: app.currentUser.dbUser.orders.map(order => order.order_id)
             };
 
       // log user in, this will complete registration and create a new permenant user ID
-      const { user } = await app.logIn(email, password);
+      const { user, error: loginError } = await app.logIn(email, password);
+
+      if (loginError) {
+        const message = getLoginError(loginError);
+        setErrorMessage(message);
+        return;
+      }
 
       // create new user, include 'orders' and 'user_id' from existing guest user if they exist
-      let variables = {
+      const variables = {
         _id: user.id,
         user_id: guestUser ? guestUser.user_id : `user-${await uniqueString()}`,
         email: email,
         type: 'customer'
       };
+
+      let newUser;
       if (guestUser) {
-        variables = { ...variables, orders: guestUser.orders };
+        const { data } = await addUserWithOrders({
+          variables: {
+            ...variables, orders: guestUser.orders
+          }
+        });
+        newUser = data.insertOneUser;
+        // delete the old guest user from db & anon user from realm
+        await deleteUser({ variables: { id: guestUser._id } });
+      } else {
+        const { data } = await addUser({ variables });
+        newUser = data.insertOneUser;
       }
-      const { data } = await addUser({ variables });
 
       app.setCurrentUser({
         ...app.currentUser,
-        dbUser: data.insertOneUser
+        dbUser: newUser
       });
 
-      // delete the old guest user from db & anon user from realm
-      await deleteUser({ variables: { id: guestUser._id } });
+      history.push('/my-account');
     } else {
-      setErrorMessage(error);
+      setErrorMessage(registerError);
     }
   };
 

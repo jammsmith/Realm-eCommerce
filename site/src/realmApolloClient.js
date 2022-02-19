@@ -48,14 +48,15 @@ export const RealmAppProvider = ({ children }) => {
 
   const logIn = async (email, password) => {
     let error;
+    let user;
     try {
       const credentials = Realm.Credentials.emailPassword(email, password);
-      const user = await app.logIn(credentials);
+      user = await app.logIn(credentials);
       setCurrentUser(user);
     } catch (err) {
       error = err;
     }
-    return { error };
+    return { user, error };
   };
 
   const logOut = async () => {

@@ -5,9 +5,10 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 // Components
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
+import Heading from '../../../../Components/Heading.js';
 
 // Styled components
-import { CheckoutItem, CheckoutHeading, Warning } from './StyledComponents.js';
+import { CheckoutItem, Warning } from './StyledComponents.js';
 
 // Hooks / helpers
 import useDDMutation from '../../../../hooks/useDDMutation.js';
@@ -53,7 +54,7 @@ const PaymentForm = ({ deliveryDetails }) => {
   return (
     <CheckoutItem>
       <form>
-        <CheckoutHeading>Payment Details</CheckoutHeading>
+        <Heading text='Payment Details' />
         <div>
           <PaymentElement />
           {message && <Warning>{message}</Warning>}

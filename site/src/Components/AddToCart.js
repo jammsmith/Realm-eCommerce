@@ -67,7 +67,7 @@ const AddToCart = ({
           <IoMailOutline />
         </>);
     }
-  }, [setButtonText, productInCart, product, activeOrder.orderItems]);
+  }, [setButtonText, productInCart, product, activeOrder]);
 
   // Order mutations
   const [createGuestOrder] = useDDMutation(mutations.CreateGuestOrder);
@@ -76,12 +76,11 @@ const AddToCart = ({
   const [updateOrderItemsInOrder] = useDDMutation(mutations.UpdateOrderItemsInOrder);
   const [updateUserOrders] = useDDMutation(mutations.UpdateUserOrders);
 
-  const { realmAppUser, dbUser } = currentUser;
-
   const handleAddToCart = async (event) => {
+    const { dbUser } = currentUser;
     const productId = event.currentTarget.value;
     // -- Logged in user with an active order -- //
-    if (dbUser && dbUser.user_id && activeOrder.order_id) {
+    if (dbUser && dbUser.user_id && activeOrder && activeOrder.order_id) {
       try {
         updateAddingToCart(true, productId);
         const newOrderItemId = `orderItem-${await uniqueString()}`;
@@ -108,7 +107,7 @@ const AddToCart = ({
     }
 
     // -- Logged in user with no active order -- //
-    if (dbUser && dbUser.user_id && !activeOrder.order_id) {
+    if (dbUser && dbUser.user_id && (!activeOrder || (activeOrder && !activeOrder.order_id))) {
       try {
         updateAddingToCart(true, productId);
         const newOrderId = `order-${await uniqueString()}`;
@@ -138,7 +137,7 @@ const AddToCart = ({
     }
 
     // -- Only an anonymous Realm user -- //
-    if (realmAppUser && !dbUser.user_id) {
+    if (currentUser && (!dbUser || (dbUser && !dbUser.user_id))) {
       try {
         updateAddingToCart(true, productId);
         const newOrderId = `order-${await uniqueString()}`;
@@ -147,7 +146,7 @@ const AddToCart = ({
         const { data } = await createGuestOrder({
           variables: {
             order_id: newOrderId,
-            user_ObjectId: realmAppUser.id,
+            user_ObjectId: currentUser.id,
             user_id: newUserId,
             orderItem_id: newOrderItemId,
             product_id: productId,

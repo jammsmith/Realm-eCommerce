@@ -21,6 +21,12 @@ const Checkbox = ({ value, label, handleChange, size }) => {
           value={value}
         />
       }
+      sx={{
+        color: dark,
+        '.MuiFormControlLabel-label': {
+          marginLeft: '0.75rem'
+        }
+      }}
       label={label}
     />
   );

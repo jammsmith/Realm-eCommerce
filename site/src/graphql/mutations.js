@@ -11,26 +11,46 @@ const mutations = {
   // AUTHORS
   AddUser: gql`
     ${USER_DETAILS}
+    mutation(
+      $_id: ObjectId!,
+      $user_id: String!,
+      $name: String,
+      $address: String,
+      $email: String,
+      $type: String!
+    ) {
+      insertOneUser(data: {
+        _id: $_id,
+        user_id: $user_id,
+        name: $name,
+        address: $address,
+        email: $email,
+        type: $type,
+      } ) {
+        ...UserDetails
+      }
+    }
+  `,
+  AddUserWithOrders: gql`
+    ${USER_DETAILS}
     ${ORDER_DETAILS}
     ${ORDER_ITEM_DETAILS}
     ${PRODUCT_DETAILS}
     mutation(
       $_id: ObjectId!,
       $user_id: String!,
-      $firstName: String,
-      $lastName: String,
+      $name: String,
+      $address: String,
       $email: String,
-      $password: String,
       $type: String!,
       $orders: [String]
     ) {
       insertOneUser(data: {
         _id: $_id,
         user_id: $user_id,
-        firstName: $firstName,
-        lastName: $lastName,
+        name: $name,
+        address: $address,
         email: $email,
-        password: $password,
         type: $type,
         orders: { 
           link: $orders
@@ -53,19 +73,17 @@ const mutations = {
     ${USER_DETAILS}
     mutation(
       $id: ObjectId!,
-      $firstName: String,
-      $lastName: String,
+      $name: String,
+      $address: String,
       $email: String,
-      $password: String,
       $type: String,
     ) {
       updateOneUser(
         query: { _id: $id },
         set: {
-          firstName: $firstName,
-          lastName: $lastName,
+          name: $name,
+          address: $address,
           email: $email,
-          password: $password,
           type: $type,
         } ) {
         ...UserDetails

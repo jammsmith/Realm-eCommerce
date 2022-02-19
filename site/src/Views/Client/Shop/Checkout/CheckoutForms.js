@@ -16,6 +16,7 @@ import Cart from '../Cart/Cart.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
+import { isAuthenticated } from '../../../../helpers/user.js';
 
 const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const app = useContext(RealmAppContext);
@@ -28,7 +29,8 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     firstName: '',
     lastName: '',
     email: '',
-    phone: null
+    phone: null,
+    registerAccount: false
   });
 
   useEffect(() => {
@@ -124,6 +126,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
           <DeliveryForm
             deliveryDetails={deliveryDetails}
             updateDeliveryDetails={updateDeliveryDetails}
+            isRegisteredUser={isAuthenticated(app.currentUser)}
           />
           <PaymentForm deliveryDetails={deliveryDetails} />
         </CheckoutFormsWrapper>

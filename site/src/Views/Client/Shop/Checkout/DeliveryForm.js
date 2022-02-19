@@ -8,11 +8,11 @@ import SelectInput from '../../../../Components/Forms/SelectInput.js';
 import RowGroup from '../../../../Components/Forms/RowGroup.js';
 import Checkbox from '../../../../Components/Forms/Checkbox.js';
 import ActionButton from '../../../../Components/ActionButton.js';
+import Heading from '../../../../Components/Heading.js';
 
 // Styled components
 import {
   CheckoutItem,
-  CheckoutHeading,
   SelectAddress,
   PersonalDetails,
   Warning,
@@ -22,7 +22,7 @@ import {
 // Helpers
 import { validateInputFields, getAddressesFromPostcode } from '../../../../helpers/address.js';
 
-const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
+const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails, isRegisteredUser }) => {
   // Form state
   const [inputFields, setInputFields] = useState({
     firstName: '',
@@ -35,6 +35,7 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
   const [formStatus, setFormStatus] = useState('');
   const [message, setMessage] = useState('');
   const [pickUpInStore, setPickUpInStore] = useState(false);
+  const [saveDeliveryDetails, setSaveDeliveryDetails] = useState(false);
   const [addressOptions, setAddressOptions] = useState({});
 
   // Event handlers
@@ -59,7 +60,8 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
           firstName: _.startCase(inputFields.firstName),
           lastName: _.startCase(inputFields.lastName),
           email: inputFields.email.toLowerCase(),
-          phone: parseInt(inputFields.phone)
+          phone: parseInt(inputFields.phone),
+          registerAccount: setSaveDeliveryDetails
         });
 
         // End function here if picking up in-store
@@ -102,7 +104,7 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
       {
         (formStatus === 'validation-passed' && pickUpInStore) || formStatus === 'user-selection-required'
           ? <>
-            <CheckoutHeading>Delivery Details</CheckoutHeading>
+            <Heading text='Delivery Details' />
             <PersonalDetails>
               <div>
                 <p>First Name:</p>
@@ -143,7 +145,7 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
             </div>
           </>
           : <>
-            <CheckoutHeading>Delivery Details</CheckoutHeading>
+            <Heading text='Delivery Details' />
             <form>
               {
                 inputOptions.map((option, index) => {
@@ -193,6 +195,14 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
                 handleChange={() => setPickUpInStore(prev => !prev)}
                 value={pickUpInStore}
               />
+              {
+                !isRegisteredUser &&
+                  <Checkbox
+                    label='Register an account to view the progress of your order and save details for next time'
+                    handleChange={() => setSaveDeliveryDetails(prev => !prev)}
+                    value={saveDeliveryDetails}
+                  />
+              }
             </CheckboxWrapper>
           </>
       }
@@ -202,7 +212,8 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
 
 DeliveryForm.propTypes = {
   deliveryDetails: PropTypes.object.isRequired,
-  updateDeliveryDetails: PropTypes.func.isRequired
+  updateDeliveryDetails: PropTypes.func.isRequired,
+  isRegisteredUser: PropTypes.bool
 };
 
 export default DeliveryForm;

@@ -8,9 +8,7 @@ const FlexContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  @media (min-width: 768px) {
-    gap: 1rem;
-  }
+  gap: 1rem;
 `;
 
 // Display multiple tiles

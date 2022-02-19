@@ -4,8 +4,8 @@ export const USER_DETAILS = gql`
   fragment UserDetails on User {
     _id
     user_id
-    firstName
-    lastName
+    name
+    address
     email
     type
   }

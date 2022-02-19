@@ -9,20 +9,17 @@
         "email": {
             "bsonType": "string"
         },
-        "firstName": {
+        "name": {
             "bsonType": "string"
         },
-        "lastName": {
-            "bsonType": "string"
+        "address": {
+          "bsonType": "string"
         },
         "orders": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
-        },
-        "password": {
-            "bsonType": "string"
         },
         "type": {
             "bsonType": "string"

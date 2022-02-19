@@ -5,6 +5,8 @@ exports = async function (userId) {
 
   const user = await db.collection('users').findOne({ _id: BSON.ObjectId(userId) });
 
+  if (!user) return;
+
   user.orders = await db.collection('orders')
     .find({ customer: user.user_id })
     .toArray();

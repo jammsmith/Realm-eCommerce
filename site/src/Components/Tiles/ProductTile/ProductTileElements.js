@@ -1,19 +1,13 @@
 import styled from 'styled-components';
 import colours from '../../../styles/colours.js';
 
-const { light, dark } = colours;
+import ResponsiveTileWrapper from '../ResponsiveTileWrapper.js';
+const { dark } = colours;
 
-export const OuterContainer = styled.div`
-  background-color: ${light};
-  border: 0.5px solid rgba(0,0,0,0.2);
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
+export const OuterContainer = styled(ResponsiveTileWrapper)`
   gap: 0.5rem;
-  margin: 0.5rem auto;
-  padding: 0.2rem;
-  -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2); 
-  box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
+  margin: 1rem auto;
+  justify-content: space-between;
 `;
 
 export const Text = styled.h2`
@@ -39,15 +33,15 @@ export const ProductTextContent = styled.div`
 `;
 
 export const TextContainer = styled.div`
-  border-radius: 5px;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-left: 4px;
 `;
 
 export const InStockInfo = styled(Text)`
   align-self: flex-end;
-  margin: 0 0.25rem 0 0;
+  margin-right: 4px;
   text-align: right;
 `;
 

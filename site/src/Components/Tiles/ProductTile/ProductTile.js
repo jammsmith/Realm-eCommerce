@@ -19,7 +19,6 @@ import {
   LineBreak,
   Description
 } from './ProductTileElements.js';
-import ResponsiveTileWrapper from '../ResponsiveTileWrapper.js';
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
@@ -27,41 +26,39 @@ const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
   const { name, price, image, numInStock, description } = product;
 
   return (
-    <ResponsiveTileWrapper productTile viewAsSingleProduct={viewAsSingleProduct}>
-      <OuterContainer>
-        <ProductContent>
-          <Image src={image} alt={name} />
-          <ProductTextContent>
-            <TextContainer>
-              <Text>{name}</Text>
-              <Text>£{price}</Text>
-            </TextContainer>
-            <InStockInfo>{numInStock > 0 ? 'In Stock' : 'Out of Stock'}</InStockInfo>
-          </ProductTextContent>
-        </ProductContent>
+    <OuterContainer productTile viewAsSingleProduct={viewAsSingleProduct}>
+      <ProductContent>
+        <Image src={image} alt={name} />
+        <ProductTextContent>
+          <TextContainer>
+            <Text>{name}</Text>
+            <Text>£{price}</Text>
+          </TextContainer>
+          <InStockInfo>{numInStock > 0 ? 'In Stock' : 'Out of Stock'}</InStockInfo>
+        </ProductTextContent>
+      </ProductContent>
+      {
+        viewAsSingleProduct &&
+          <>
+            <LineBreak />
+            <Description>{description}</Description>
+          </>
+      }
+      <ButtonContainer>
         {
-          viewAsSingleProduct &&
-            <>
-              <LineBreak />
-              <Description>{description}</Description>
-            </>
+          !viewAsSingleProduct &&
+            <ActionButton
+              text='Item Description'
+              linkTo={linkTo}
+              customStyles={{ width: '100%' }}
+            />
         }
-        <ButtonContainer>
-          {
-            !viewAsSingleProduct &&
-              <ActionButton
-                text='Item Description'
-                linkTo={linkTo}
-                customStyles={{ width: '100%' }}
-              />
-          }
-          <AddToCart
-            product={product}
-            {...other}
-          />
-        </ButtonContainer>
-      </OuterContainer>
-    </ResponsiveTileWrapper>
+        <AddToCart
+          product={product}
+          {...other}
+        />
+      </ButtonContainer>
+    </OuterContainer>
   );
 };
 
