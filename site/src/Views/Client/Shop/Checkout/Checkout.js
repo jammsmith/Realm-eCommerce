@@ -7,7 +7,8 @@ import CheckoutForms from './CheckoutForms.js';
 import Summary from './Summary.js';
 
 const Checkout = (props) => {
-  const [urlParams, setUrlParams] = useState({});
+  const [urlParams, setUrlParams] = useState();
+  const [isRedirectedPurchase, setIsRedirectedPurchase] = useState();
   const history = useHistory();
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const Checkout = (props) => {
       'payment_intent'
     );
     if (paymentIntent) {
+      setIsRedirectedPurchase(true);
       setUrlParams({
         clientSecretId: clientSecret,
         paymentIntentId: paymentIntent
@@ -27,12 +29,14 @@ const Checkout = (props) => {
 
       // re-direct back to checkout removes client secret etc from url
       history.push('/shop/checkout');
+    } else {
+      setIsRedirectedPurchase(false);
     }
   }, [history]);
   return (
-    urlParams.paymentIntentId
+    urlParams && urlParams.paymentIntentId
       ? <Summary urlParams={urlParams} />
-      : <CheckoutForms {...props} />
+      : <CheckoutForms {...props} isRedirectedPurchase={isRedirectedPurchase} />
   );
 };
 

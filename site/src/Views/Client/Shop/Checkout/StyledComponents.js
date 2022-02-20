@@ -1,9 +1,5 @@
 import styled from 'styled-components';
 
-// Colours
-import colours from '../../../../styles/colours.js';
-const { darkFade } = colours;
-
 export const CheckoutFormsWrapper = styled.div`
   display: flex;
   flex-direction: column;

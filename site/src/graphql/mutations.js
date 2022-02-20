@@ -435,7 +435,8 @@ const mutations = {
       $firstName: String!,
       $lastName: String!,
       $email: String!,
-      $phone: Int
+      $phone: Int,
+      $registerAccount: Boolean
     ) {
       updateOneOrder(
         query: { order_id: $order_id },
@@ -449,6 +450,7 @@ const mutations = {
               lastName: $lastName
               email: $email
               phone: $phone
+              registerAccount: $registerAccount
             }
           }
         }

@@ -18,7 +18,8 @@ const MyAccountMenu = () => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  const handleMenuSeletion = async (selection) => {
+  const handleMenuSeletion = async (e, selection) => {
+    e.preventDefault();
     if (selection === 'logout') {
       await app.logOut();
       history.push('/');
@@ -53,12 +54,12 @@ const MyAccountMenu = () => {
             ? <MenuList>
               <MenuItem>{app.currentUser.dbUser.email}</MenuItem>
               <MenuItem divider />
-              <MenuItem onClick={() => handleMenuSeletion('my-account')}>My Account</MenuItem>
-              <MenuItem onClick={() => handleMenuSeletion('logout')}>Logout</MenuItem>
+              <MenuItem onClick={(e) => handleMenuSeletion(e, 'my-account')}>My Account</MenuItem>
+              <MenuItem onClick={(e) => handleMenuSeletion(e, 'logout')}>Logout</MenuItem>
               </MenuList>
             : <MenuList>
-              <MenuItem onClick={() => handleMenuSeletion('login')}>Login</MenuItem>
-              <MenuItem onClick={() => handleMenuSeletion('login')}>Register</MenuItem>
+              <MenuItem onClick={(e) => handleMenuSeletion(e, 'login')}>Login</MenuItem>
+              <MenuItem onClick={(e) => handleMenuSeletion(e, 'login')}>Register</MenuItem>
               </MenuList>
         }
       </Menu>

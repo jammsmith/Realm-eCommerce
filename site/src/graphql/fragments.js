@@ -80,5 +80,6 @@ export const DELIVERY_DETAILS = gql`
     lastName
     email
     phone
+    registerAccount
   }
 `;

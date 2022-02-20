@@ -25,7 +25,7 @@ const PaymentForm = ({ deliveryDetails }) => {
     event.preventDefault();
 
     if (deliveryDetails && deliveryDetails.address === '') {
-      setMessage('Please complete delivery details before submitting payment');
+      setMessage('Please complete and confirm delivery details before submitting payment');
       return;
     }
     if (!stripe || !elements) return;

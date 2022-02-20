@@ -22,7 +22,7 @@ import {
 // Helpers
 import { validateInputFields, getAddressesFromPostcode } from '../../../../helpers/address.js';
 
-const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails, isRegisteredUser }) => {
+const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails }) => {
   // Form state
   const [inputFields, setInputFields] = useState({
     firstName: '',
@@ -35,7 +35,6 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails, isRegisteredUser
   const [formStatus, setFormStatus] = useState('');
   const [message, setMessage] = useState('');
   const [pickUpInStore, setPickUpInStore] = useState(false);
-  const [saveDeliveryDetails, setSaveDeliveryDetails] = useState(false);
   const [addressOptions, setAddressOptions] = useState({});
 
   // Event handlers
@@ -60,8 +59,7 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails, isRegisteredUser
           firstName: _.startCase(inputFields.firstName),
           lastName: _.startCase(inputFields.lastName),
           email: inputFields.email.toLowerCase(),
-          phone: parseInt(inputFields.phone),
-          registerAccount: setSaveDeliveryDetails
+          phone: parseInt(inputFields.phone)
         });
 
         // End function here if picking up in-store
@@ -195,14 +193,6 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails, isRegisteredUser
                 handleChange={() => setPickUpInStore(prev => !prev)}
                 value={pickUpInStore}
               />
-              {
-                !isRegisteredUser &&
-                  <Checkbox
-                    label='Register an account to view the progress of your order and save details for next time'
-                    handleChange={() => setSaveDeliveryDetails(prev => !prev)}
-                    value={saveDeliveryDetails}
-                  />
-              }
             </CheckboxWrapper>
           </>
       }
@@ -212,8 +202,7 @@ const DeliveryForm = ({ deliveryDetails, updateDeliveryDetails, isRegisteredUser
 
 DeliveryForm.propTypes = {
   deliveryDetails: PropTypes.object.isRequired,
-  updateDeliveryDetails: PropTypes.func.isRequired,
-  isRegisteredUser: PropTypes.bool
+  updateDeliveryDetails: PropTypes.func.isRequired
 };
 
 export default DeliveryForm;

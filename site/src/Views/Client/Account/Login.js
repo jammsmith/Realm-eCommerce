@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import uniqueString from 'unique-string';
 import styled from 'styled-components';
@@ -28,9 +29,9 @@ const ButtonsWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const Login = () => {
+const Login = ({ form, showSuccessStep }) => {
   const app = useContext(RealmAppContext);
-  const [formType, setFormType] = useState('login');
+  const [formType, setFormType] = useState(form || 'login');
   const [formFields, setFormFields] = useState({
     email: '',
     password: '',
@@ -48,7 +49,8 @@ const Login = () => {
     setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
     const { email, password, confirmPassword } = formFields;
 
     if (password !== confirmPassword) {
@@ -101,18 +103,18 @@ const Login = () => {
         newUser = data.insertOneUser;
       }
 
-      app.setCurrentUser({
+      await app.setCurrentUser({
         ...app.currentUser,
         dbUser: newUser
       });
-
       history.push('/my-account');
     } else {
       setErrorMessage(registerError);
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     const { error } = await app.logIn(formFields.email, formFields.password);
     if (!error) {
       history.push('/my-account');
@@ -180,6 +182,10 @@ const Login = () => {
       {errorMessage && <ErrorMessage message={errorMessage} />}
     </LoginWrapper>
   );
+};
+
+Login.propTypes = {
+  form: PropTypes.string
 };
 
 export default Login;

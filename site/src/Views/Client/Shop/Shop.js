@@ -33,7 +33,7 @@ const Shop = () => {
     if (dbUser && !activeOrder) {
       if (dbUser.orders && dbUser.orders.length) {
         const order = dbUser.orders.find(order => order.orderStatus === 'pendingInCart');
-        if (order.orderItems && order.orderItems.length) {
+        if (order && order.orderItems && order.orderItems.length) {
           const subTotal = getCartSubTotal(order);
           setActiveOrder({ ...order, subTotal });
         } else {

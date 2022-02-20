@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import uniqueString from 'unique-string';
 
@@ -16,10 +17,10 @@ import Cart from '../Cart/Cart.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
-import { isAuthenticated } from '../../../../helpers/user.js';
 
 const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const app = useContext(RealmAppContext);
+  const history = useHistory();
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [deliveryDetails, setDeliveryDetails] = useState({
@@ -29,19 +30,24 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     firstName: '',
     lastName: '',
     email: '',
-    phone: null,
-    registerAccount: false
+    phone: null
   });
 
   useEffect(() => {
-    if (activeOrder) {
-      setDeliveryDetails(prev => ({ ...prev, order_id: activeOrder.order_id }));
+    if (activeOrder && !activeOrder.orderItems) {
+      history.push('/shop/cart');
     }
-  }, [activeOrder]);
+  }, [history, activeOrder]);
 
-  const updateDeliveryDetails = (update) => {
+  const updateDeliveryDetails = useCallback((update) => {
     setDeliveryDetails(prev => ({ ...prev, ...update }));
-  };
+  }, [setDeliveryDetails]);
+
+  useEffect(() => {
+    if (activeOrder) {
+      updateDeliveryDetails({ order_id: activeOrder.order_id });
+    }
+  }, [activeOrder, updateDeliveryDetails]);
 
   // Payment Element styling
   const paymentElementStyles = {
@@ -86,7 +92,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
 
   // Get a new payment intent if one does not already exist, or retrieve the existing one if it does -->
   useEffect(() => {
-    if (activeOrder && !activeOrder.paymentIntentId) {
+    if (activeOrder && activeOrder.orderItems && !activeOrder.paymentIntentId) {
       const createPaymentIntent = async () => {
         const intent = await app.currentUser.functions.createPaymentIntent(activeOrder);
         const { data } = await updateOrder({
@@ -126,16 +132,11 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
           <DeliveryForm
             deliveryDetails={deliveryDetails}
             updateDeliveryDetails={updateDeliveryDetails}
-            isRegisteredUser={isAuthenticated(app.currentUser)}
           />
           <PaymentForm deliveryDetails={deliveryDetails} />
         </CheckoutFormsWrapper>
         </Elements>
-      : <LoadingView
-        redirectUrl='/shop/cart'
-        redirectName='cart'
-        initialMessage='Preparing your order for checkout'
-        />
+      : <LoadingView message='Preparing your order for checkout' />
   );
 };
 
