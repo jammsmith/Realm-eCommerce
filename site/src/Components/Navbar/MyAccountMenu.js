@@ -29,6 +29,14 @@ const MyAccountMenu = () => {
     handleCloseMenu();
   };
 
+  const menuStyles = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '0.5rem',
+    padding: '0.5rem'
+  };
+
   return (
     <div>
       <Button
@@ -51,13 +59,13 @@ const MyAccountMenu = () => {
       >
         {
           app.currentUser && isAuthenticated(app.currentUser)
-            ? <MenuList>
+            ? <MenuList sx={menuStyles}>
               <MenuItem>{app.currentUser.dbUser.email}</MenuItem>
               <MenuItem divider />
               <MenuItem onClick={(e) => handleMenuSeletion(e, 'my-account')}>My Account</MenuItem>
               <MenuItem onClick={(e) => handleMenuSeletion(e, 'logout')}>Logout</MenuItem>
               </MenuList>
-            : <MenuList>
+            : <MenuList sx={menuStyles}>
               <MenuItem onClick={(e) => handleMenuSeletion(e, 'login')}>Login</MenuItem>
               <MenuItem onClick={(e) => handleMenuSeletion(e, 'login')}>Register</MenuItem>
               </MenuList>
