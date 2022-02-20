@@ -34,7 +34,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   });
 
   useEffect(() => {
-    if (activeOrder && !activeOrder.orderItems) {
+    if (activeOrder && (!activeOrder.orderItems || (activeOrder.orderItems && !activeOrder.orderItems.length))) {
       history.push('/shop/cart');
     }
   }, [history, activeOrder]);
