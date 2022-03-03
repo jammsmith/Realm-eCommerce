@@ -6,9 +6,6 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "address_id": {
-            "bsonType": "string"
-        },
         "delivery_id": {
             "bsonType": "string"
         },
@@ -22,7 +19,10 @@
             "bsonType": "string"
         },
         "phone": {
-            "bsonType": "int"
+            "bsonType": "string"
+        },
+        "address": {
+            "bsonType": "string"
         }
     },
     "title": "Delivery"

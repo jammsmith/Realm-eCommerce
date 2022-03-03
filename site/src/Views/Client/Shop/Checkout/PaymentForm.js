@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import uniqueString from 'unique-string';
 
-// Components
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import Heading from '../../../../Components/Heading.js';
 import UserMessage from '../../../../Components/UserMessage.js';
+import useDDMutation from '../../../../hooks/useDDMutation.js';
+import mutations from '../../../../graphql/mutations.js';
 
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';
-
-// Hooks / helpers
-import useDDMutation from '../../../../hooks/useDDMutation.js';
-import mutations from '../../../../graphql/mutations.js';
 
 const PaymentForm = ({ deliveryDetails }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [createAddress] = useDDMutation(mutations.CreateAddress);
   const [addDeliveryDetailsToOrder] = useDDMutation(mutations.AddDeliveryDetailsToOrder);
 
   const handleSubmitPayment = async (event) => {
@@ -32,8 +32,30 @@ const PaymentForm = ({ deliveryDetails }) => {
     if (!stripe || !elements) return;
 
     setIsLoading(true);
+    // Create a new address
+    const { data } = await createAddress({
+      variables: {
+        address_id: `address-${await uniqueString()}`,
+        line1: deliveryDetails.line1,
+        line2: deliveryDetails.line2,
+        city: deliveryDetails.city,
+        county: deliveryDetails.county,
+        postcode: deliveryDetails.postcode,
+        country: deliveryDetails.country
+      }
+    });
 
-    await addDeliveryDetailsToOrder({ variables: deliveryDetails });
+    await addDeliveryDetailsToOrder({
+      variables: {
+        order_id: deliveryDetails.order_id,
+        delivery_id: deliveryDetails.delivery_id,
+        address_id: data.insertOneAddress.address_id,
+        firstName: deliveryDetails.firstName,
+        lastName: deliveryDetails.lastName,
+        email: deliveryDetails.email,
+        phone: deliveryDetails.phone
+      }
+    });
 
     const { error: stripeError } = await stripe.confirmPayment({
       elements,
@@ -55,7 +77,7 @@ const PaymentForm = ({ deliveryDetails }) => {
   return (
     <CheckoutItem>
       <form>
-        <Heading text='Payment Details' />
+        <Heading text='Payment Details' size='small' />
         <div>
           <PaymentElement />
           {errorMessage && <UserMessage type='error' text={errorMessage} />}

@@ -519,7 +519,7 @@ const mutations = {
       $lastName: String!,
       $email: String!,
       $address_id: String,
-      $phone: Int,
+      $phone: String,
     ) {
       updateOneOrder(
         query: { order_id: $order_id },

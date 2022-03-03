@@ -8,8 +8,8 @@ const { darkFade, dark } = colours;
 
 export const StyledHeading = styled.h4`
   color: ${dark};
-  paddingTop: 0.5rem;
-  paddingBottom: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
   margin-bottom: 0.25rem;
   border-bottom: 1px solid ${darkFade};
   font-size: ${props => props.size === 'small' ? '1.25rem' : '1.5rem'}

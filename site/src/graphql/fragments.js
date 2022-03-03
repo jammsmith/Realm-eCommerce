@@ -75,7 +75,6 @@ export const ORDER_ITEM_DETAILS = gql`
 export const DELIVERY_DETAILS = gql`
   fragment DeliveryDetails on Delivery {
     _id
-    address_id
     delivery_id
     firstName
     lastName

@@ -26,7 +26,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const [deliveryDetails, setDeliveryDetails] = useState({
     order_id: '',
     delivery_id: `delivery-${uniqueString()}`,
-    address: '',
+    address_id: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -48,6 +48,8 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
       updateDeliveryDetails({ order_id: activeOrder.order_id });
     }
   }, [activeOrder, updateDeliveryDetails]);
+
+  useEffect(() => console.log('deliveryDetails', deliveryDetails), [deliveryDetails]);
 
   // Payment Element styling
   const paymentElementStyles = {
@@ -130,10 +132,9 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             updateActiveOrder={updateActiveOrder}
           />
           <DeliveryForm
-            formType='lookup'
-            deliveryDetails={deliveryDetails}
+            formType='basic'
             updateDeliveryDetails={updateDeliveryDetails}
-            user={app?.currentUser?.dbUser}
+            dbUser={app.currentUser.dbUser}
           />
           <PaymentForm deliveryDetails={deliveryDetails} />
         </CheckoutFormsWrapper>

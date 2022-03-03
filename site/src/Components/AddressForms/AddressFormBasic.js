@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import FormSubmit from './FormSubmit.js';
 import RowGroup from '../Forms/RowGroup.js';
 import TextInput from '../Forms/TextInput.js';
-import ActionButton from '../ActionButton.js';
-import UserMessage from '../UserMessage.js';
-import ProgressSpinner from '../ProgressSpinner.js';
+import { formatUserDetails } from '../../helpers/user.js';
 
-// Styled components
-import { SpacedRow } from './StyledComponents';
-
-const AddressFormBasic = ({ onAddressValid, address }) => {
+const AddressFormBasic = ({ dbUser, onAddressValid, buttonText, successMessage, disableOnSuccess }) => {
   const [addressFields, setAddressFields] = useState({
     line1: '',
     line2: '',
@@ -19,15 +15,18 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
     postcode: '',
     country: ''
   });
-
   const [message, setMessage] = useState({});
   const [loading, setLoading] = useState(false);
+  const [formDisabled, setFormDisabled] = useState(false);
 
   useEffect(() => {
-    if (address && address !== addressFields) {
-      setAddressFields(prev => ({ ...prev, ...address }));
+    if (dbUser.addresses && dbUser.addresses.length) {
+      const defaultAddress = dbUser.addresses.find(addr => addr.isDefault === true);
+      if (addressFields !== defaultAddress) {
+        setAddressFields(defaultAddress);
+      }
     }
-  }, [address]);
+  }, [dbUser]);
 
   const handleInputChange = (e) => {
     setAddressFields(prev => ({
@@ -55,13 +54,25 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
           text: 'Address must include all fields marked as required (*)'
         });
       } else {
-        await onAddressValid(addressFields);
+        const formattedFields = formatUserDetails(addressFields);
+        await onAddressValid({ ...formattedFields, address_id: addressFields.address_id });
+        if (disableOnSuccess) {
+          setMessage({
+            type: 'success',
+            text: successMessage || 'Saved address'
+          });
+          setFormDisabled(true);
+        }
       }
     } catch (err) {
       throw new Error('Failed to save address. Error:', err);
     } finally {
       setLoading(false);
     }
+  };
+  const handleBackToEdit = () => {
+    setFormDisabled(false);
+    setMessage({});
   };
 
   return (
@@ -74,6 +85,7 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
         variant='outlined'
         margin='normal'
         type='text'
+        disabled={formDisabled}
       />
       <TextInput
         name='line2'
@@ -84,6 +96,7 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
         variant='outlined'
         margin='normal'
         type='text'
+        disabled={formDisabled}
       />
       <RowGroup>
         <TextInput
@@ -94,6 +107,7 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
           variant='outlined'
           margin='normal'
           type='text'
+          disabled={formDisabled}
         />
         <TextInput
           name='county'
@@ -103,6 +117,7 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
           variant='outlined'
           margin='normal'
           type='text'
+          disabled={formDisabled}
         />
       </RowGroup>
       <RowGroup>
@@ -114,6 +129,7 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
           variant='outlined'
           margin='normal'
           type='text'
+          disabled={formDisabled}
         />
         <TextInput
           name='country'
@@ -123,21 +139,27 @@ const AddressFormBasic = ({ onAddressValid, address }) => {
           variant='outlined'
           margin='normal'
           type='text'
+          disabled={formDisabled}
         />
       </RowGroup>
-      <ActionButton
-        text={loading ? <ProgressSpinner size='1.5rem' /> : 'save address'}
-        onClick={handleSubmit}
-        customStyles={{ width: '10rem', marginTop: '1.5rem', marginBottom: '0.75rem' }}
+      <FormSubmit
+        formDisabled={formDisabled}
+        message={message}
+        buttonText={buttonText}
+        loading={loading}
+        handleSubmit={handleSubmit}
+        handleBackToEdit={handleBackToEdit}
       />
-      {message && message.type && <UserMessage type={message.type} text={message.text} />}
     </form>
   );
 };
 
 AddressFormBasic.propTypes = {
+  dbUser: PropTypes.object.isRequired,
   onAddressValid: PropTypes.func.isRequired,
-  address: PropTypes.object
+  buttonText: PropTypes.string,
+  successMessage: PropTypes.string,
+  disableOnSuccess: PropTypes.bool
 };
 
 export default AddressFormBasic;

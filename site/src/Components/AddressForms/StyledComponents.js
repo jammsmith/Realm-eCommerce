@@ -27,3 +27,7 @@ export const CheckboxWrapper = styled.div`
   margin-top: 0.5rem;
   margin-left: 0.5rem;
 `;
+
+export const MessageWrapper = styled.span`
+  margin-right: 0.25rem
+`;

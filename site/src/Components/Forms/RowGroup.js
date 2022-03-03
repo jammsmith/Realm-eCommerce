@@ -11,7 +11,8 @@ const RowGroup = ({ children }) => {
   const asRow = {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   };
 
   const asColumn = {

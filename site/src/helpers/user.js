@@ -20,6 +20,9 @@ export const formatUserDetails = (details) => {
       case 'email':
         formattedFields.email = value.trim().toLowerCase();
         break;
+      case 'phone':
+        formattedFields.phone = value.toString().trim();
+        break;
       default:
         break;
     }

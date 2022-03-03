@@ -11,7 +11,7 @@ const MyAccount = () => {
   const app = useContext(RealmAppContext);
   const { dbUser } = app.currentUser;
 
-  const updateCurrentUser = (updatedUser) => {
+  const updateDbUser = (updatedUser) => {
     app.setCurrentUser({
       ...app.currentUser,
       dbUser: updatedUser
@@ -22,12 +22,12 @@ const MyAccount = () => {
     {
       name: 'personal',
       label: 'Personal Details',
-      component: <PersonalDetails dbUser={dbUser} />
+      component: <PersonalDetails dbUser={dbUser} updateDbUser={updateDbUser} />
     },
     {
       name: 'delivery',
       label: 'Delivery Details',
-      component: <DeliveryDetails dbUser={dbUser} updateCurrentUser={updateCurrentUser} />
+      component: <DeliveryDetails dbUser={dbUser} updateDbUser={updateDbUser} />
     },
     {
       name: 'orders',

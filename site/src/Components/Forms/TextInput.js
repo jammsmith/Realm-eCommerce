@@ -3,7 +3,19 @@ import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 import colours from '../../styles/colours.js';
 
-const TextInput = ({ name, value, label, helperText, required, handleChange, autoFocus, type, variant, margin }) => {
+const TextInput = ({
+  name,
+  value,
+  label,
+  helperText,
+  required,
+  handleChange,
+  autoFocus,
+  type,
+  disabled,
+  variant,
+  margin
+}) => {
   return (
     <TextField
       id={name}
@@ -18,6 +30,7 @@ const TextInput = ({ name, value, label, helperText, required, handleChange, aut
       onChange={handleChange}
       fullWidth
       autoFocus={autoFocus}
+      disabled={disabled}
       type={type}
       sx={{
         backgroundColor: 'transparent',
@@ -40,6 +53,7 @@ TextInput.propTypes = {
   required: PropTypes.bool,
   autoFocus: PropTypes.bool,
   type: PropTypes.string, // html input type
+  disabled: PropTypes.bool,
   variant: PropTypes.string,
   margin: PropTypes.string
 };

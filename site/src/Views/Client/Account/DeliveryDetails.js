@@ -1,45 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import uniqueString from 'unique-string';
 
 import AddressFormBasic from '../../../Components/AddressForms/AddressFormBasic.js';
-import { formatUserDetails } from '../../../helpers/user.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
 
 // Styled components
 import { Wrapper } from './StyledComponents.js';
 
-const DeliveryDetails = ({ dbUser, updateCurrentUser }) => {
-  const [address, setAddress] = useState();
-  const [createNew, setCreateNew] = useState(false);
-
+const DeliveryDetails = ({ dbUser, updateDbUser }) => {
   const [createAddress] = useDDMutation(mutations.CreateAddress);
   const [updateAddress] = useDDMutation(mutations.UpdateAddress);
   const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
 
-  useEffect(() => {
-    if (dbUser.addresses && dbUser.addresses.length) {
-      const defaultAddress = dbUser.addresses.find(addr => addr.isDefault === true);
-      if (address !== defaultAddress) {
-        setAddress(defaultAddress);
-      }
-    }
-  }, [dbUser, address]);
-
-  const onAddressValid = async (addressFields) => {
+  const onAddressValid = async (fields) => {
     try {
-      const formattedFields = formatUserDetails(addressFields);
-
-      if (createNew || !address) {
+      if (!dbUser.addresses || !dbUser.addresses.length) {
         const { data: addressData } = await createAddress({
           variables: {
             address_id: `address-${await uniqueString()}`,
             isDefault: !(dbUser.addresses && dbUser.addresses.length),
-            ...formattedFields
+            ...fields
           }
         });
-
         const { data: userData } = await updateUserAddresses({
           variables: {
             user_id: dbUser.user_id,
@@ -49,21 +33,20 @@ const DeliveryDetails = ({ dbUser, updateCurrentUser }) => {
           }
         });
 
-        updateCurrentUser(userData.updateOneUser);
+        updateDbUser(userData.updateOneUser);
       } else {
         const { data } = await updateAddress({
           variables: {
-            address_id: addressFields.address_id,
-            ...formattedFields
+            address_id: fields.address_id,
+            ...fields
           }
         });
-
         const update = data.updateOneAddress;
         const addressesClone = [...dbUser.addresses];
         const addressesLessUpdated = addressesClone.filter(address => address.address_id !== update.address_id);
         const updatedAddresses = [...addressesLessUpdated, update];
 
-        updateCurrentUser({
+        updateDbUser({
           ...dbUser,
           addresses: updatedAddresses
         });
@@ -76,8 +59,10 @@ const DeliveryDetails = ({ dbUser, updateCurrentUser }) => {
   return (
     <Wrapper>
       <AddressFormBasic
+        dbUser={dbUser}
         onAddressValid={onAddressValid}
-        address={address}
+        buttonText='save address'
+        successMessage='Address saved'
       />
     </Wrapper>
   );

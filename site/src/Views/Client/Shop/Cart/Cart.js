@@ -37,7 +37,7 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
   return (
     <CartWrapper isMinimised={isMinimised}>
       <ProductListWrapper>
-        <Heading text='Cart' />
+        <Heading text='Cart' size={isMinimised && 'small'} />
         <SectionSpacer />
         {
           order && order.orderItems && order.orderItems.length
