@@ -9,7 +9,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { ORDER_BY_PAYMENT_INTENT } from '../../../../graphql/queries.js';
-import { isAuthenticated } from '../../../../helpers/user.js';
+import { isAuthenticated } from '../../../../helpers/auth.js';
 
 // Styled Components
 import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponents.js';

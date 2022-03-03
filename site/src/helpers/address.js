@@ -24,13 +24,14 @@ export const validateInputFields = (inputFields, requiredFields) => {
     // Check for failed fields and provide a relevant message to show user -->
     failedTests = tests.filter(t => t.result === false);
     if (failedTests.length) {
+      console.log('failedTests[0]', failedTests[0]);
       let message;
       switch (failedTests.length) {
         case 1:
-          message = `'${_.startCase(failedTests[0])}' is missing`;
+          message = `'${_.startCase(failedTests[0].key)}' is missing`;
           break;
         case 2:
-          message = `'${_.startCase(failedTests[0])}' and '${_.startCase(failedTests[1])}' are missing`;
+          message = `'${_.startCase(failedTests[0].key)}' and '${_.startCase(failedTests[1].key)}' are missing`;
           break;
         default: message = 'Required fields missing';
       }

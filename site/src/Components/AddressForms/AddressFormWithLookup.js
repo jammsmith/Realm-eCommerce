@@ -15,7 +15,7 @@ import UserMessage from '../UserMessage.js';
 import {
   Wrapper,
   SelectAddress,
-  PersonalDetails,
+  SpacedRow,
   CheckboxWrapper
 } from './StyledComponents.js';
 
@@ -103,7 +103,7 @@ const AddressFormWithLookup = ({ deliveryDetails, updateDeliveryDetails }) => {
       {
         (formStatus === 'validation-passed' && pickUpInStore) || formStatus === 'user-selection-required'
           ? <>
-            <PersonalDetails>
+            <SpacedRow>
               <div>
                 <p>First Name:</p>
                 <p>Last Name:</p>
@@ -116,7 +116,7 @@ const AddressFormWithLookup = ({ deliveryDetails, updateDeliveryDetails }) => {
                 <p>{inputFields.email.toLowerCase()}</p>
                 <p>{inputFields.phone || ''}</p>
               </div>
-            </PersonalDetails>
+            </SpacedRow>
             {
               formStatus === 'user-selection-required' &&
                 <SelectAddress>

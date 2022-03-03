@@ -7,7 +7,10 @@ import ActionButton from '../ActionButton.js';
 import UserMessage from '../UserMessage.js';
 import ProgressSpinner from '../ProgressSpinner.js';
 
-const AddressFormBasic = ({ onSubmitSuccess, address }) => {
+// Styled components
+import { SpacedRow } from './StyledComponents';
+
+const AddressFormBasic = ({ onAddressValid, address }) => {
   const [addressFields, setAddressFields] = useState({
     line1: '',
     line2: '',
@@ -17,12 +20,11 @@ const AddressFormBasic = ({ onSubmitSuccess, address }) => {
     country: ''
   });
 
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (address) {
-      console.log('address in form', address);
+    if (address && address !== addressFields) {
       setAddressFields(prev => ({ ...prev, ...address }));
     }
   }, [address]);
@@ -35,30 +37,31 @@ const AddressFormBasic = ({ onSubmitSuccess, address }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    try {
+      e.preventDefault();
+      setLoading(true);
 
-    // check required fields exist
-    const failedTests = [];
-    const requiredFields = ['line1', 'city', 'county', 'postcode', 'country'];
-    for (const field of requiredFields) {
-      if (!addressFields[field] || addressFields[field] === '') {
-        failedTests.push(field);
+      // check required fields exist
+      const failedTests = [];
+      const requiredFields = ['line1', 'city', 'county', 'postcode', 'country'];
+      for (const field of requiredFields) {
+        if (!addressFields[field] || addressFields[field] === '') {
+          failedTests.push(field);
+        }
       }
+      if (failedTests.length) {
+        setMessage({
+          type: 'error',
+          text: 'Address must include all fields marked as required (*)'
+        });
+      } else {
+        await onAddressValid(addressFields);
+      }
+    } catch (err) {
+      throw new Error('Failed to save address. Error:', err);
+    } finally {
+      setLoading(false);
     }
-    if (failedTests.length) {
-      setMessage({
-        type: 'error',
-        message: 'Address must include all fields marked as required (*)'
-      });
-    } else {
-      console.log('AddressFormBasic -> handleSubmit no failed tests, addressFields:', addressFields);
-      await onSubmitSuccess(addressFields);
-      console.log('AddressFormBasic -> handleSubmit onSubmitSuccess completed');
-    }
-    console.log('3');
-    setLoading(false);
-    console.log('4');
   };
 
   return (
@@ -127,13 +130,13 @@ const AddressFormBasic = ({ onSubmitSuccess, address }) => {
         onClick={handleSubmit}
         customStyles={{ width: '10rem', marginTop: '1.5rem', marginBottom: '0.75rem' }}
       />
-      {message && <UserMessage type={message.type} message={message.text} />}
+      {message && message.type && <UserMessage type={message.type} text={message.text} />}
     </form>
   );
 };
 
 AddressFormBasic.propTypes = {
-  onSubmitSuccess: PropTypes.func.isRequired,
+  onAddressValid: PropTypes.func.isRequired,
   address: PropTypes.object
 };
 

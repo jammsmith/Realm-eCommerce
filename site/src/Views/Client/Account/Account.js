@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useQuery } from '@apollo/client';
 
 import PersonalDetails from './PersonalDetails.js';
 import DeliveryDetails from './DeliveryDetails.js';

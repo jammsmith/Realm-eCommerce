@@ -29,7 +29,7 @@ const ErrorIcon = styled(IoAlertCircleOutline)`
   font-size: 1.25rem;
 `;
 
-const UserMessage = ({ message, type }) => {
+const UserMessage = ({ text, type }) => {
   let icon;
   let colour;
   switch (type) {
@@ -50,13 +50,13 @@ const UserMessage = ({ message, type }) => {
   return (
     <Wrapper>
       {icon}
-      <Message colour={colour}>{message}</Message>
+      <Message colour={colour}>{text}</Message>
     </Wrapper>
   );
 };
 
 UserMessage.propTypes = {
-  message: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired
 };
 

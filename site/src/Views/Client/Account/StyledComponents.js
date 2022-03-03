@@ -6,8 +6,3 @@ export const Wrapper = styled(ResponsiveTileWrapper)`
   -webkit-box-shadow: none;
   box-shadow: none;
 `;
-
-export const SavedAddress = styled(ResponsiveTileWrapper)`
-  height: auto;
-  padding: 1rem 0.5rem;
-`;

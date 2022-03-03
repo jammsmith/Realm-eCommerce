@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { LoginIcon } from './NavbarElements';
 import { RealmAppContext } from '../../realmApolloClient.js';
-import { isAuthenticated } from '../../helpers/user.js';
+import { isAuthenticated } from '../../helpers/auth.js';
 
 const MyAccountMenu = () => {
   const app = useContext(RealmAppContext);

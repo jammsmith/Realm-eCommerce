@@ -58,12 +58,12 @@ const PaymentForm = ({ deliveryDetails }) => {
         <Heading text='Payment Details' />
         <div>
           <PaymentElement />
-          {errorMessage && <UserMessage type='error' message={errorMessage} />}
+          {errorMessage && <UserMessage type='error' text={errorMessage} />}
         </div>
         <div>
           <UserMessage
             type='warning'
-            message='Clicking pay now will submit your payment'
+            text='Clicking pay now will submit your payment'
           />
           <ActionButton
             text={isLoading ? <ProgressSpinner /> : 'pay now'}

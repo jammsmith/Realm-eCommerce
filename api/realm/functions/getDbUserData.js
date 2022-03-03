@@ -7,6 +7,11 @@ exports = async function (userId) {
 
   if (!user) return;
 
+  user.addresses = user.addresses && user.addresses.length &&
+    await db.collection('addresses')
+      .find({ address_id: { $in: user.addresses } })
+      .toArray();
+
   user.orders = await db.collection('orders')
     .find({ customer: user.user_id })
     .toArray();

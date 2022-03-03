@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
 import { RealmAppContext } from '../realmApolloClient.js';
-import { isAuthenticated } from '../helpers/user.js';
+import { isAuthenticated } from '../helpers/auth.js';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const app = useContext(RealmAppContext);

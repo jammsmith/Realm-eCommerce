@@ -18,7 +18,7 @@ export const SelectAddress = styled.div`
   marginTop: 5.5rem;
 `;
 
-export const PersonalDetails = styled.div`
+export const SpacedRow = styled.div`
   display: flex;
   justify-content: space-between;
 `;
