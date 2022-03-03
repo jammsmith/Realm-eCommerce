@@ -130,8 +130,10 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             updateActiveOrder={updateActiveOrder}
           />
           <DeliveryForm
+            formType='lookup'
             deliveryDetails={deliveryDetails}
             updateDeliveryDetails={updateDeliveryDetails}
+            user={app?.currentUser?.dbUser}
           />
           <PaymentForm deliveryDetails={deliveryDetails} />
         </CheckoutFormsWrapper>

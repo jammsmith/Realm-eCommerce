@@ -7,35 +7,41 @@ export const validateInputFields = (inputFields, requiredFields) => {
     return { isValid: false, message: 'Must provide delivery details' };
   }
 
+  const fields = { ...inputFields };
   // Check to make sure at least some value has been passed for the required fields -->
   let tests = [];
-  requiredFields.forEach(field => {
-    if (inputFields[field]) {
-      tests.push({ field, result: true });
-    } else {
-      tests.push({ field, result: false });
-    }
-  });
+  let failedTests = [];
 
-  // Check for failed fields and provide a relevant message to show user -->
-  let failedTests = tests.filter(t => t.result === false);
-  if (failedTests.length) {
-    let message;
-    switch (failedTests.length) {
-      case 1:
-        message = `'${_.startCase(failedTests[0])}' is missing from delivery details`;
-        break;
-      case 2:
-        message = `'${_.startCase(failedTests[0])}' and '${_.startCase(failedTests[1])}' are missing from delivery details`;
-        break;
-      default: message = 'Required fields missing from delivery details';
+  if (requiredFields) {
+    requiredFields.forEach(key => {
+      if (fields[key]) {
+        tests.push({ key, result: true });
+      } else {
+        tests.push({ key, result: false });
+      }
+    });
+
+    // Check for failed fields and provide a relevant message to show user -->
+    failedTests = tests.filter(t => t.result === false);
+    if (failedTests.length) {
+      let message;
+      switch (failedTests.length) {
+        case 1:
+          message = `'${_.startCase(failedTests[0])}' is missing`;
+          break;
+        case 2:
+          message = `'${_.startCase(failedTests[0])}' and '${_.startCase(failedTests[1])}' are missing`;
+          break;
+        default: message = 'Required fields missing';
+      }
+      return { isValid: false, message, failedTests };
     }
-    return { isValid: false, message, failedTests };
   }
 
   // Check format of personal details fields
   const personalDetails = ['firstName', 'lastName', 'email', 'phone'];
   tests = [];
+  failedTests = [];
 
   const regexCheck = (key, value) => {
     let regex;
@@ -50,15 +56,19 @@ export const validateInputFields = (inputFields, requiredFields) => {
   };
 
   personalDetails.forEach(key => {
-    if (inputFields[key]) {
-      const value = inputFields[key].trim();
+    if (fields[key]) {
+      let value = fields[key];
+      if (typeof value !== 'string') {
+        value = value.toString();
+      }
+      value = value.trim();
       regexCheck(key, value);
     }
   });
   failedTests = tests.filter(t => t.result === false);
 
   if (failedTests.length) {
-    return { isValid: false, message: 'Errors in delivery details, please check and re-submit', failedTests };
+    return { isValid: false, message: 'Errors in form details, please check and re-submit', failedTests };
   } else {
     return { isValid: true };
   }

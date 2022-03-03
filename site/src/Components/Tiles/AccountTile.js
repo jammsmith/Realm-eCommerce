@@ -6,7 +6,12 @@ import Heading from '../Heading.js';
 
 // Styled components
 const Tile = styled(ResponsiveTileWrapper)`
-  margin: 0;
+  /* margin: 0; */
+  height: auto;
+  @media (max-width: 414px) {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
 `;
 const Content = styled.div`
   display: flex;

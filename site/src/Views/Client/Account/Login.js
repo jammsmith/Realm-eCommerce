@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import ActionButton from '../../../Components/ActionButton.js';
 import TextInput from '../../../Components/Forms/TextInput.js';
-import ErrorMessage from '../../../Components/ErrorMessage.js';
+import UserMessage from '../../../Components/UserMessage.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
 import { registerEmailPassword, getLoginError } from '../../../helpers/user.js';
 import mutations from '../../../graphql/mutations.js';
@@ -179,7 +179,7 @@ const Login = ({ form, showSuccessStep }) => {
             />
             </ButtonsWrapper>
       }
-      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {errorMessage && <UserMessage message={errorMessage} type='error' />}
     </LoginWrapper>
   );
 };

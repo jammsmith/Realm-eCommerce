@@ -6,9 +6,10 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import Heading from '../../../../Components/Heading.js';
+import UserMessage from '../../../../Components/UserMessage.js';
 
 // Styled components
-import { CheckoutItem, Warning } from './StyledComponents.js';
+import { CheckoutItem } from './StyledComponents.js';
 
 // Hooks / helpers
 import useDDMutation from '../../../../hooks/useDDMutation.js';
@@ -17,7 +18,7 @@ import mutations from '../../../../graphql/mutations.js';
 const PaymentForm = ({ deliveryDetails }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [addDeliveryDetailsToOrder] = useDDMutation(mutations.AddDeliveryDetailsToOrder);
 
@@ -25,7 +26,7 @@ const PaymentForm = ({ deliveryDetails }) => {
     event.preventDefault();
 
     if (deliveryDetails && deliveryDetails.address === '') {
-      setMessage('Please complete and confirm delivery details before submitting payment');
+      setErrorMessage('Please complete and confirm delivery details before submitting payment');
       return;
     }
     if (!stripe || !elements) return;
@@ -44,9 +45,9 @@ const PaymentForm = ({ deliveryDetails }) => {
     // This will only be reached if an error has occurred.  Show the error
     // in a message for the customer. Otherwise, customer is redirected to 'return_url'
     if (stripeError.type === 'card_error' || stripeError.type === 'validation_error') {
-      setMessage(stripeError.message);
+      setErrorMessage(stripeError.message);
     } else {
-      setMessage('An unexpected error occured.');
+      setErrorMessage('An unexpected error occured.');
     }
     setIsLoading(false);
   };
@@ -57,10 +58,13 @@ const PaymentForm = ({ deliveryDetails }) => {
         <Heading text='Payment Details' />
         <div>
           <PaymentElement />
-          {message && <Warning>{message}</Warning>}
+          {errorMessage && <UserMessage type='error' message={errorMessage} />}
         </div>
         <div>
-          <Warning>Clicking 'pay now' will submit your payment</Warning>
+          <UserMessage
+            type='warning'
+            message='Clicking pay now will submit your payment'
+          />
           <ActionButton
             text={isLoading ? <ProgressSpinner /> : 'pay now'}
             onClick={handleSubmitPayment}

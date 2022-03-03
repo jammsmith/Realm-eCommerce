@@ -9,11 +9,20 @@
         "email": {
             "bsonType": "string"
         },
-        "name": {
+        "firstName": {
             "bsonType": "string"
         },
-        "address": {
+        "lastName": {
+            "bsonType": "string"
+        },
+        "phone": {
           "bsonType": "string"
+        },
+        "type": {
+            "bsonType": "string"
+        },
+        "user_id": {
+            "bsonType": "string"
         },
         "orders": {
             "bsonType": "array",
@@ -21,11 +30,11 @@
                 "bsonType": "string"
             }
         },
-        "type": {
-            "bsonType": "string"
-        },
-        "user_id": {
-            "bsonType": "string"
+        "addresses": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         }
     },
     "title": "User"

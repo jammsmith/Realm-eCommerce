@@ -7,7 +7,8 @@ import {
   PRODUCT_DETAILS,
   ORDER_DETAILS,
   ORDER_ITEM_DETAILS,
-  DELIVERY_DETAILS
+  DELIVERY_DETAILS,
+  ADDRESS_DETAILS
 } from './fragments.js';
 
 // Users
@@ -34,9 +35,13 @@ export const USER_DETAILED = gql`
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}
   ${PRODUCT_DETAILS}
+  ${ADDRESS_DETAILS}
   query($id: ObjectId!) {
     user(query: { _id: $id }) {
       ...UserDetails
+      addresses {
+        ...AddressDetails
+      }
       orders {
         ...OrderDetails
         orderItems {
@@ -196,6 +201,19 @@ export const DELIVERY_BY_ID = gql`
   query($delivery_id: String!) {
     delivery(query: { delivery_id: $delivery_id }) {
       ...DeliveryDetails
+    }
+  }
+`;
+
+export const ADDRESSES_BY_ID = gql`
+  ${ADDRESS_DETAILS}
+  query(
+    $addressIds: [String]!
+  ) {
+    addresses(query: { 
+      address_id_in: $addressIds
+    } ) {
+      ...AddressDetails
     }
   }
 `;

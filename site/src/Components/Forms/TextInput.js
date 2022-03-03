@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
+import colours from '../../styles/colours.js';
 
-const TextInput = ({ name, value, label, helperText, required, handleChange, autoFocus, type }) => {
+const TextInput = ({ name, value, label, helperText, required, handleChange, autoFocus, type, variant, margin }) => {
   return (
     <TextField
       id={name}
@@ -12,8 +13,8 @@ const TextInput = ({ name, value, label, helperText, required, handleChange, aut
       required={required !== false}
       helperText={helperText}
       label={label}
-      margin='dense'
-      variant='filled'
+      margin={margin || 'dense'}
+      variant={variant || 'filled'}
       onChange={handleChange}
       fullWidth
       autoFocus={autoFocus}
@@ -21,7 +22,10 @@ const TextInput = ({ name, value, label, helperText, required, handleChange, aut
       sx={{
         backgroundColor: 'transparent',
         background: 'transparent',
-        borderRadius: '10px'
+        borderRadius: '10px',
+        '.Mui-focused': {
+          color: colours.dark
+        }
       }}
     />
   );
@@ -29,13 +33,15 @@ const TextInput = ({ name, value, label, helperText, required, handleChange, aut
 
 TextInput.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   label: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   helperText: PropTypes.string,
   required: PropTypes.bool,
   autoFocus: PropTypes.bool,
-  type: PropTypes.string
+  type: PropTypes.string, // html input type
+  variant: PropTypes.string,
+  margin: PropTypes.string
 };
 
 export default TextInput;

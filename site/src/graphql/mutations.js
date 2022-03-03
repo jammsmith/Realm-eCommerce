@@ -4,7 +4,8 @@ import {
   ORDER_DETAILS,
   ORDER_ITEM_DETAILS,
   PRODUCT_DETAILS,
-  DELIVERY_DETAILS
+  DELIVERY_DETAILS,
+  ADDRESS_DETAILS
 } from './fragments.js';
 
 const mutations = {
@@ -14,18 +15,14 @@ const mutations = {
     mutation(
       $_id: ObjectId!,
       $user_id: String!,
-      $name: String,
-      $address: String,
-      $email: String,
-      $type: String!
+      $type: String!,
+      $email: String
     ) {
       insertOneUser(data: {
         _id: $_id,
         user_id: $user_id,
-        name: $name,
-        address: $address,
-        email: $email,
         type: $type,
+        email: $email,
       } ) {
         ...UserDetails
       }
@@ -39,8 +36,6 @@ const mutations = {
     mutation(
       $_id: ObjectId!,
       $user_id: String!,
-      $name: String,
-      $address: String,
       $email: String,
       $type: String!,
       $orders: [String]
@@ -48,13 +43,12 @@ const mutations = {
       insertOneUser(data: {
         _id: $_id,
         user_id: $user_id,
-        name: $name,
-        address: $address,
         email: $email,
+        phone: $phone,
         type: $type,
         orders: { 
           link: $orders
-        }
+        },
       } ) {
         ...UserDetails
         orders {
@@ -73,20 +67,54 @@ const mutations = {
     ${USER_DETAILS}
     mutation(
       $id: ObjectId!,
-      $name: String,
-      $address: String,
+      $firstName: String,
+      $lastName: String,
       $email: String,
-      $type: String,
+      $phone: String,
+      $type: String
     ) {
       updateOneUser(
         query: { _id: $id },
         set: {
-          name: $name,
-          address: $address,
+          firstName: $firstName,
+          lastName: $lastName,
           email: $email,
+          phone: $phone,
           type: $type,
         } ) {
         ...UserDetails
+      }
+    }
+  `,
+  UpdateUserAddresses: gql`
+    ${USER_DETAILS}
+    ${ORDER_DETAILS}
+    ${ORDER_ITEM_DETAILS}
+    ${PRODUCT_DETAILS}
+    ${PRODUCT_DETAILS}
+    ${ADDRESS_DETAILS}
+    mutation(
+      $user_id: String!,
+      $addresses: [String!]
+    ) {
+      updateOneUser(
+        query: { user_id: $user_id },
+        set: {
+          addresses: { link: $addresses }
+        } ) {
+        ...UserDetails
+        addresses {
+          ...AddressDetails
+        }
+        orders {
+          ...OrderDetails
+          orderItems {
+            ...OrderItemDetails
+            product {
+              ...ProductDetails
+            }
+          }
+        }
       }
     }
   `,
@@ -425,18 +453,73 @@ const mutations = {
       }
     }
   `,
+  CreateAddress: gql`
+    ${ADDRESS_DETAILS}
+    mutation(
+      $address_id: String!,
+      $line1: String!,
+      $line2: String,
+      $city: String!,
+      $county: String!,
+      $postcode: String!,
+      $country: String = "UK",
+      $isDefault: Boolean = false
+    ) {
+      insertOneAddress(
+        data: {
+          address_id: $address_id,
+          line1: $line1,
+          line2: $line2,
+          city: $city,
+          county: $county,
+          postcode: $postcode,
+          country: $country,
+          isDefault: $isDefault
+        }
+      ) {
+        ...AddressDetails
+      }
+    }
+  `,
+  UpdateAddress: gql`
+    ${ADDRESS_DETAILS}
+    mutation(
+      $address_id: String!,
+      $line1: String,
+      $line2: String,
+      $city: String,
+      $county: String,
+      $postcode: String,
+      $country: String,
+      $isDefault: Boolean
+    ) {
+      updateOneAddress(
+        query: { address_id: $address_id },
+        set: {
+          line1: $line1,
+          line2: $line2,
+          city: $city,
+          county: $county,
+          postcode: $postcode,
+          country: $country,
+          isDefault: $isDefault
+        }
+      ) {
+        ...AddressDetails
+      }
+    }
+  `,
   AddDeliveryDetailsToOrder: gql`
     ${ORDER_DETAILS}
     ${DELIVERY_DETAILS}
     mutation(
       $order_id: String!,
       $delivery_id: String!,
-      $address: String,
       $firstName: String!,
       $lastName: String!,
       $email: String!,
+      $address_id: String,
       $phone: Int,
-      $registerAccount: Boolean
     ) {
       updateOneOrder(
         query: { order_id: $order_id },
@@ -444,13 +527,14 @@ const mutations = {
           delivery: {
             link: "delivery_id",
             create: {
-              delivery_id: $delivery_id
-              address: $address
-              firstName: $firstName
-              lastName: $lastName
-              email: $email
-              phone: $phone
-              registerAccount: $registerAccount
+              delivery_id: $delivery_id,
+              firstName: $firstName,
+              lastName: $lastName,
+              email: $email,
+              phone: $phone,
+              address: {
+                link: $address_id
+              }
             }
           }
         }

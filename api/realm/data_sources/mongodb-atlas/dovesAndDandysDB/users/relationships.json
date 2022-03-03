@@ -4,5 +4,11 @@
         "source_key": "orders",
         "foreign_key": "order_id",
         "is_list": true
+    },
+    "addresses": {
+        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/addresses",
+        "source_key": "addresses",
+        "foreign_key": "address_id",
+        "is_list": true
     }
 }

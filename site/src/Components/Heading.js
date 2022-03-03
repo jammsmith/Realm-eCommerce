@@ -12,14 +12,16 @@ export const StyledHeading = styled.h4`
   paddingBottom: 0.25rem;
   margin-bottom: 0.25rem;
   border-bottom: 1px solid ${darkFade};
+  font-size: ${props => props.size === 'small' ? '1.25rem' : '1.5rem'}
 `;
 
-const Heading = ({ text }) => {
-  return <StyledHeading>{text}</StyledHeading>;
+const Heading = ({ text, size }) => {
+  return <StyledHeading size={size}>{text}</StyledHeading>;
 };
 
 Heading.propTypes = {
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
+  size: PropTypes.string
 };
 
 export default Heading;

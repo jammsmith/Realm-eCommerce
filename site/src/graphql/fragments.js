@@ -4,9 +4,10 @@ export const USER_DETAILS = gql`
   fragment UserDetails on User {
     _id
     user_id
-    name
-    address
+    firstName
+    lastName
     email
+    phone
     type
   }
 `;
@@ -74,12 +75,25 @@ export const ORDER_ITEM_DETAILS = gql`
 export const DELIVERY_DETAILS = gql`
   fragment DeliveryDetails on Delivery {
     _id
+    address_id
     delivery_id
-    address
     firstName
     lastName
     email
     phone
-    registerAccount
+  }
+`;
+
+export const ADDRESS_DETAILS = gql`
+  fragment AddressDetails on Address {
+    _id
+    address_id
+    line1
+    line2
+    city
+    county
+    postcode
+    country
+    isDefault
   }
 `;
