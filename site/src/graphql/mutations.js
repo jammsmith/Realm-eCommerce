@@ -33,28 +33,41 @@ const mutations = {
     ${ORDER_DETAILS}
     ${ORDER_ITEM_DETAILS}
     ${PRODUCT_DETAILS}
+    ${DELIVERY_DETAILS}
+    ${ADDRESS_DETAILS}
     mutation(
       $_id: ObjectId!,
       $user_id: String!,
+      $firstName: String,
+      $lastName: String,
       $email: String,
+      $phone: String,
       $type: String!,
       $orders: [String]
     ) {
       insertOneUser(data: {
         _id: $_id,
         user_id: $user_id,
+        firstName: $firstName,
+        lastName: $lastName,
         email: $email,
         phone: $phone,
         type: $type,
-        orders: { 
+        orders: {
           link: $orders
         },
       } ) {
         ...UserDetails
         orders {
           ...OrderDetails
+          delivery {
+            ...DeliveryDetails
+            address {
+              ...AddressDetails
+            }
+          }
           orderItems {
-            ...OrderItemDetails 
+            ...OrderItemDetails
             product {
               ...ProductDetails
             }
@@ -94,11 +107,11 @@ const mutations = {
     ${PRODUCT_DETAILS}
     ${ADDRESS_DETAILS}
     mutation(
-      $user_id: String!,
+      $id: ObjectId!,
       $addresses: [String!]
     ) {
       updateOneUser(
-        query: { user_id: $user_id },
+        query: { _id: $id },
         set: {
           addresses: { link: $addresses }
         } ) {
@@ -282,7 +295,7 @@ const mutations = {
           link: $user_id,
         },
         orderItems: {
-          link: ["orderItem_id"], 
+          link: ["orderItem_id"],
           create: [{
             orderItem_id: $orderItem_id,
             quantity: 1,

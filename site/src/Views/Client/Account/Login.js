@@ -29,11 +29,13 @@ const ButtonsWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const Login = ({ form, showSuccessStep }) => {
+const Login = ({ form }) => {
   const app = useContext(RealmAppContext);
+  const { dbUser } = app.currentUser;
+
   const [formType, setFormType] = useState(form || 'login');
   const [formFields, setFormFields] = useState({
-    email: '',
+    email: dbUser ? dbUser.email : '',
     password: '',
     confirmPassword: ''
   });
@@ -41,12 +43,27 @@ const Login = ({ form, showSuccessStep }) => {
 
   const [addUser] = useDDMutation(mutations.AddUser);
   const [addUserWithOrders] = useDDMutation(mutations.AddUserWithOrders);
+  const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
   const [deleteUser] = useDDMutation(mutations.DeleteUser);
+
   const history = useHistory();
 
   // Event handlers
   const handleFormChange = (e) => {
     setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const { error } = await app.logIn(formFields.email, formFields.password);
+
+    if (!error) {
+      history.push('/my-account');
+    } else {
+      const message = getLoginError(error);
+      setErrorMessage(message);
+    }
   };
 
   const handleRegister = async (e) => {
@@ -58,69 +75,91 @@ const Login = ({ form, showSuccessStep }) => {
       return;
     }
 
-    const { error: registerError } = await registerEmailPassword(app, email, password);
+    try {
+      const { error: registerError } = await registerEmailPassword(app, email, password);
 
-    if (!registerError) {
-      // If app.currentUser has been created as a guest user, save relevant details
-      // to be duplicated into new user object
-      const guestUser =
-          app.currentUser && app.currentUser.dbUser && app.currentUser.dbUser.orders && app.currentUser.dbUser.orders.length &&
-            {
-              _id: app.currentUser.dbUser._id,
-              user_id: app.currentUser.dbUser.user_id,
-              orders: app.currentUser.dbUser.orders.map(order => order.order_id)
-            };
+      if (!registerError) {
+        // If app.currentUser has been created as a guest user, save relevant details
+        // to be duplicated into new user object
+        const guestUser =
+            dbUser.orders && dbUser.orders.length &&
+              {
+                _id: dbUser._id,
+                user_id: dbUser.user_id,
+                firstName: dbUser.firstName || '',
+                lastName: dbUser.lastName || '',
+                phone: dbUser.phone || '',
+                orders: dbUser.orders.map(order => order.order_id),
+                addresses: dbUser.addresses.map(address => address.address_id)
+              };
 
-      // log user in, this will complete registration and create a new permenant user ID
-      const { user, error: loginError } = await app.logIn(email, password);
+        // log user in, this will complete registration and create a new permenant user ID
+        const { user, error: loginError } = await app.logIn(email, password);
 
-      if (loginError) {
-        const message = getLoginError(loginError);
-        setErrorMessage(message);
-        return;
-      }
+        if (loginError) {
+          const message = getLoginError(loginError);
+          setErrorMessage(message);
+          return;
+        }
 
-      // create new user, include 'orders' and 'user_id' from existing guest user if they exist
-      const variables = {
-        _id: user.id,
-        user_id: guestUser ? guestUser.user_id : `user-${await uniqueString()}`,
-        email: email,
-        type: 'customer'
-      };
+        // create new user, keep existing data if it exists
+        const standardVars = {
+          _id: user.id,
+          user_id: guestUser ? guestUser.user_id : `user-${await uniqueString()}`,
+          email: email,
+          type: 'customer'
+        };
 
-      let newUser;
-      if (guestUser) {
-        const { data } = await addUserWithOrders({
-          variables: {
-            ...variables, orders: guestUser.orders
+        let guestUserVars;
+        if (guestUser) {
+          guestUserVars = {
+            ...standardVars,
+            firstName: guestUser.firstName,
+            lastName: guestUser.lastName,
+            phone: guestUser.phone
+          };
+        }
+
+        let newUser;
+
+        if (guestUser) {
+          const { data: addUserWithOrdersData } = await addUserWithOrders({
+            variables: {
+              ...guestUserVars, orders: guestUser.orders
+            }
+          });
+
+          if (guestUser.addresses && guestUser.addresses.length) {
+            const { data: updateUserAddressesData } = await updateUserAddresses({
+              variables: {
+                id: user.id,
+                addresses: guestUser.addresses
+              }
+            });
+
+            newUser = updateUserAddressesData.updateOneUser;
+          } else {
+            newUser = addUserWithOrdersData.insertOneUser;
           }
+
+          // delete the old guest user from db & anon user from realm
+          await deleteUser({ variables: { id: guestUser._id } });
+        } else {
+          const { data: addUserData } = await addUser({ standardVars });
+          newUser = addUserData.insertOneUser;
+        }
+
+        app.setCurrentUser({
+          ...app.currentUser,
+          dbUser: newUser
         });
-        newUser = data.insertOneUser;
-        // delete the old guest user from db & anon user from realm
-        await deleteUser({ variables: { id: guestUser._id } });
+
+        history.push('/my-account');
       } else {
-        const { data } = await addUser({ variables });
-        newUser = data.insertOneUser;
+        setErrorMessage(registerError);
       }
-
-      await app.setCurrentUser({
-        ...app.currentUser,
-        dbUser: newUser
-      });
-      history.push('/my-account');
-    } else {
-      setErrorMessage(registerError);
-    }
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const { error } = await app.logIn(formFields.email, formFields.password);
-    if (!error) {
-      history.push('/my-account');
-    } else {
-      const message = getLoginError(error);
-      setErrorMessage(message);
+    } catch (err) {
+      throw new Error('Failed to register user. Error:', err.message);
     }
   };
 

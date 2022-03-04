@@ -10,6 +10,7 @@
   "scripts": {
     "db:seed": "node api/mongoose/seeder/seeder.js",
     "db:delete-all": "node api/mongoose/seeder/seeder.js -d",
+    "db:clear-shop": "node api/mongoose/scripts/clearShopHistory.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

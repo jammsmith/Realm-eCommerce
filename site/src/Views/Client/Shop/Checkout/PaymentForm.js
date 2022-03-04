@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import uniqueString from 'unique-string';
@@ -13,7 +13,7 @@ import mutations from '../../../../graphql/mutations.js';
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';
 
-const PaymentForm = ({ deliveryDetails }) => {
+const PaymentForm = ({ deliveryDetails, checkoutFormsComplete, updateCheckoutCompletion }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
@@ -32,24 +32,29 @@ const PaymentForm = ({ deliveryDetails }) => {
     if (!stripe || !elements) return;
 
     setIsLoading(true);
-    // Create a new address
-    const { data } = await createAddress({
-      variables: {
-        address_id: `address-${await uniqueString()}`,
-        line1: deliveryDetails.line1,
-        line2: deliveryDetails.line2,
-        city: deliveryDetails.city,
-        county: deliveryDetails.county,
-        postcode: deliveryDetails.postcode,
-        country: deliveryDetails.country
-      }
-    });
+
+    let addressId = deliveryDetails.address_id;
+
+    if (!addressId || addressId === '') {
+      const { data } = await createAddress({
+        variables: {
+          address_id: `address-${await uniqueString()}`,
+          line1: deliveryDetails.line1,
+          line2: deliveryDetails.line2,
+          city: deliveryDetails.city,
+          county: deliveryDetails.county,
+          postcode: deliveryDetails.postcode,
+          country: deliveryDetails.country
+        }
+      });
+      addressId = data.insertOneAddress.address_id;
+    }
 
     await addDeliveryDetailsToOrder({
       variables: {
         order_id: deliveryDetails.order_id,
         delivery_id: deliveryDetails.delivery_id,
-        address_id: data.insertOneAddress.address_id,
+        address_id: addressId,
         firstName: deliveryDetails.firstName,
         lastName: deliveryDetails.lastName,
         email: deliveryDetails.email,
@@ -74,6 +79,19 @@ const PaymentForm = ({ deliveryDetails }) => {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    if (elements) {
+      const paymentElement = elements.getElement('payment');
+      paymentElement.on('change', (e) => {
+        if (e.complete !== checkoutFormsComplete.paymentFormComplete) {
+          updateCheckoutCompletion({
+            paymentFormComplete: e.complete
+          });
+        }
+      });
+    }
+  }, [elements, checkoutFormsComplete]);
+
   return (
     <CheckoutItem>
       <form>
@@ -88,10 +106,11 @@ const PaymentForm = ({ deliveryDetails }) => {
             text='Clicking pay now will submit your payment'
           />
           <ActionButton
-            text={isLoading ? <ProgressSpinner /> : 'pay now'}
+            text={isLoading ? <ProgressSpinner size='1.5rem' /> : 'pay now'}
             onClick={handleSubmitPayment}
-            disabled={!stripe || !elements}
+            disabled={!stripe || !elements || !checkoutFormsComplete}
             fullWidth
+            customStyles={!checkoutFormsComplete ? { opacity: 0.5 } : null}
           />
         </div>
       </form>
@@ -100,7 +119,9 @@ const PaymentForm = ({ deliveryDetails }) => {
 };
 
 PaymentForm.propTypes = {
-  deliveryDetails: PropTypes.object.isRequired
+  deliveryDetails: PropTypes.object.isRequired,
+  checkoutFormsComplete: PropTypes.bool.isRequired,
+  updateCheckoutCompletion: PropTypes.func.isRequired
 };
 
 export default PaymentForm;

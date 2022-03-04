@@ -34,7 +34,7 @@ const FormSubmit = ({ formDisabled, message, buttonText, loading, handleSubmit, 
 
 FormSubmit.propTypes = {
   formDisabled: PropTypes.bool.isRequired,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.object.isRequired,
   buttonText: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,

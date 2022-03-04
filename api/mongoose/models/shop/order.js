@@ -14,7 +14,8 @@ const orderSchema = new Schema({
   dateRefunded: String,
   dateSent: String,
   dateReceived: String,
-  deliveryAddress: String
+  delivery: String,
+  customer: { type: String, required: true }
 });
 
 module.exports = model('Order', orderSchema);

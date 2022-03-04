@@ -20,8 +20,10 @@ import { RealmAppContext } from '../../../../realmApolloClient.js';
 
 const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const app = useContext(RealmAppContext);
+
   const history = useHistory();
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
+
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [deliveryDetails, setDeliveryDetails] = useState({
     order_id: '',
@@ -32,12 +34,24 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     email: '',
     phone: null
   });
+  const [checkoutCompletion, setCheckoutCompletion] = useState({
+    personalFormComplete: false,
+    deliveryFormComplete: false,
+    paymentFormComplete: false
+  });
+
+  const { personalFormComplete, deliveryFormComplete, paymentFormComplete } = checkoutCompletion;
+  const checkoutFormsComplete = !!(personalFormComplete && deliveryFormComplete && paymentFormComplete);
 
   useEffect(() => {
     if (activeOrder && (!activeOrder.orderItems || (activeOrder.orderItems && !activeOrder.orderItems.length))) {
       history.push('/shop/cart');
     }
   }, [history, activeOrder]);
+
+  const updateCheckoutCompletion = useCallback((update) => {
+    setCheckoutCompletion(prev => ({ ...prev, ...update }));
+  }, [setCheckoutCompletion]);
 
   const updateDeliveryDetails = useCallback((update) => {
     setDeliveryDetails(prev => ({ ...prev, ...update }));
@@ -132,11 +146,15 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             updateActiveOrder={updateActiveOrder}
           />
           <DeliveryForm
-            formType='basic'
             updateDeliveryDetails={updateDeliveryDetails}
             dbUser={app.currentUser.dbUser}
+            updateCheckoutCompletion={updateCheckoutCompletion}
           />
-          <PaymentForm deliveryDetails={deliveryDetails} />
+          <PaymentForm
+            deliveryDetails={deliveryDetails}
+            checkoutFormsComplete={checkoutFormsComplete}
+            updateCheckoutCompletion={updateCheckoutCompletion}
+          />
         </CheckoutFormsWrapper>
         </Elements>
       : <LoadingView message='Preparing your order for checkout' />

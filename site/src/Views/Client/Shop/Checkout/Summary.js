@@ -27,6 +27,8 @@ const Summary = ({ urlParams }) => {
     }
   });
   const [updateUser] = useDDMutation(mutations.UpdateUser);
+  const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
+  const [updateAddress] = useDDMutation(mutations.UpdateAddress);
 
   useEffect(() => {
     const retrievePaymentIntent = async () => {
@@ -57,58 +59,81 @@ const Summary = ({ urlParams }) => {
 
   const handleRegister = async (e, delivery) => {
     e.preventDefault();
+    const { dbUser } = app.currentUser;
 
-    // Add delivery details to guest db user
-    await updateUser({
-      variables: {
-        id: app.currentUser.dbUser._id,
-        name: `${delivery.firstName} ${delivery.lastName}`,
-        address: delivery.address,
-        email: delivery.email
-      }
-    });
-    // forward to register page to complete
+    try {
+      await updateAddress({
+        variables: {
+          address_id: delivery.address.address_id,
+          isDefault: true
+        }
+      }); // should do this after registration so they cant access it without registering first
+      await updateUser({
+        variables: {
+          id: dbUser._id,
+          firstName: delivery.firstName,
+          lastName: delivery.lastName,
+          email: delivery.email,
+          phone: delivery.phone
+        }
+      });
+      const { data } = await updateUserAddresses({
+        variables: {
+          id: dbUser._id,
+          addresses: [delivery.address.address_id]
+        }
+      });
+
+      app.setCurrentUser({
+        ...app.currentUser,
+        dbUser: data.updateOneUser
+      });
+    } catch (err) {
+      throw new Error('Failed to update user with order details. Error:', err.message);
+    }
+
+    // forward to register page to provide password etc
     history.push('/login');
   };
 
   return (
-    app.currentUser && app.currentUser.dbUser &&
-      <SummaryWrapper>
-        <SummaryItem>
-          <h4 style={{ margin: '1rem 0' }}>{message}</h4>
-        </SummaryItem>
-        {
-          order
-            ? <>
-              {
-                !isAuthenticated(app.currentUser) &&
-                  <SummaryItem>
-                    <Text>Register an account to track your order and save your delivery details for next time</Text>
-                    <ActionButton
-                      text='Click to register!'
-                      onClick={(e) => handleRegister(e, order.delivery)}
-                      fullWidth
-                    />
-                  </SummaryItem>
-              }
-              <Cart altOrder={order} isMinimised />
-              {
-                paymentIntent.status === 'succeeded' &&
-                  <SummaryItem>
-                    <SummaryRow>
-                      <Text>Order Reference Number:</Text>
-                      <strong>{order.order_id}</strong>
-                    </SummaryRow>
-                    <SummaryRow>
-                      <Text>You will receive a confirmation of your payment by email to:</Text>
-                      <strong>{order.delivery.email}</strong>
-                    </SummaryRow>
-                  </SummaryItem>
-              }
+    <SummaryWrapper>
+      <SummaryItem>
+        <h4 style={{ margin: '1rem 0' }}>{message}</h4>
+      </SummaryItem>
+      {
+        order
+          ? <>
+            {
+              !isAuthenticated(app.currentUser) &&
+                <SummaryItem>
+                  <Text>Register an account to track your order and save your delivery details for next time</Text>
+                  <br />
+                  <ActionButton
+                    text='Click to register!'
+                    onClick={(e) => handleRegister(e, order.delivery)}
+                    fullWidth
+                  />
+                </SummaryItem>
+            }
+            <Cart altOrder={order} isMinimised />
+            {
+              paymentIntent.status === 'succeeded' &&
+                <SummaryItem>
+                  <SummaryRow>
+                    <Text>Order Reference Number:</Text>
+                    <strong>{order.order_id}</strong>
+                  </SummaryRow>
+                  <SummaryRow>
+                    <Text>You will receive a confirmation of your payment by email to:</Text>
+                    <strong>{order.delivery.email}</strong>
+                  </SummaryRow>
+                </SummaryItem>
+            }
             </>
-            : null
-        }
-      </SummaryWrapper>
+          : null
+      }
+    </SummaryWrapper>
   );
 };
 

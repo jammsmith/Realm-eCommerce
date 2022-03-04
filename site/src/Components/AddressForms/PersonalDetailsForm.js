@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 
 import FormSubmit from './FormSubmit.js';
 import RowGroup from '../Forms/RowGroup.js';
@@ -8,25 +7,24 @@ import TextInput from '../Forms/TextInput.js';
 import { formatUserDetails } from '../../helpers/user.js';
 import { validateInputFields } from '../../helpers/address.js';
 
-const PersonalDetailsForm = ({ dbUser, onValidDetails, buttonText, successMessage, disableOnSuccess }) => {
+const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, successMessage, disableOnComplete }) => {
   const [personalDetailsFields, setPersonalDetailsFields] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: ''
+    firstName: dbUser.firstName || '',
+    lastName: dbUser.lastName || '',
+    email: dbUser.email || '',
+    phone: dbUser.phone || ''
   });
   const [message, setMessage] = useState({});
   const [loading, setLoading] = useState(false);
   const [formDisabled, setFormDisabled] = useState(false);
 
-  useEffect(() => {
-    setPersonalDetailsFields({
-      firstName: dbUser.firstName || '',
-      lastName: dbUser.lastName || '',
-      email: dbUser.email || '',
-      phone: dbUser.phone || ''
+  const handleFormComplete = useCallback(() => {
+    setMessage({
+      type: 'success',
+      text: successMessage || 'Saved address details'
     });
-  }, [dbUser]);
+    setFormDisabled(true);
+  }, [successMessage]);
 
   const handleInputChange = (e) => {
     setPersonalDetailsFields(prev => ({
@@ -44,13 +42,9 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, buttonText, successMessag
     if (isValid) {
       try {
         const formattedFields = formatUserDetails(personalDetailsFields);
-        await onValidDetails(formattedFields);
-        if (disableOnSuccess) {
-          setMessage({
-            type: 'success',
-            text: successMessage || 'Saved address details'
-          });
-          setFormDisabled(true);
+        await onValidDetails(formattedFields, 'personal');
+        if (disableOnComplete) {
+          handleFormComplete();
         }
       } catch (err) {
         console.error('Save personal details failed. Error:', err);
@@ -69,7 +63,16 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, buttonText, successMessag
   const handleBackToEdit = () => {
     setFormDisabled(false);
     setMessage({});
+    if (onEditting) {
+      onEditting('personal');
+    }
   };
+
+  useEffect(() => {
+    if (disableOnComplete && dbUser.email) {
+      handleFormComplete();
+    }
+  }, [dbUser, disableOnComplete, handleFormComplete]);
 
   return (
     <form>
@@ -133,9 +136,10 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, buttonText, successMessag
 PersonalDetailsForm.propTypes = {
   dbUser: PropTypes.object.isRequired,
   onValidDetails: PropTypes.func.isRequired,
+  onEditting: PropTypes.func,
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,
-  disableOnSuccess: PropTypes.bool
+  disableOnComplete: PropTypes.bool
 };
 
 export default PersonalDetailsForm;

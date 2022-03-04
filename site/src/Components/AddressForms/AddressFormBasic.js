@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import FormSubmit from './FormSubmit.js';
@@ -6,27 +6,27 @@ import RowGroup from '../Forms/RowGroup.js';
 import TextInput from '../Forms/TextInput.js';
 import { formatUserDetails } from '../../helpers/user.js';
 
-const AddressFormBasic = ({ dbUser, onAddressValid, buttonText, successMessage, disableOnSuccess }) => {
+const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessage, disableOnComplete, defaultAddress }) => {
   const [addressFields, setAddressFields] = useState({
-    line1: '',
-    line2: '',
-    city: '',
-    county: '',
-    postcode: '',
-    country: ''
+    address_id: defaultAddress ? defaultAddress.address_id : undefined,
+    line1: defaultAddress ? defaultAddress.line1 : '',
+    line2: defaultAddress ? defaultAddress.line2 : '',
+    city: defaultAddress ? defaultAddress.city : '',
+    county: defaultAddress ? defaultAddress.county : '',
+    postcode: defaultAddress ? defaultAddress.postcode : '',
+    country: defaultAddress ? defaultAddress.country : ''
   });
   const [message, setMessage] = useState({});
   const [loading, setLoading] = useState(false);
   const [formDisabled, setFormDisabled] = useState(false);
 
-  useEffect(() => {
-    if (dbUser.addresses && dbUser.addresses.length) {
-      const defaultAddress = dbUser.addresses.find(addr => addr.isDefault === true);
-      if (addressFields !== defaultAddress) {
-        setAddressFields(defaultAddress);
-      }
-    }
-  }, [dbUser]);
+  const handleFormComplete = useCallback(() => {
+    setMessage({
+      type: 'success',
+      text: successMessage || 'Saved address details'
+    });
+    setFormDisabled(true);
+  }, [successMessage]);
 
   const handleInputChange = (e) => {
     setAddressFields(prev => ({
@@ -55,13 +55,9 @@ const AddressFormBasic = ({ dbUser, onAddressValid, buttonText, successMessage, 
         });
       } else {
         const formattedFields = formatUserDetails(addressFields);
-        await onAddressValid({ ...formattedFields, address_id: addressFields.address_id });
-        if (disableOnSuccess) {
-          setMessage({
-            type: 'success',
-            text: successMessage || 'Saved address'
-          });
-          setFormDisabled(true);
+        onAddressValid({ ...formattedFields, address_id: addressFields.address_id }, 'delivery');
+        if (disableOnComplete) {
+          handleFormComplete();
         }
       }
     } catch (err) {
@@ -73,7 +69,16 @@ const AddressFormBasic = ({ dbUser, onAddressValid, buttonText, successMessage, 
   const handleBackToEdit = () => {
     setFormDisabled(false);
     setMessage({});
+    if (onEditting) {
+      onEditting('delivery');
+    }
   };
+
+  useEffect(() => {
+    if (defaultAddress && disableOnComplete) {
+      handleFormComplete();
+    }
+  }, [defaultAddress, disableOnComplete, handleFormComplete]);
 
   return (
     <form>
@@ -155,11 +160,12 @@ const AddressFormBasic = ({ dbUser, onAddressValid, buttonText, successMessage, 
 };
 
 AddressFormBasic.propTypes = {
-  dbUser: PropTypes.object.isRequired,
   onAddressValid: PropTypes.func.isRequired,
+  onEditting: PropTypes.func,
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,
-  disableOnSuccess: PropTypes.bool
+  disableOnComplete: PropTypes.bool,
+  defaultAddress: PropTypes.object
 };
 
 export default AddressFormBasic;

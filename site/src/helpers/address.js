@@ -113,3 +113,13 @@ export const getAddressesFromPostcode = async (postcode) => {
     console.log('Error getting address from postcode', err);
   }
 };
+
+export const getDefaultAddress = (addresses) => {
+  if (addresses && addresses.length) {
+    const defaultAddress = addresses.find(addr => addr.isDefault === true);
+
+    if (defaultAddress) {
+      return defaultAddress;
+    }
+  }
+};

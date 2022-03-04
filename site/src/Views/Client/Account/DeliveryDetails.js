@@ -5,6 +5,7 @@ import uniqueString from 'unique-string';
 import AddressFormBasic from '../../../Components/AddressForms/AddressFormBasic.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
+import { getDefaultAddress } from '../../../helpers/address.js';
 
 // Styled components
 import { Wrapper } from './StyledComponents.js';
@@ -36,19 +37,16 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
         updateDbUser(userData.updateOneUser);
       } else {
         const { data } = await updateAddress({
-          variables: {
-            address_id: fields.address_id,
-            ...fields
-          }
+          variables: fields
         });
         const update = data.updateOneAddress;
-        const addressesClone = [...dbUser.addresses];
-        const addressesLessUpdated = addressesClone.filter(address => address.address_id !== update.address_id);
-        const updatedAddresses = [...addressesLessUpdated, update];
+        const addressListClone = [...dbUser.addresses];
+        const addressListLessUpdated = addressListClone.filter(address => address.address_id !== update.address_id);
+        const updatedAddressList = [...addressListLessUpdated, update];
 
         updateDbUser({
           ...dbUser,
-          addresses: updatedAddresses
+          addresses: updatedAddressList
         });
       }
     } catch (err) {
@@ -59,10 +57,10 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
   return (
     <Wrapper>
       <AddressFormBasic
-        dbUser={dbUser}
         onAddressValid={onAddressValid}
         buttonText='save address'
         successMessage='Address saved'
+        defaultAddress={getDefaultAddress(dbUser.addresses)}
       />
     </Wrapper>
   );

@@ -138,11 +138,15 @@ export const SINGLE_ORDER_DETAILED = gql`
   ${PRODUCT_DETAILS}
   ${USER_DETAILS}
   ${DELIVERY_DETAILS}
+  ${ADDRESS_DETAILS}
   query($id: ObjectId!) {
     order(query: { _id: $id }) {
       ...OrderDetails
       delivery {
         ...DeliveryDetails
+        address {
+          ...AddressDetails
+        }
       }
       customer {
         ...UserDetails
@@ -171,11 +175,15 @@ export const ORDER_BY_PAYMENT_INTENT = gql`
   ${ORDER_ITEM_DETAILS}
   ${PRODUCT_DETAILS}
   ${DELIVERY_DETAILS}
+  ${ADDRESS_DETAILS}
   query($paymentIntentId: String!) {
     order(query: { paymentIntentId: $paymentIntentId }) {
       ...OrderDetails,
       delivery {
         ...DeliveryDetails
+        address {
+          ...AddressDetails
+        }
       }
       orderItems {
         ...OrderItemDetails
