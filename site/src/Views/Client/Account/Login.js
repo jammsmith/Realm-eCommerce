@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import uniqueString from 'unique-string';
@@ -8,9 +8,10 @@ import ActionButton from '../../../Components/ActionButton.js';
 import TextInput from '../../../Components/Forms/TextInput.js';
 import UserMessage from '../../../Components/UserMessage.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
-import { registerEmailPassword, getLoginError } from '../../../helpers/auth.js';
+import { registerEmailPassword, getLoginError, isAuthenticated } from '../../../helpers/auth.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
+import colours from '../../../styles/colours.js';
 
 // Styled components
 const LoginWrapper = styled.div`
@@ -35,7 +36,7 @@ const Login = ({ form }) => {
 
   const [formType, setFormType] = useState(form || 'login');
   const [formFields, setFormFields] = useState({
-    email: dbUser ? dbUser.email : '',
+    email: dbUser && dbUser.email ? dbUser.email : '',
     password: '',
     confirmPassword: ''
   });
@@ -163,6 +164,12 @@ const Login = ({ form }) => {
     }
   };
 
+  useEffect(() => {
+    if (!isAuthenticated(app.currentUser)) {
+      setFormType('register');
+    }
+  }, [isAuthenticated]);
+
   return (
     <LoginWrapper>
       <div>{formType === 'login' ? 'Login to your account' : 'Register an account'}</div>
@@ -176,7 +183,6 @@ const Login = ({ form }) => {
           handleChange={handleFormChange}
         />
         <TextInput
-          autoFocus
           label='Password'
           name='password'
           type='password'
@@ -186,7 +192,6 @@ const Login = ({ form }) => {
         {
           formType === 'register' &&
             <TextInput
-              autoFocus
               label='Confirm password'
               name='confirmPassword'
               type='password'
@@ -199,22 +204,24 @@ const Login = ({ form }) => {
         formType === 'login'
           ? <ButtonsWrapper>
             <ActionButton
-              text='login'
-              onClick={handleLogin}
-            />
-            <ActionButton
               text='register new account'
               onClick={() => setFormType('register')}
+            />
+            <ActionButton
+              text='login'
+              onClick={handleLogin}
+              customStyles={{ borderWidth: '0.15rem', borderColor: colours.dark }}
             />
             </ButtonsWrapper>
           : <ButtonsWrapper>
             <ActionButton
-              text='register'
-              onClick={handleRegister}
-            />
-            <ActionButton
               text='login to your account'
               onClick={() => setFormType('login')}
+            />
+            <ActionButton
+              text='register'
+              onClick={handleRegister}
+              customStyles={{ borderWidth: '0.15rem', borderColor: colours.dark }}
             />
             </ButtonsWrapper>
       }
