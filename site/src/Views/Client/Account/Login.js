@@ -168,7 +168,7 @@ const Login = ({ form }) => {
     if (!isAuthenticated(app.currentUser)) {
       setFormType('register');
     }
-  }, [isAuthenticated]);
+  }, [app.currentUser]);
 
   return (
     <LoginWrapper>

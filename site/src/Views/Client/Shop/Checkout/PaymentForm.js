@@ -90,7 +90,7 @@ const PaymentForm = ({ deliveryDetails, checkoutFormsComplete, updateCheckoutCom
         }
       });
     }
-  }, [elements, checkoutFormsComplete]);
+  }, [elements, checkoutFormsComplete, updateCheckoutCompletion]);
 
   return (
     <CheckoutItem>

@@ -15,7 +15,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
     if (formType) {
       updateCheckoutCompletion({ [`${formType}FormComplete`]: true });
     }
-  }, [updateDeliveryDetails]);
+  }, [updateDeliveryDetails, updateCheckoutCompletion]);
 
   const handleEditDetails = useCallback((formType) => {
     updateCheckoutCompletion({ [`${formType}FormComplete`]: false });
@@ -39,7 +39,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
         });
       }
     }
-  }, [dbUser, defaultAddress, handleValidDetails]);
+  }, [dbUser, defaultAddress, handleValidDetails, updateCheckoutCompletion]);
 
   return (
     <>
