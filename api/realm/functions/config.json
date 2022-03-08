@@ -1,16 +1,12 @@
 [
     {
-        "name": "getDbUserData",
-        "private": false
+        "name": "incomingStripeEvents",
+        "private": false,
+        "run_as_system": true
     },
     {
         "name": "resetPassword",
         "private": false
-    },
-    {
-        "name": "incomingStripeEvents",
-        "private": false,
-        "run_as_system": true
     },
     {
         "name": "retrievePaymentIntent",
@@ -19,6 +15,15 @@
     },
     {
         "name": "createPaymentIntent",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "getDbUserData",
+        "private": false
+    },
+    {
+        "name": "generateId",
         "private": false,
         "run_as_system": true
     }

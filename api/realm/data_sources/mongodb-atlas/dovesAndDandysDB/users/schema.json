@@ -6,6 +6,12 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "addresses": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "email": {
             "bsonType": "string"
         },
@@ -15,26 +21,20 @@
         "lastName": {
             "bsonType": "string"
         },
-        "phone": {
-          "bsonType": "string"
-        },
-        "type": {
-            "bsonType": "string"
-        },
-        "user_id": {
-            "bsonType": "string"
-        },
         "orders": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
         },
-        "addresses": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
+        "phone": {
+            "bsonType": "string"
+        },
+        "type": {
+            "bsonType": "string"
+        },
+        "user_id": {
+            "bsonType": "string"
         }
     },
     "title": "User"

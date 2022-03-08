@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import DDTable from '../../../Components/Table/DDTable.js';
+import { getCartSubTotal } from '../../../helpers/cart.js';
 
 // Styled components
 import { Wrapper } from './StyledComponents.js';
@@ -23,7 +24,7 @@ const MyOrders = ({ dbUser }) => {
 
   const rows = orders && orders.length &&
     orders.map(order =>
-      buildRows(order.datePaid, order._id, order.paymentStatus, order.orderStatus, 4.0)
+      buildRows(order.datePaid, order.order_id, order.paymentStatus, order.orderStatus, getCartSubTotal(order))
     );
 
   return (
