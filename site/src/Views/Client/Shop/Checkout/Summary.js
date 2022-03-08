@@ -105,10 +105,17 @@ const Summary = ({ urlParams }) => {
         order
           ? <>
             {
-              !isAuthenticated(app.currentUser) &&
-                <SummaryItem>
+              isAuthenticated(app.currentUser)
+                ? <SummaryItem>
+                  <Text>Click below to view the order status in your account, or access any time by logging in</Text>
+                  <ActionButton
+                    text='view in my account'
+                    linkTo='/my-account'
+                    fullWidth
+                  />
+                </SummaryItem>
+                : <SummaryItem>
                   <Text>Register an account to track your order and save your delivery details for next time</Text>
-                  <br />
                   <ActionButton
                     text='Click to register!'
                     onClick={(e) => handleRegister(e, order.delivery)}

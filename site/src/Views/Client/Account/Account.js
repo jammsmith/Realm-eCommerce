@@ -39,7 +39,9 @@ const MyAccount = () => {
   return (
     <>
       <SectionSpacer dark spaceBelow />
-      <TabMenu items={sections} />
+      <div style={{ minHeight: '500px' }}>
+        <TabMenu items={sections} />
+      </div>
     </>
   );
 };

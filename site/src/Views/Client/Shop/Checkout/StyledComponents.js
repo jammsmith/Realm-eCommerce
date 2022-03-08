@@ -42,5 +42,5 @@ export const SummaryRow = styled.div`
 `;
 
 export const Text = styled.p`
-  margin-bottom: 0;
+  margin-bottom: 0.5rem;
 `;
