@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, useLocation } from 'react-router-dom';
 
 // Main views
 import Home from './Views/Client/Home/Home.js';
+import Admin from './Views/Admin/Admin.js';
 import Shop from './Views/Client/Shop/Shop.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
@@ -11,6 +12,7 @@ import Login from './Views/Client/Account/Login.js';
 import Error404 from './Views/Error/Error404.js';
 
 // Other
+import ClientView from './Components/ClientView.js';
 import Navbar from './Components/Navbar/Navbar';
 import SideDrawer from './Components/SideDrawer/SideDrawer';
 import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
@@ -28,40 +30,71 @@ const App = () => {
     }
   }, [app]);
 
-  // Small screen menu toggle -->
-  const [menuInView, setMenuInView] = useState(false);
-  const handleToggle = () => setMenuInView(prevValue => !prevValue);
-  const closeMenu = () => setMenuInView(false);
-
   return (
     appReady
       ? <Router>
-        <Navbar handleToggle={handleToggle} />
-        {
-          menuInView &&
-            <>
-              <SideDrawer
-                show={menuInView}
-                handleDrawerLinkClick={closeMenu}
-              />
-              <BackgroundShadow handleBackgroundClick={closeMenu} />
-            </>
-        }
         <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/about-us' component={AboutUs} />
-          <Route exact path='/contact-us' component={ContactUs} />
-          <Route exact path='/login' component={Login} />
+          <Route
+            exact
+            path='/admin'
+            component={Admin}
+          />
+          <Route
+            exact
+            path='/'
+            render={() =>
+              <ClientView>
+                <Home />
+              </ClientView>}
+          />
+          <Route
+            exact
+            path='/about-us'
+            render={() =>
+              <ClientView>
+                <AboutUs />
+              </ClientView>}
+          />
+          <Route
+            exact
+            path='/contact-us'
+            render={() =>
+              <ClientView>
+                <ContactUs />
+              </ClientView>}
+          />
+          <Route
+            exact
+            path='/login'
+            render={() =>
+              <ClientView>
+                <Login />
+              </ClientView>}
+          />
           <PrivateRoute
             exact
             path='/my-account'
-            component={Account}
+            render={() =>
+              <ClientView>
+                <Account />
+              </ClientView>}
           />
-          <Route path='/shop' component={Shop} />
-          <Route path='/' component={Error404} />
+          <Route
+            path='/shop'
+            render={() =>
+              <ClientView>
+                <Shop />
+              </ClientView>}
+          />
+          <Route
+            path='/'
+            render={() =>
+              <ClientView>
+                <Error404 />
+              </ClientView>}
+          />
         </Switch>
-        <Footer />
-      </Router>
+        </Router>
       : null
   );
 };

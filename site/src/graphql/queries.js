@@ -204,6 +204,32 @@ export const ALL_ORDERS = gql`
   }
 `;
 
+export const ADMIN_ORDERS = gql`
+  ${ORDER_DETAILS}
+  ${ORDER_ITEM_DETAILS}
+  ${PRODUCT_DETAILS}
+  ${USER_DETAILS}
+  query {
+    orders(query: {
+
+        paymentStatus: "successful",
+        orderStatus_ne: "archived"
+
+    }) {
+      ...OrderDetails
+      orderItems {
+        ...OrderItemDetails
+        product {
+          ...ProductDetails
+        }
+      }
+      customer {
+        ...UserDetails
+      }
+    }
+  }
+`;
+
 export const DELIVERY_BY_ID = gql`
   ${DELIVERY_DETAILS}
   query($delivery_id: String!) {
