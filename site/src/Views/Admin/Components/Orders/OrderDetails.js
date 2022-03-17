@@ -20,7 +20,8 @@ const OrderDetails = ({ open, handleClose, orderId }) => {
   const [order, setOrder] = useState();
 
   const { data, loading } = useQuery(SINGLE_ORDER_DETAILED, {
-    variables: { orderId }
+    variables: { orderId },
+    skip: !orderId
   });
 
   useEffect(() => {
@@ -47,7 +48,6 @@ const OrderDetails = ({ open, handleClose, orderId }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>
-        <Button onClick={handleClose}>Save</Button>
       </DialogActions>
     </Dialog>
   );
@@ -56,7 +56,7 @@ const OrderDetails = ({ open, handleClose, orderId }) => {
 OrderDetails.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  orderId: PropTypes.object.isRequired
+  orderId: PropTypes.string.isRequired
 };
 
 export default OrderDetails;

@@ -133,6 +133,15 @@ export const ALL_PRODUCTS = gql`
   }
 `;
 
+export const PRODUCTS_SEARCH = gql`
+  ${PRODUCT_DETAILS}
+  query($name: String) {
+    productSearch(input: $name) {
+      ...ProductDetails
+    }
+  }
+`;
+
 export const SINGLE_ORDER_DETAILED = gql`
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}
@@ -217,11 +226,11 @@ export const ADMIN_ORDERS = gql`
   query {
     orders(query: {
       AND: [
-        { 
+        {
           OR: [
             { paymentStatus: "successful" },
             { paymentStatus: "refunded" },
-          ] 
+          ]
         },
         { orderStatus_ne: "archived" }
       ]

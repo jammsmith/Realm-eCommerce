@@ -22,7 +22,7 @@ const MyOrders = ({ dbUser }) => {
       date: formattedDate,
       orderId,
       paymentStatus: _.startCase(paymentStatus),
-      orderStatus: _.startCase(orderStatus),
+      orderStatus: orderStatus !== 'archived' ? _.startCase(orderStatus) : 'Dispatched',
       amount
     };
   };

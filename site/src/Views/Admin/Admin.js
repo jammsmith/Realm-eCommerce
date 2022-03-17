@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Navbar from './Components/Navbar.js';
-import OrdersTable from './Components/Orders/Orders.js';
-import InventoryTable from './Components/InventoryTable.js';
+import Orders from './Components/Orders/Orders.js';
+import Inventory from './Components/Inventory/Inventory.js';
 import SalesGraph from './Components/SalesGraph.js';
 import SiteStatsGraph from './Components/SiteStatsGraph.js';
 
@@ -14,8 +14,8 @@ const Admin = () => {
     <>
       <Navbar />
       <AdminWrapper>
-        <OrdersTable />
-        <InventoryTable />
+        <Orders />
+        <Inventory />
         <SalesGraph />
         <SiteStatsGraph />
       </AdminWrapper>

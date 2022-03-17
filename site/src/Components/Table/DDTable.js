@@ -11,10 +11,10 @@ import {
 } from '@mui/material';
 import uniqueString from 'unique-string';
 
-const DDTable = ({ columns, rows, size, handleRowClick }) => {
+const DDTable = ({ columns, rows, size, handleRowClick, style }) => {
   return (
     <TableContainer
-      sx={{
+      sx={style || {
         background: 'transparent',
         WebkitBoxShadow: '-3px -1px 10px 2px rgba(0,0,0,0.2)',
         boxShadow: '-3px -1px 10px 2px rgba(0,0,0,0.2)'
@@ -63,7 +63,8 @@ DDTable.propTypes = {
   rows: PropTypes.array.isRequired,
   columns: PropTypes.array.isRequired,
   size: PropTypes.string,
-  handleRowClick: PropTypes.func
+  handleRowClick: PropTypes.func,
+  style: PropTypes.object
 };
 
 export default DDTable;

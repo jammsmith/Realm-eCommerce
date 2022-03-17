@@ -6,7 +6,13 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "customer": {
+            "bsonType": "string"
+        },
         "dateCreated": {
+            "bsonType": "date"
+        },
+        "dateDispatched": {
             "bsonType": "date"
         },
         "datePaid": {
@@ -15,11 +21,17 @@
         "dateReceived": {
             "bsonType": "date"
         },
-        "dateDispatched": {
-            "bsonType": "date"
+        "delivery": {
+            "bsonType": "string"
         },
         "extraInfo": {
             "bsonType": "string"
+        },
+        "orderItems": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "orderStatus": {
             "bsonType": "string"
@@ -33,23 +45,11 @@
         "paymentStatus": {
             "bsonType": "string"
         },
-        "delivery": {
-            "bsonType": "string"
-        },
-        "customer": {
-            "bsonType": "string"
-        },
-        "orderItems": {
+        "refunds": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
-        },
-        "refunds": {
-          "bsonType": "array",
-          "items": {
-            "bsonType": "string"
-          }
         }
     },
     "title": "Order"

@@ -19,26 +19,29 @@ export const AdminWrapper = styled.div`
 `;
 
 // Grid children -->
-export const OrdersWrapper = styled.div`
-  border: 2px solid red;
+const GridItem = styled.div`
+  background-color: rgb(63,81,181);
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  padding: 1rem;
+`;
+export const OrdersWrapper = styled(GridItem)`
   grid-column: 1 / 7;
   grid-row: 1 / 1;
 `;
 
-export const InventoryWrapper = styled.div`
-  border: 2px solid green;
+export const InventoryWrapper = styled(GridItem)`
   grid-column: 7 / 14;
   grid-row: 1 / 1;
 `;
 
-export const SalesGraphWrapper = styled.div`
-  border: 2px solid blue;
+export const SalesGraphWrapper = styled(GridItem)`
   grid-column: 1 / 7;
   grid-row: 2 / 2;
 `;
 
-export const SiteStatsWrapper = styled.div`
-  border: 2px solid orange;
+export const SiteStatsWrapper = styled(GridItem)`
   grid-column: 7 / 14;
   grid-row: 2 / 2;
 `;
@@ -92,6 +95,34 @@ export const RefundWrapper = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   gap: 1rem;
+`;
+
+// Order Status
+export const OrderStatusContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+export const OrderStatusRow = styled(DataRow)`
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  border: none;
+`;
+export const StatusButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem
+`;
+
+// Inventory
+export const InventoryButtonWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+  width: 100%;
 `;

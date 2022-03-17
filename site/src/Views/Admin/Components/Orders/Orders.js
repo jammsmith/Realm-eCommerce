@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import OrderDetails from './OrderDetails.js';
 import DDTable from '../../../../Components/Table/DDTable.js';
+import Heading from '../../../../Components/Heading.js';
 import { ADMIN_ORDERS } from '../../../../graphql/queries.js';
 
 // Styled components
@@ -72,7 +73,7 @@ const Orders = () => {
         orderId={selectedOrderId.current}
       />
       <OrdersWrapper>
-      Orders Table
+        <Heading text='Orders' size='small' color='white' />
         {
           rows
             ? <DDTable
@@ -80,6 +81,7 @@ const Orders = () => {
               columns={columns}
               size='small'
               handleRowClick={handleOpenDialog}
+              style={{ marginTop: '1rem' }}
               />
             : 'no active orders'
         }

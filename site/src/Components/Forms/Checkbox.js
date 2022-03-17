@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormControlLabel, Checkbox as MuiCheckbox } from '@mui/material';
 
 // Colours
@@ -30,6 +31,13 @@ const Checkbox = ({ value, label, handleChange, size }) => {
       label={label}
     />
   );
+};
+
+Checkbox.propTypes = {
+  value: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  size: PropTypes.string.isRequired
 };
 
 export default Checkbox;

@@ -1,58 +1,92 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { IoCheckmarkCircleSharp } from 'react-icons/io5';
+import _ from 'lodash';
 
 import Heading from '../../../../Components/Heading.js';
+import ActionButton from '../../../../Components/ActionButton.js';
+import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
+import UserMessage from '../../../../Components/UserMessage.js';
+import useDDMutation from '../../../../hooks/useDDMutation.js';
+import mutations from '../../../../graphql/mutations.js';
 
 // Styled components
 import {
   DataSection as Section,
-  DataRow,
+  OrderStatusRow,
   DataRowLeftItem,
   DataRowRightItem,
-  AddressWrapper
+  StatusButtons,
+  OrderStatusContainer
 } from '../../styledComponents.js';
 
 const StatusSection = ({ order }) => {
-  const { delivery } = order;
-  const { address } = delivery;
+  const [loading, setLoading] = useState({});
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState(order ? order.orderStatus : null);
+  useEffect(() => {
+    if (order && order.orderStatus !== status) {
+      setStatus(order.orderStatus);
+    }
+  }, [order]);
+
+  const [updateOrder] = useDDMutation(mutations.UpdateOrder);
+  const updateOrderStatus = async (e, status) => {
+    try {
+      e.preventDefault();
+      setLoading({ button: status, state: true });
+      await updateOrder({
+        variables: {
+          id: order._id,
+          orderStatus: status
+        }
+      });
+      setStatus(status);
+      setLoading({ button: status, state: false });
+    } catch (err) {
+      setError(err);
+    } finally {
+      loading.state === true && setLoading({});
+    }
+  };
+
   return (
-    <Section>
-      <Heading text='Order Status' size='small' />
-      <div>
-        <DataRow>
-          <DataRowLeftItem>Name</DataRowLeftItem>
-          <DataRowRightItem>{delivery.firstName} {delivery.lastName}</DataRowRightItem>
-        </DataRow>
-        <DataRow>
-          <DataRowLeftItem>Email</DataRowLeftItem>
-          <DataRowRightItem>{delivery.email}</DataRowRightItem>
-        </DataRow>
-        <DataRow>
-          <DataRowLeftItem>Phone</DataRowLeftItem>
-          <DataRowRightItem>{delivery.phone}</DataRowRightItem>
-        </DataRow>
-        <DataRow>
-          {
-            address
-              ? <>
-                <DataRowLeftItem>Address</DataRowLeftItem>
-                <AddressWrapper>
-                  <DataRowRightItem>{address.line1}</DataRowRightItem>
-                  <DataRowRightItem>{address.line2}</DataRowRightItem>
-                  <DataRowRightItem>{address.city}</DataRowRightItem>
-                  <DataRowRightItem>{address.postcode.toUpperCase()}</DataRowRightItem>
-                  <DataRowRightItem>{address.country.toUpperCase()}</DataRowRightItem>
-                </AddressWrapper>
-              </>
-              : <>
-                <DataRowLeftItem>Store Pick-up</DataRowLeftItem>
-                <IoCheckmarkCircleSharp style={{ fontSize: '1.5rem', color: 'green' }} />
-              </>
-          }
-        </DataRow>
-      </div>
-    </Section>
+    status
+      ? <Section>
+        <Heading text='Order Status' size='small' />
+        <OrderStatusContainer>
+          <OrderStatusRow>
+            <DataRowLeftItem>Current Status</DataRowLeftItem>
+            <DataRowRightItem>{_.startCase(status)}</DataRowRightItem>
+          </OrderStatusRow>
+          <StatusButtons>
+            <ActionButton
+              text={loading.status === true && loading.button === 'accepted'
+                ? <ProgressSpinner size='1.5rem' />
+                : 'Accept Order'}
+              onClick={(e) => updateOrderStatus(e, 'accepted')}
+              fullWidth
+              disabled={status === 'accepted' || status === 'dispatched' || status === 'archived'}
+            />
+            <ActionButton
+              text={loading.status === true && loading.button === 'dispatched'
+                ? <ProgressSpinner size='1.5rem' />
+                : 'Mark as dispatched'}
+              onClick={(e) => updateOrderStatus(e, 'dispatched')}
+              fullWidth
+              disabled={status === 'dispatched' || status === 'archived'}
+            />
+            <ActionButton
+              text={loading.status === true && loading.button === 'archived'
+                ? <ProgressSpinner size='1.5rem' />
+                : 'Archive Order'}
+              onClick={(e) => updateOrderStatus(e, 'archived')}
+              fullWidth
+              disabled={status === 'archived'}
+            />
+          </StatusButtons>
+        </OrderStatusContainer>
+        </Section>
+      : null
   );
 };
 

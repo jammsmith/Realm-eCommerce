@@ -6,20 +6,20 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "refund_id": {
-            "bsonType": "string"
-        },
         "amount": {
-            "bsonType": "string"
-        },
-        "reason": {
             "bsonType": "string"
         },
         "date": {
             "bsonType": "date"
         },
+        "reason": {
+            "bsonType": "string"
+        },
+        "refund_id": {
+            "bsonType": "string"
+        },
         "status": {
-          "bsonType": "string"
+            "bsonType": "string"
         }
     },
     "title": "Refund"
