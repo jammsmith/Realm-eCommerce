@@ -37,7 +37,10 @@ const ClientView = ({ children }) => {
 };
 
 ClientView.propTypes = {
-  children: PropTypes.elementType.isRequired
+  children: PropTypes.oneOfType([
+    PropTypes.elementType,
+    PropTypes.object
+  ]).isRequired
 };
 
 export default ClientView;

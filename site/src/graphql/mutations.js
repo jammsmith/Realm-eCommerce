@@ -368,8 +368,7 @@ const mutations = {
       $paymentStatus: String,
       $dateCreated: DateTime,
       $datePaid: DateTime,
-      $dateRefunded: DateTime,
-      $dateSent: DateTime,
+      $dateDispatched: DateTime,
       $dateReceived: DateTime
     ) {
       updateOneOrder(
@@ -381,8 +380,7 @@ const mutations = {
           paymentStatus: $paymentStatus,
           dateCreated: $dateCreated,
           datePaid: $datePaid,
-          dateRefunded: $dateRefunded,
-          dateSent: $dateSent,
+          dateDispatched: $dateDispatched,
           dateReceived: $dateReceived
         } ) {
         ...OrderDetails

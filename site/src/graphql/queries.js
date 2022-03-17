@@ -8,7 +8,8 @@ import {
   ORDER_DETAILS,
   ORDER_ITEM_DETAILS,
   DELIVERY_DETAILS,
-  ADDRESS_DETAILS
+  ADDRESS_DETAILS,
+  REFUND_DETAILS
 } from './fragments.js';
 
 // Users
@@ -139,8 +140,9 @@ export const SINGLE_ORDER_DETAILED = gql`
   ${USER_DETAILS}
   ${DELIVERY_DETAILS}
   ${ADDRESS_DETAILS}
-  query($id: ObjectId!) {
-    order(query: { _id: $id }) {
+  ${REFUND_DETAILS}
+  query($orderId: String!) {
+    order(query: { order_id: $orderId }) {
       ...OrderDetails
       delivery {
         ...DeliveryDetails
@@ -156,6 +158,9 @@ export const SINGLE_ORDER_DETAILED = gql`
         product {
           ...ProductDetails
         }
+      }
+      refunds {
+        ...RefundDetails
       }
     }
   }
@@ -211,10 +216,15 @@ export const ADMIN_ORDERS = gql`
   ${USER_DETAILS}
   query {
     orders(query: {
-
-        paymentStatus: "successful",
-        orderStatus_ne: "archived"
-
+      AND: [
+        { 
+          OR: [
+            { paymentStatus: "successful" },
+            { paymentStatus: "refunded" },
+          ] 
+        },
+        { orderStatus_ne: "archived" }
+      ]
     }) {
       ...OrderDetails
       orderItems {
@@ -244,7 +254,7 @@ export const ADDRESSES_BY_ID = gql`
   query(
     $addressIds: [String]!
   ) {
-    addresses(query: { 
+    addresses(query: {
       address_id_in: $addressIds
     } ) {
       ...AddressDetails

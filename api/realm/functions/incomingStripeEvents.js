@@ -1,14 +1,12 @@
 exports = async (payload, response) => {
   // Convert the webhook body from BSON to an EJSON object
   const event = EJSON.parse(payload.body.text());
-  const paymentIntent = event.data.object;
 
-  //
+  // Handle payments
   const orders = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('orders');
-
   const updateOrderStatus = async (options) => {
     await orders.updateOne(
-      { paymentIntentId: paymentIntent.id },
+      { paymentIntentId: event.data.object.id },
       { $set: options }
     );
   };
@@ -29,6 +27,19 @@ exports = async (payload, response) => {
     });
   };
 
+  // Handle refunds
+  const handleRefundUpdated = async () => {
+    const refunds = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('refunds');
+    const refund = event.data.object;
+
+    await refunds.updateOne(
+      { refund_id: refund.id },
+      {
+        $set: { status: refund.status }
+      }
+    );
+  };
+
   // Handle the event
   switch (event.type) {
     case 'payment_intent.succeeded':
@@ -38,6 +49,11 @@ exports = async (payload, response) => {
     case 'payment_intent.payment_failed':
       console.log('payment_intent.payment_failed');
       handlePaymentFailed();
+      break;
+    case 'charge.refunded':
+    case 'charge.refund.updated':
+      console.log('charge.refunded || charge.refund.updated');
+      handleRefundUpdated();
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);

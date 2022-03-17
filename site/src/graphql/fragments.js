@@ -57,8 +57,7 @@ export const ORDER_DETAILS = gql`
     paymentStatus
     dateCreated
     datePaid
-    dateRefunded
-    dateSent
+    dateDispatched
     dateReceived
   }
 `;
@@ -94,5 +93,16 @@ export const ADDRESS_DETAILS = gql`
     postcode
     country
     isDefault
+  }
+`;
+
+export const REFUND_DETAILS = gql`
+  fragment RefundDetails on Refund {
+    _id
+    refund_id
+    amount
+    reason
+    date
+    status
   }
 `;

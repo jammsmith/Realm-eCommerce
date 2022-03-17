@@ -8,7 +8,13 @@ import { getCartSubTotal } from '../../../helpers/cart.js';
 import { Wrapper } from './StyledComponents.js';
 
 const MyOrders = ({ dbUser }) => {
-  const columns = ['Date', 'Order Id', 'Payment Status', 'Order Status', 'Amount'];
+  const columns = [
+    { name: 'date', label: 'Date' },
+    { name: 'orderId', label: 'Order ID' },
+    { name: 'paymentStatus', label: 'Payment Status' },
+    { name: 'orderStatus', label: 'Order Status' },
+    { name: 'amount', label: 'Amount' }
+  ];
 
   const buildRows = (date, orderId, paymentStatus, orderStatus, amount) => {
     const formattedDate = date.split('T')[0];
@@ -20,7 +26,7 @@ const MyOrders = ({ dbUser }) => {
       amount
     };
   };
-  const orders = dbUser.orders.filter(order => order.paymentStatus === 'successful');
+  const orders = dbUser.orders && dbUser.orders.filter(order => order.paymentStatus === 'successful' || order.paymentStatus === 'refunded');
 
   const rows = orders && orders.length &&
     orders.map(order =>

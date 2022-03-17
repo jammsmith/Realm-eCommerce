@@ -11,37 +11,48 @@ import {
 } from '@mui/material';
 import uniqueString from 'unique-string';
 
-const DDTable = ({ columns, rows }) => {
+const DDTable = ({ columns, rows, size, handleRowClick }) => {
   return (
     <TableContainer
       sx={{
         background: 'transparent',
-        '-webkit-box-shadow': '-3px -1px 10px 2px rgba(0,0,0,0.2)',
+        WebkitBoxShadow: '-3px -1px 10px 2px rgba(0,0,0,0.2)',
         boxShadow: '-3px -1px 10px 2px rgba(0,0,0,0.2)'
       }}
       component={Paper}
     >
-      <Table sx={{ width: '100%' }} size='medium' aria-label='table of my past orders'>
+      <Table sx={{ width: '100%' }} size={size || 'medium'}>
         <TableHead>
           <TableRow>
             {
-              columns.map(c => <TableCell key={uniqueString()} align='left'>{c}</TableCell>)
+              columns.map(c =>
+                <TableCell key={uniqueString()} align='left'>{c.label}</TableCell>
+              )
             }
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={uniqueString()}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell align='left'>{row.date}</TableCell>
-              <TableCell align='left'>{row.orderId}</TableCell>
-              <TableCell align='left'>{row.paymentStatus}</TableCell>
-              <TableCell align='left'>{row.orderStatus}</TableCell>
-              <TableCell align='left'>{row.amount}</TableCell>
-            </TableRow>
-          ))}
+          {rows.map((row) => {
+            return (
+              <TableRow
+                key={uniqueString()}
+                sx={{
+                  '&:last-child td, &:last-child th': { border: 0 },
+                  ':hover': {
+                    cursor: 'pointer'
+                  }
+                }}
+                hover={!!handleRowClick}
+                onClick={handleRowClick ? () => handleRowClick(row.orderId) : null}
+              >
+                {
+                  columns.map(column =>
+                    <TableCell key={uniqueString()} align='left'>{row[column.name]}</TableCell>
+                  )
+                }
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
@@ -50,7 +61,9 @@ const DDTable = ({ columns, rows }) => {
 
 DDTable.propTypes = {
   rows: PropTypes.array.isRequired,
-  columns: PropTypes.array.isRequired
+  columns: PropTypes.array.isRequired,
+  size: PropTypes.string,
+  handleRowClick: PropTypes.func
 };
 
 export default DDTable;

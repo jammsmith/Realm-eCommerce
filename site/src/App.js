@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Route, Switch, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Main views
 import Home from './Views/Client/Home/Home.js';
@@ -13,10 +13,6 @@ import Error404 from './Views/Error/Error404.js';
 
 // Other
 import ClientView from './Components/ClientView.js';
-import Navbar from './Components/Navbar/Navbar';
-import SideDrawer from './Components/SideDrawer/SideDrawer';
-import BackgroundShadow from './Components/BackgroundShadow/BackgroundShadow';
-import Footer from './Components/Footer/Footer.js';
 import PrivateRoute from './Components/PrivateRoute.js';
 import { RealmAppContext } from './realmApolloClient.js';
 
@@ -74,7 +70,7 @@ const App = () => {
           <PrivateRoute
             exact
             path='/my-account'
-            render={() =>
+            component={() =>
               <ClientView>
                 <Account />
               </ClientView>}

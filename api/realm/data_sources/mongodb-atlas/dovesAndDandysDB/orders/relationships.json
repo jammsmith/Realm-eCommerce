@@ -16,5 +16,11 @@
         "source_key": "orderItems",
         "foreign_key": "orderItem_id",
         "is_list": true
+    },
+    "refunds": {
+        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/refunds",
+        "source_key": "refunds",
+        "foreign_key": "refund_id",
+        "is_list": true
     }
 }

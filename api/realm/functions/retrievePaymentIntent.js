@@ -1,6 +1,6 @@
 exports = async (paymentIntentId) => {
   /** Mongodb Realm has an ongoing problem with the stripe SDK which makes it run VERY slowly.
-  Using Axios instead to perform POST request. **/
+  Using Axios instead to perform stripe requests. **/
   const axios = require('axios');
   const secretKey = context.values.get('STRIPE_SK_TEST');
 

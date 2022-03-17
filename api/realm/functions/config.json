@@ -19,6 +19,11 @@
         "run_as_system": true
     },
     {
+        "name": "refundPaymentIntent",
+        "private": false,
+        "run_as_system": true
+    },
+    {
         "name": "getDbUserData",
         "private": false
     },

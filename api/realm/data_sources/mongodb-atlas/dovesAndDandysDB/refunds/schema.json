@@ -1,0 +1,26 @@
+{
+    "properties": {
+        "__v": {
+            "bsonType": "int"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "refund_id": {
+            "bsonType": "string"
+        },
+        "amount": {
+            "bsonType": "string"
+        },
+        "reason": {
+            "bsonType": "string"
+        },
+        "date": {
+            "bsonType": "date"
+        },
+        "status": {
+          "bsonType": "string"
+        }
+    },
+    "title": "Refund"
+}

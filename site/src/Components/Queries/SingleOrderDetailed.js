@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import DDQuery from './DDQuery.js';
 import { SINGLE_ORDER_DETAILED } from '../../graphql/queries.js';
 
-const SingleOrderDetailed = ({ children, id, pollInterval }) => {
+const SingleOrderDetailed = ({ children, orderId, pollInterval }) => {
   return (
-    <DDQuery query={SINGLE_ORDER_DETAILED} variables={{ id }} pollInterval={pollInterval}>
+    <DDQuery query={SINGLE_ORDER_DETAILED} variables={{ orderId }} pollInterval={pollInterval}>
       {data => {
         return children(data.order);
       }}
@@ -16,7 +16,7 @@ const SingleOrderDetailed = ({ children, id, pollInterval }) => {
 
 SingleOrderDetailed.propTypes = {
   children: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired
+  orderId: PropTypes.string.isRequired
 };
 
 export default SingleOrderDetailed;
