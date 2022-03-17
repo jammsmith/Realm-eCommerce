@@ -1,0 +1,52 @@
+import React, { useState } from 'react';
+
+import Heading from '../../../../Components/Heading.js';
+import BigButton from './BigButton.js';
+import InventoryDetails from './InventoryDetails.js';
+import EditProducts from './EditProducts.js';
+import EditCategories from './EditCategories.js';
+import EditSubCategories from './EditSubCategories.js';
+
+// Styled components
+import { InventoryWrapper, InventoryButtonWrapper } from '../../styledComponents.js';
+
+const Inventory = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
+
+  const handleSelection = (type) => {
+    setSelectedType(type);
+    setDialogOpen(true);
+  };
+
+  return (
+    <InventoryWrapper>
+      <Heading text='Inventory' size='small' color='white' />
+      <InventoryDetails
+        open={dialogOpen}
+        handleClose={() => setDialogOpen(false)}
+        inventoryType={selectedType}
+      >
+        {selectedType === 'products' && <EditProducts />}
+        {selectedType === 'subcategories' && <EditSubCategories />}
+        {selectedType === 'categories' && <EditCategories />}
+      </InventoryDetails>
+      <InventoryButtonWrapper>
+        <BigButton
+          type='products'
+          handleSelection={() => handleSelection('products')}
+        />
+        <BigButton
+          type='subcategories'
+          handleSelection={() => handleSelection('subcategories')}
+        />
+        <BigButton
+          type='categories'
+          handleSelection={() => handleSelection('categories')}
+        />
+      </InventoryButtonWrapper>
+    </InventoryWrapper>
+  );
+};
+
+export default Inventory;
