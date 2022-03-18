@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
+import ProgressSpinner from './ProgressSpinner.js';
+
 // Fonts
 import fonts from '../styles/fonts.js';
 import colours from '../styles/colours.js';
@@ -11,7 +13,7 @@ const { standard } = fonts;
 const { dark } = colours;
 
 //
-const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, value, disabled, fullWidth }) => {
+const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, value, disabled, fullWidth, loading }) => {
   const basicStyles = {
     fontFamily: standard,
     width: fullWidth && '100%',
@@ -34,7 +36,11 @@ const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, valu
       style={customStyles || basicStyles}
       disabled={disabled || false}
     >
-      {text}
+      {
+        loading
+          ? <ProgressSpinner size='1.25rem' color={dark} />
+          : text
+      }
     </Button>;
 
   return linkTo ? <Link to={linkTo}>{button}</Link> : button;
@@ -51,7 +57,8 @@ ActionButton.propTypes = {
   variant: PropTypes.string,
   customStyles: PropTypes.object,
   onClick: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool
 };
 
 export default ActionButton;

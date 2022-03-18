@@ -21,7 +21,7 @@ const BigButton = ({ type, handleSelection }) => (
 
 BigButton.propTypes = {
   type: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleSelection: PropTypes.func.isRequired
 };
 
 export default BigButton;

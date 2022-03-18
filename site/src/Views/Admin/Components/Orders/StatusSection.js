@@ -5,7 +5,6 @@ import _ from 'lodash';
 import Heading from '../../../../Components/Heading.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
-import UserMessage from '../../../../Components/UserMessage.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 
@@ -21,7 +20,6 @@ import {
 
 const StatusSection = ({ order }) => {
   const [loading, setLoading] = useState({});
-  const [error, setError] = useState('');
   const [status, setStatus] = useState(order ? order.orderStatus : null);
   useEffect(() => {
     if (order && order.orderStatus !== status) {
@@ -43,7 +41,7 @@ const StatusSection = ({ order }) => {
       setStatus(status);
       setLoading({ button: status, state: false });
     } catch (err) {
-      setError(err);
+      throw new Error('Failed to update order. Error:', err);
     } finally {
       loading.state === true && setLoading({});
     }

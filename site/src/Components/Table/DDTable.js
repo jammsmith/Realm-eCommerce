@@ -39,7 +39,7 @@ const DDTable = ({ columns, rows, size, handleRowClick, style }) => {
                 sx={{
                   '&:last-child td, &:last-child th': { border: 0 },
                   ':hover': {
-                    cursor: 'pointer'
+                    cursor: handleRowClick ? 'pointer' : 'cursor'
                   }
                 }}
                 hover={!!handleRowClick}
@@ -59,8 +59,13 @@ const DDTable = ({ columns, rows, size, handleRowClick, style }) => {
   );
 };
 
+DDTable.defaultProps = {
+  maxRows: 25
+};
+
 DDTable.propTypes = {
   rows: PropTypes.array.isRequired,
+  maxRows: PropTypes.number.isRequired,
   columns: PropTypes.array.isRequired,
   size: PropTypes.string,
   handleRowClick: PropTypes.func,

@@ -1,0 +1,22 @@
+import styled from 'styled-components';
+
+export const Wrapper = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const Item = styled.div`
+  -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
+  box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
+`;
+
+export const SearchWrapper = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+export const InventorySection = styled.div`
+  flex: 0.5;
+`;

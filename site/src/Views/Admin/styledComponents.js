@@ -73,12 +73,11 @@ export const DataRowLeftItem = styled.h6`
 export const DataRowRightItem = styled.h4`
   margin: 0;
 `;
-export const DataSectionTitle = styled.h2`
-
-`;
 export const DialogContentWrapper = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  margin: 1rem;
+  gap: 1rem;
 `;
 
 // Delivery details

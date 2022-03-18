@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import Heading from '../../../../Components/Heading.js';
 import BigButton from './BigButton.js';
 import InventoryDetails from './InventoryDetails.js';
-import EditProducts from './EditProducts.js';
+import ProductTable from './Products/ProductTable.js';
+import ProductEdit from './Products/ProductEdit.js';
 import EditCategories from './EditCategories.js';
 import EditSubCategories from './EditSubCategories.js';
 
@@ -26,11 +27,9 @@ const Inventory = () => {
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
         inventoryType={selectedType}
-      >
-        {selectedType === 'products' && <EditProducts />}
-        {selectedType === 'subcategories' && <EditSubCategories />}
-        {selectedType === 'categories' && <EditCategories />}
-      </InventoryDetails>
+        tableSection={ProductTable}
+        editSection={ProductEdit}
+      />
       <InventoryButtonWrapper>
         <BigButton
           type='products'

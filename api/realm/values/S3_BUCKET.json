@@ -1,0 +1,5 @@
+{
+    "name": "S3_BUCKET",
+    "value": "s3_bucket",
+    "from_secret": true
+}

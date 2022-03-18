@@ -13,7 +13,7 @@ import { OrdersWrapper } from '../../styledComponents.js';
 const Orders = () => {
   // Dialog state / handlers
   const [dialogOpen, setDialogOpen] = useState(false);
-  const selectedOrderId = useRef();
+  const selectedOrderId = useRef('');
   const { data: adminOrders, error } = useQuery(ADMIN_ORDERS);
 
   const handleCloseDialog = () => {

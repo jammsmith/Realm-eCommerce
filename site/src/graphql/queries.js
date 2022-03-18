@@ -117,8 +117,15 @@ export const ALL_SUBCATEGORIES = gql`
 // Shop products
 export const SINGLE_PRODUCT = gql`
   ${PRODUCT_DETAILS}
-  query($id: ObjectId!) {
-    product(query: { _id: $id }) {
+  query(
+    $id: ObjectId,
+    $productId: String
+  ) {
+    product(
+      query: { 
+        _id: $id,
+        product_id: $productId 
+      } ) {
       ...ProductDetails
     }
   }
@@ -267,6 +274,17 @@ export const ADDRESSES_BY_ID = gql`
       address_id_in: $addressIds
     } ) {
       ...AddressDetails
+    }
+  }
+`;
+
+export const S3_CONFIG = gql`
+  query {
+    getS3Config {
+      bucketName
+      region
+      accessKeyId
+      secretAccessKey
     }
   }
 `;
