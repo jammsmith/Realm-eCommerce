@@ -7,7 +7,7 @@ import _ from 'lodash';
 // Components
 import ProductTile from '../../../Components/Tiles/ProductTile/ProductTile.js';
 import TextSection from '../../../Components/TextSection.js';
-import SingleSubCategory from '../../../Components/Queries/SingleSubCategory.js';
+import SingleSubCategoryByName from '../../../Components/Queries/SingleSubCategoryByName.js';
 
 // Return a selection of products in a specific sub-category
 const SubCategory = (props) => {
@@ -15,7 +15,7 @@ const SubCategory = (props) => {
   const { category, subCategory } = useParams();
 
   return (
-    <SingleSubCategory name={subCategory} category={category}>
+    <SingleSubCategoryByName name={subCategory} category={category}>
       {
         subCategory => {
           const { name, description, products } = subCategory;
@@ -38,7 +38,7 @@ const SubCategory = (props) => {
           );
         }
       }
-    </SingleSubCategory>
+    </SingleSubCategoryByName>
   );
 };
 

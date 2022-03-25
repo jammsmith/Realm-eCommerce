@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import DDQuery from './DDQuery.js';
-import { SINGLE_SUBCATEGORY } from '../../graphql/queries.js';
+import { SINGLE_SUBCATEGORY_BY_NAME } from '../../graphql/queries.js';
 
-const SingleSubCategory = ({ children, name, category }) => {
+const SingleSubCategoryByName = ({ children, name, category }) => {
   return (
-    <DDQuery query={SINGLE_SUBCATEGORY} variables={{ name, category }}>
+    <DDQuery query={SINGLE_SUBCATEGORY_BY_NAME} variables={{ name, category }}>
       {data => {
         return children(data.subCategory);
       }}
@@ -14,10 +14,10 @@ const SingleSubCategory = ({ children, name, category }) => {
   );
 };
 
-SingleSubCategory.propTypes = {
+SingleSubCategoryByName.propTypes = {
   children: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired
 };
 
-export default SingleSubCategory;
+export default SingleSubCategoryByName;

@@ -92,6 +92,24 @@ export const ALL_CATEGORIES_AND_SUBCATEGORIES = gql`
   }
 `;
 
+export const SINGLE_SUBCATEGORY_BY_NAME = gql`
+${SUBCATEGORY_DETAILS}
+${PRODUCT_DETAILS}
+ query($name: String!, $category: String!) {
+   subCategory(query: { 
+     AND: [
+       { name: $name },
+       { category: $category }
+     ]
+   }) {
+     ...SubCategoryDetails
+     products {
+       ...ProductDetails
+     }
+   }
+ }
+`;
+
 export const SINGLE_SUBCATEGORY = gql`
 ${SUBCATEGORY_DETAILS}
 ${PRODUCT_DETAILS}
