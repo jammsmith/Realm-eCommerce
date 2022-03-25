@@ -12,8 +12,11 @@
         "description": {
             "bsonType": "string"
         },
-        "image": {
-            "bsonType": "string"
+        "images": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "name": {
             "bsonType": "string"

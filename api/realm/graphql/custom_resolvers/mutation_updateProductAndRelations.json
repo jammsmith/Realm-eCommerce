@@ -1,0 +1,9 @@
+{
+    "field_name": "updateProductAndRelations",
+    "function_name": "db_updateProduct",
+    "input_type": "ProductUpdateInput",
+    "input_type_format": "generated",
+    "on_type": "Mutation",
+    "payload_type": "Product",
+    "payload_type_format": "generated"
+}

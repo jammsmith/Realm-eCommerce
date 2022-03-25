@@ -5,8 +5,6 @@ import BigButton from './BigButton.js';
 import InventoryDetails from './InventoryDetails.js';
 import ProductTable from './Products/ProductTable.js';
 import ProductEdit from './Products/ProductEdit.js';
-import EditCategories from './EditCategories.js';
-import EditSubCategories from './EditSubCategories.js';
 
 // Styled components
 import { InventoryWrapper, InventoryButtonWrapper } from '../../styledComponents.js';

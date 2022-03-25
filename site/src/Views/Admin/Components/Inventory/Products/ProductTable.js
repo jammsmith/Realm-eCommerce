@@ -78,15 +78,14 @@ const ProductTable = ({ rows, updateRows, reset, handleItemSelected }) => {
           onClick={() => searchProducts({ variables: { name: searchTerm.current } })}
         />
       </SearchWrapper>
-      <Item>
-        <PaginatedTable
-          name='products table'
-          rows={rows}
-          columns={columns}
-          handleRowClick={(id) => getSelectedProduct({ variables: { productId: id } })}
-        />
-        {error && <UserMessage text={error} type='error' />}
-      </Item>
+      <PaginatedTable
+        name='products table'
+        rows={rows}
+        columns={columns}
+        handleRowClick={(id) => getSelectedProduct({ variables: { productId: id } })}
+        size='small'
+      />
+      {error && <UserMessage text={error} type='error' />}
     </InventorySection>
   );
 };

@@ -23,7 +23,7 @@ const generateProducts = () => {
     generatedProducts.push({
       product_id: `product-00${i}`,
       name: faker.commerce.productName(),
-      image: 'https://placedog.net/350?random',
+      images: ['https://placedog.net/350?random'],
       category: randomCategory,
       subCategory: randomSubCategory,
       description: faker.commerce.productDescription(),

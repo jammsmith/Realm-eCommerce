@@ -34,7 +34,7 @@ const ActionButton = ({ text, linkTo, variant, customStyles, onClick, name, valu
       value={value}
       variant={variant || 'outlined'}
       style={customStyles || basicStyles}
-      disabled={disabled || false}
+      disabled={loading || disabled || false}
     >
       {
         loading

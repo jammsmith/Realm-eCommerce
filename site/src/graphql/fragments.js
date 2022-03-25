@@ -38,7 +38,7 @@ export const PRODUCT_DETAILS = gql`
     product_id
     category
     description
-    image
+    images
     name
     numInStock
     price

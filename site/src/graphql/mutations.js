@@ -4,12 +4,14 @@ import {
   ORDER_DETAILS,
   ORDER_ITEM_DETAILS,
   PRODUCT_DETAILS,
+  SUBCATEGORY_DETAILS,
   DELIVERY_DETAILS,
   ADDRESS_DETAILS
 } from './fragments.js';
 
 const mutations = {
-  // AUTHORS
+  //
+  // Users -->
   AddUser: gql`
     ${USER_DETAILS}
     mutation(
@@ -154,12 +156,13 @@ const mutations = {
       }
     }
   `,
-  AddProductToInventory: gql`
+  // Shop Inventory -->
+  AddProduct: gql`
     ${PRODUCT_DETAILS}
     mutation(
       $product_id: String!
       $name: String!,
-      $image: String!,
+      $images: [String]!,
       $category: String!,
       $subCategory: String!,
       $description: String!,
@@ -169,7 +172,7 @@ const mutations = {
       insertOneProduct(data: {
         product_id: $product_id
         name: $name,
-        image: $image,
+        images: $images,
         category: $category,
         subCategory: $subCategory,
         description: $description,
@@ -180,12 +183,12 @@ const mutations = {
       }
     }
   `,
-  UpdateProductInInventory: gql`
+  UpdateProduct: gql`
     ${PRODUCT_DETAILS}
     mutation(
       $id: ObjectId!
       $name: String,
-      $image: String,
+      $images: [String],
       $category: String,
       $subCategory: String,
       $description: String,
@@ -193,11 +196,11 @@ const mutations = {
       $numInStock: Int
     ) {
       updateOneProduct(
-        query: { _id: id },
+        query: { _id: $id },
         set: {
           productId: $productId,
           name: $name,
-          image: $image,
+          images: $images,
           category: $category,
           subCategory: $subCategory,
           description: $description,
@@ -208,7 +211,36 @@ const mutations = {
       }
     }
   `,
-  RemoveProductFromInventory: gql`
+  UpdateProductAndRelations: gql`
+  ${PRODUCT_DETAILS}
+    mutation(
+      $_id: ObjectId!,
+      $product_id: String!,
+      $name: String,
+      $images: [String],
+      $category: String,
+      $subCategory: String,
+      $description: String,
+      $price: Int,
+      $numInStock: Int
+    ) {
+      updateProductAndRelations(input: {
+          _id: $_id,
+          product_id: $product_id,
+          name: $name,
+          images: $images,
+          category: $category,
+          subCategory: $subCategory,
+          description: $description,
+          price: $price,
+          numInStock: $numInStock
+          }
+       ) {
+        ...ProductDetails
+      }
+    }
+  `,
+  DeleteProduct: gql`
     ${PRODUCT_DETAILS}
     mutation($id: ObjectId!) {
       deleteOneProduct(query: { _id: $id }) {
@@ -216,6 +248,78 @@ const mutations = {
       }
     }
   `,
+  AddSubCategory: gql`
+    ${SUBCATEGORY_DETAILS}
+    mutation(
+      $subCategory_id: String!
+      $name: String!,
+      $description: String!,
+      $image: String!,
+      $category: String!
+    ) {
+      insertOneSubCategory(data: {
+        subCategory_id: $subCategory_id
+        name: $name,
+        description: $description,
+        image: $image,
+        category: $category
+        } ) {
+          ...SubCategoryDetails
+      }
+    }
+  `,
+  UpdateSubCategory: gql`
+    ${SUBCATEGORY_DETAILS}
+    mutation(
+      $subCategory_id: String!
+      $name: String,
+      $description: String,
+      $image: String,
+      $category: String
+    ) {
+      updateOneSubCategory(
+        query: { subCategory_id: $subCategory_id },
+        set: {
+        name: $name,
+        description: $description,
+        image: $image,
+        category: $category
+        } ) {
+          ...SubCategoryDetails
+      }
+    }
+  `,
+  UpdateSubCategoryProducts: gql`
+    ${SUBCATEGORY_DETAILS}
+    mutation(
+      $subCategory_id: String!,
+      $products: [String]!
+    ) {
+      updateOneSubCategory(
+        query: { subCategory_id: $subCategory_id },
+        set: {
+          products: {
+            link: $products
+          }
+        } ) {
+          ...SubCategoryDetails
+      }
+    }
+  `,
+  DeleteSubCategory: gql`
+    ${SUBCATEGORY_DETAILS}
+    mutation(
+      $subCategory_id: String!
+    ) {
+      deleteOneSubCategory(query: { 
+        subCategory_id: $subCategory_id 
+      } ) {
+        ...SubCategoryDetails
+      }
+    }
+  `,
+  //
+  // Orders ->
   CreateGuestOrder: gql`
     ${USER_DETAILS}
     ${PRODUCT_DETAILS}
@@ -462,6 +566,8 @@ const mutations = {
       }
     }
   `,
+  //
+  // Addresses ->
   CreateAddress: gql`
     ${ADDRESS_DETAILS}
     mutation(
@@ -518,6 +624,8 @@ const mutations = {
       }
     }
   `,
+  //
+  // Deliveries -->
   AddDeliveryDetailsToOrder: gql`
     ${ORDER_DETAILS}
     ${DELIVERY_DETAILS}

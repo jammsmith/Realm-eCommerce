@@ -95,8 +95,8 @@ export const ALL_CATEGORIES_AND_SUBCATEGORIES = gql`
 export const SINGLE_SUBCATEGORY = gql`
 ${SUBCATEGORY_DETAILS}
 ${PRODUCT_DETAILS}
- query($name: String!, $category: String!) {
-   subCategory(query: { name: $name, category: $category }) {
+ query($subCategoryId: String!) {
+   subCategory(query: { subCategory_id: $subCategoryId }) {
      ...SubCategoryDetails
      products {
        ...ProductDetails

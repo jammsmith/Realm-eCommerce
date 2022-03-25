@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import {
   Button,
   Dialog,
-  DialogActions,
-  DialogTitle
+  DialogActions
 } from '@mui/material';
 import _ from 'lodash';
 
 import Heading from '../../../../Components/Heading.js';
-import { DialogContentWrapper } from '../../styledComponents.js';
+import { DialogContentWrapper, DialogStyle } from '../../styledComponents.js';
+import { DialogHeading } from './styledComponents.js';
 
 const InventoryDetails = ({ tableSection, editSection, inventoryType, open, handleClose }) => {
   const [tableRows, setTableRows] = useState([]);
@@ -25,20 +25,30 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='80vw'>
-      <Heading text={inventoryType ? `Manage ${_.startCase(inventoryType)}` : 'Manage Inventory'} />
-      <DialogContentWrapper>
-        <TableComponent
-          rows={tableRows}
-          updateRows={setTableRows}
-          reset={!open}
-          handleItemSelected={setItemToEdit}
-        />
-        <EditComponent item={itemToEdit} />
-      </DialogContentWrapper>
-      <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
+    <Dialog open={open} onClose={handleClose} fullScreen>
+      <DialogStyle>
+        <DialogHeading>
+          <Heading
+            text={inventoryType ? `Manage ${_.startCase(inventoryType)}` : 'Manage Inventory'}
+          />
+        </DialogHeading>
+        <DialogContentWrapper>
+          <TableComponent
+            rows={tableRows}
+            updateRows={setTableRows}
+            reset={!open}
+            handleItemSelected={setItemToEdit}
+          />
+          <EditComponent
+            item={itemToEdit}
+            tableRows={tableRows}
+            updateTableRows={setTableRows}
+          />
+        </DialogContentWrapper>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </DialogStyle>
     </Dialog>
   );
 };
@@ -47,7 +57,8 @@ InventoryDetails.propTypes = {
   tableSection: PropTypes.elementType.isRequired,
   editSection: PropTypes.elementType.isRequired,
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  inventoryType: PropTypes.string
 };
 
 export default InventoryDetails;

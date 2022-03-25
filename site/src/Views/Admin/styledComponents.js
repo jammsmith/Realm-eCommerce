@@ -20,7 +20,7 @@ export const AdminWrapper = styled.div`
 
 // Grid children -->
 const GridItem = styled.div`
-  background-color: rgb(63,81,181);
+  background-color: rgba(63, 81, 181, 1);
   border-radius: 10px;
   color: white;
   font-weight: bold;
@@ -124,4 +124,8 @@ export const InventoryButtonWrapper = styled.div`
   justify-content: space-between;
   margin-top: 1rem;
   width: 100%;
+`;
+
+export const DialogStyle = styled.div`
+  background-color: rgba(63, 81, 181, 0.1);
 `;
