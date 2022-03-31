@@ -4,21 +4,23 @@ import { TextField, InputAdornment } from '@mui/material';
 
 import Heading from '../../../../Components/Heading.js';
 import ActionButton from '../../../../Components/ActionButton.js';
+import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import SelectInput from '../../../../Components/Forms/SelectInput.js';
 import UserMessage from '../../../../Components/UserMessage.js';
-import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import { convertStripeAmountToPrice, convertPriceToStripeAmount, toTwoDecimalPlaces } from '../../../../helpers/price.js';
 import { getTotalPreviousRefunds, verifyRefundAmount, checkIsFullRefund } from '../../../../helpers/refund.js';
 
 // Styled components
 import {
+  PaymentSectionWrapper,
   DataSection as Section,
   DataRow,
   DataRowLeftItem,
   DataRowRightItem,
   RefundWrapper
-} from '../../styledComponents.js';
+} from './styledComponents.js';
+import { DataLoading } from '../../styledComponents.js';
 
 const PaymentSection = ({ order }) => {
   const app = useContext(RealmAppContext);
@@ -94,9 +96,14 @@ const PaymentSection = ({ order }) => {
     } catch (err) {
       console.error('Failed to retrieve payment intent', err);
     }
-  }, [app.currentUser]);
+  }, [app.currentUser, order]);
 
-  useEffect(() => getPaymentIntent(), [getPaymentIntent]);
+  useEffect(() => {
+    if (order && order.paymentIntentId && !paymentIntent) {
+      getPaymentIntent();
+    }
+  }, [order, getPaymentIntent]);
+
   useEffect(() => {
     if (error && loading) {
       setLoading(false);
@@ -104,67 +111,77 @@ const PaymentSection = ({ order }) => {
   }, [error, loading]);
 
   return (
-    paymentIntent
-      ? <Section>
+    <PaymentSectionWrapper>
+      <Section>
         <Heading text='Payment Details' size='small' />
-        <>
-          <div>
-            <DataRow>
-              <DataRowLeftItem>Date Paid</DataRowLeftItem>
-              <DataRowRightItem>{order.datePaid.split('T')[0]}</DataRowRightItem>
-            </DataRow>
-            <DataRow>
-              <DataRowLeftItem>Amount Paid</DataRowLeftItem>
-              <DataRowRightItem>{convertStripeAmountToPrice(paymentIntent.amount)}</DataRowRightItem>
-            </DataRow>
-            <DataRow>
-              <DataRowLeftItem>Currency</DataRowLeftItem>
-              <DataRowRightItem>{paymentIntent.currency.toUpperCase()}</DataRowRightItem>
-            </DataRow>
-            <DataRow>
-              <DataRowLeftItem>Pending Refunds</DataRowLeftItem>
-              <DataRowRightItem>{toTwoDecimalPlaces(pendingRefundTotal)}</DataRowRightItem>
-            </DataRow>
-            <DataRow>
-              <DataRowLeftItem>Completed Refunds</DataRowLeftItem>
-              <DataRowRightItem>{toTwoDecimalPlaces(existingRefundTotal)}</DataRowRightItem>
-            </DataRow>
-          </div>
-          <RefundWrapper>
-            <Heading text='Refund' size='small' />
-            <SelectInput
-              name='refundReason'
-              value={refund.reason}
-              label='Select a reason for the refund'
-              handleChange={handleRefundReasonSelect}
-              required
-              options={[
-                { name: 'Requested by customer', value: 'requested_by_customer' },
-                { name: 'Duplicate order', value: 'duplicate' },
-                { name: 'Fraudulent', value: 'fraudulent' }
-              ]}
-              variant='outlined'
-              isAdminSelect
-            />
-            <TextField
-              label='Refund amount'
-              variant='outlined'
-              required
-              InputProps={{
-                startAdornment: <InputAdornment position='start'>£</InputAdornment>
-              }}
-              onChange={handleRefundAmountInput}
-            />
-            <ActionButton
-              text={loading ? <ProgressSpinner size='1.5em' /> : 'refund order'}
-              onClick={handleRefundSubmit}
-              fullWidth
-            />
-            {error && <UserMessage text={error} type='error' />}
-          </RefundWrapper>
-        </>
-        </Section>
-      : null
+        {
+          order && paymentIntent
+            ? (
+              <div>
+                <DataRow>
+                  <DataRowLeftItem>Date Paid</DataRowLeftItem>
+                  <DataRowRightItem>{order.datePaid.split('T')[0]}</DataRowRightItem>
+                </DataRow>
+                <DataRow>
+                  <DataRowLeftItem>Amount Paid</DataRowLeftItem>
+                  <DataRowRightItem>{convertStripeAmountToPrice(paymentIntent.amount)}</DataRowRightItem>
+                </DataRow>
+                <DataRow>
+                  <DataRowLeftItem>Currency</DataRowLeftItem>
+                  <DataRowRightItem>{paymentIntent.currency.toUpperCase()}</DataRowRightItem>
+                </DataRow>
+                <DataRow>
+                  <DataRowLeftItem>Pending Refunds</DataRowLeftItem>
+                  <DataRowRightItem>{toTwoDecimalPlaces(pendingRefundTotal)}</DataRowRightItem>
+                </DataRow>
+                <DataRow>
+                  <DataRowLeftItem>Completed Refunds</DataRowLeftItem>
+                  <DataRowRightItem>{toTwoDecimalPlaces(existingRefundTotal)}</DataRowRightItem>
+                </DataRow>
+              </div>
+            ) : (
+              <DataLoading>
+                <ProgressSpinner size='3rem' colour='blue' />
+              </DataLoading>
+            )
+        }
+      </Section>
+      <Section>
+        <RefundWrapper>
+          <Heading text='Refund' size='small' />
+          <SelectInput
+            name='refundReason'
+            value={refund.reason}
+            label='Select a reason for the refund'
+            handleChange={handleRefundReasonSelect}
+            required
+            options={[
+              { name: 'Requested by customer', value: 'requested_by_customer' },
+              { name: 'Duplicate order', value: 'duplicate' },
+              { name: 'Fraudulent', value: 'fraudulent' }
+            ]}
+            variant='outlined'
+            isAdminSelect
+          />
+          <TextField
+            label='Refund amount'
+            variant='outlined'
+            required
+            InputProps={{
+              startAdornment: <InputAdornment position='start'>£</InputAdornment>
+            }}
+            onChange={handleRefundAmountInput}
+          />
+          <ActionButton
+            text='refund order'
+            onClick={handleRefundSubmit}
+            fullWidth
+            loading={loading}
+          />
+          {error && <UserMessage text={error} type='error' />}
+        </RefundWrapper>
+      </Section>
+    </PaymentSectionWrapper>
   );
 };
 

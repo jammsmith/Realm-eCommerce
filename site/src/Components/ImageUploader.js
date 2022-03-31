@@ -8,30 +8,59 @@ import { S3_CONFIG } from '../graphql/queries.js';
 import ActionButton from './ActionButton.js';
 import FileBrowseButton from './FileBrowseButton.js';
 import UserMessage from './UserMessage.js';
+import Heading from './Heading.js';
 
 // Styled components
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0.5rem 0;
+  margin: 0;
   gap: 0.25rem;
 `;
-const InnerWrapper = styled.div`
-  flex: 1;
+const UploadWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 0.25rem;
+`;
+const MessageWrapper = styled.div`
+  align-self: flex-end;
+`;
+const SelectedFile = styled.p`
+  margin: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5rem;
+  height: 1.5rem;
+  width: 18rem;
+  white-space: nowrap;
+  align-self: flex-end;
+`;
+const ThumbnailsWrapper = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+  width: 100%;
+`;
+const Thumbnail = styled.img`
+  border-radius: 4px;
+  height: 50px;
+  width: auto;
+`;
+const ImagePlaceholder = styled.div`
+  height: 50px;
 `;
 
-const ImageUploader = ({ onUpload }) => {
+const ImageUploader = ({ onUpload, images }) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState(null);
   const { data } = useQuery(S3_CONFIG);
 
   const handleFileInput = (e) => {
+    setMessage(null);
     setSelectedFile(e.target.files[0]);
-    setDisabled(false);
   };
 
   const handleUpload = async (e, file) => {
@@ -65,28 +94,44 @@ const ImageUploader = ({ onUpload }) => {
 
   return (
     <Wrapper>
-      <div>Upload an image</div>
-      <InnerWrapper>
-        <FileBrowseButton onChange={handleFileInput} />
+      <Heading text='Upload an image' size='x-small' />
+      <UploadWrapper>
+        <FileBrowseButton
+          onChange={handleFileInput}
+        />
         <ActionButton
           text='Upload'
           onClick={(e) => handleUpload(e, selectedFile)}
+          disabled={!selectedFile}
+          loading={loading}
           customStyles={{
             width: '6rem',
             height: '2.5rem'
           }}
-          disabled={disabled}
-          loading={loading}
         />
-      </InnerWrapper>
-      {selectedFile && selectedFile.name}
-      {message && message.type && <UserMessage type={message.type} text={message.text} />}
+        {selectedFile && <SelectedFile>{selectedFile.name}</SelectedFile>}
+        {
+          message && (
+            <MessageWrapper>
+              <UserMessage type={message.type} text={message.text} />
+            </MessageWrapper>
+          )
+        }
+      </UploadWrapper>
+      <ThumbnailsWrapper>
+        {
+          images && images.length
+            ? images.map((imageUrl, index) => <Thumbnail key={index} src={imageUrl} />)
+            : <ImagePlaceholder>No images yet!</ImagePlaceholder>
+        }
+      </ThumbnailsWrapper>
     </Wrapper>
   );
 };
 
 ImageUploader.propTypes = {
-  onUpload: PropTypes.func.isRequired
+  onUpload: PropTypes.func.isRequired,
+  images: PropTypes.array
 };
 
 export default ImageUploader;

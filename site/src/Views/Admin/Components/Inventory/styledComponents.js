@@ -18,26 +18,24 @@ export const SearchWrapper = styled.div`
 `;
 
 export const InventorySection = styled.div`
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
   padding: 1rem;
-  height: 90vh;
+  min-height: 90vh;
   flex: 0.5;
   -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
   box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
   border-radius: 10px;
+  position: relative;
+`;
+export const FixedSizeInventorySection = styled(InventorySection)`
+  height: 90vh;
 `;
 
 export const EditFormContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 1rem;
-`;
-
-export const DialogHeading = styled.div`
-  margin: 0 1rem;
-`;
-
-export const DialogButtons = styled.div`
-
 `;

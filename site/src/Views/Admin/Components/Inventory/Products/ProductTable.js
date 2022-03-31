@@ -8,11 +8,15 @@ import { PRODUCTS_SEARCH, SINGLE_PRODUCT } from '../../../../../graphql/queries'
 import PaginatedTable from '../../../../../Components/Table/PaginatedTable.js';
 import ActionButton from '../../../../../Components/ActionButton.js';
 import UserMessage from '../../../../../Components/UserMessage.js';
+import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
 
-import { SearchWrapper, Item, InventorySection } from '../styledComponents.js';
+import { SearchWrapper, InventorySection } from '../styledComponents.js';
+import { DataLoading } from '../../../styledComponents.js';
 
-const ProductTable = ({ rows, updateRows, reset, handleItemSelected }) => {
+const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected }) => {
   const [error, setError] = useState('');
+  const [productLoading, setProductLoading] = useState(false);
+
   const searchTerm = useRef('');
 
   const buildRows = (id, name, category, subcategory, numInStock, price) => ({
@@ -42,7 +46,9 @@ const ProductTable = ({ rows, updateRows, reset, handleItemSelected }) => {
     },
     onError: setError
   });
+
   const searchProducts = useCallback(searchFunc, [searchTerm.current]);
+
   useEffect(() => {
     if (!rows || !rows.length || reset) {
       searchProducts();
@@ -52,9 +58,26 @@ const ProductTable = ({ rows, updateRows, reset, handleItemSelected }) => {
   const [getSelectedProduct] = useLazyQuery(SINGLE_PRODUCT, {
     onCompleted: (data) => {
       handleItemSelected(data.product);
+      setProductLoading({
+        id: null,
+        state: false
+      });
     },
-    onError: setError
+    onError: (err) => {
+      setError(err);
+      setProductLoading({
+        id: null,
+        state: false
+      });
+    }
   });
+  const handleProductSelection = (productId) => {
+    setProductLoading({
+      id: productId,
+      state: true
+    });
+    getSelectedProduct({ variables: { productId } });
+  };
 
   const columns = [
     { name: 'name', label: 'Name' },
@@ -78,13 +101,24 @@ const ProductTable = ({ rows, updateRows, reset, handleItemSelected }) => {
           onClick={() => searchProducts({ variables: { name: searchTerm.current } })}
         />
       </SearchWrapper>
-      <PaginatedTable
-        name='products table'
-        rows={rows}
-        columns={columns}
-        handleRowClick={(id) => getSelectedProduct({ variables: { productId: id } })}
-        size='small'
-      />
+      {
+        rows && rows.length ? (
+          <PaginatedTable
+            name='products table'
+            rows={rows}
+            columns={columns}
+            selectedRow={selectedRow}
+            handleRowClick={handleProductSelection}
+            size='small'
+            rowsNum={8}
+            selectionLoading={productLoading}
+          />
+        ) : (
+          <DataLoading>
+            <ProgressSpinner size='3rem' colour='blue' />
+          </DataLoading>
+        )
+      }
       {error && <UserMessage text={error} type='error' />}
     </InventorySection>
   );

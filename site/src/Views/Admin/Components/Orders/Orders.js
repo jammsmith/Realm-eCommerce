@@ -5,16 +5,17 @@ import _ from 'lodash';
 import OrderDetails from './OrderDetails.js';
 import DDTable from '../../../../Components/Table/DDTable.js';
 import Heading from '../../../../Components/Heading.js';
+import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import { ADMIN_ORDERS } from '../../../../graphql/queries.js';
 
 // Styled components
-import { OrdersWrapper } from '../../styledComponents.js';
+import { OrdersWrapper, DataLoading } from '../../styledComponents.js';
 
 const Orders = () => {
   // Dialog state / handlers
   const [dialogOpen, setDialogOpen] = useState(false);
   const selectedOrderId = useRef('');
-  const { data: adminOrders, error } = useQuery(ADMIN_ORDERS);
+  const { data: adminOrders, loading, error } = useQuery(ADMIN_ORDERS);
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -75,15 +76,23 @@ const Orders = () => {
       <OrdersWrapper>
         <Heading text='Orders' size='small' color='white' />
         {
-          rows
-            ? <DDTable
-              rows={rows}
-              columns={columns}
-              size='small'
-              handleRowClick={handleOpenDialog}
-              style={{ marginTop: '1rem' }}
+          loading ? (
+            <DataLoading>
+              <ProgressSpinner size='3rem' colour='white' />
+            </DataLoading>
+          ) : (
+            rows ? (
+              <DDTable
+                rows={rows}
+                columns={columns}
+                size='small'
+                handleRowClick={handleOpenDialog}
+                style={{ marginTop: '1rem' }}
               />
-            : 'no active orders'
+            ) : (
+              <p style={{ color: 'white' }}>No active orders</p>
+            )
+          )
         }
       </OrdersWrapper>
     </>

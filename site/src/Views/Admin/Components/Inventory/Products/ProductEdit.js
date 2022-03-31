@@ -5,16 +5,17 @@ import { TextField, InputAdornment } from '@mui/material';
 import _ from 'lodash';
 
 import ActionButton from '../../../../../Components/ActionButton.js';
+import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
 import Heading from '../../../../../Components/Heading.js';
 import ImageUploader from '../../../../../Components/ImageUploader.js';
 import RowGroup from '../../../../../Components/Forms/RowGroup.js';
 import SelectInput from '../../../../../Components/Forms/SelectInput.js';
 import { ALL_CATEGORIES_AND_SUBCATEGORIES } from '../../../../../graphql/queries.js';
-// import { toTwoDecimalPlaces } from '../../../../../helpers/price.js';
 import mutations from '../../../../../graphql/mutations.js';
 import useDDMutation from '../../../../../hooks/useDDMutation.js';
 
-import { InventorySection, EditFormContainer } from '../styledComponents.js';
+import { FixedSizeInventorySection, EditFormContainer } from '../styledComponents.js';
+import { DataLoading } from '../../../styledComponents.js';
 
 const ProductEdit = ({ item, tableRows, updateTableRows }) => {
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,6 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
     } else {
       throw new Error(`Unknown action of '${action}' supplied to handleImageChange`);
     }
-
     setFields(prev => ({ ...prev, images: updatedImages }));
   };
 
@@ -108,7 +108,7 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
       const itemFields = {
         name: item.name,
         description: item.description,
-        images: [],
+        images: item.images,
         category: item.category,
         subCategory: item.subCategory,
         quantity: item.numInStock,
@@ -121,97 +121,117 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
   }, [item]);
 
   return (
-    data && data.categories ? (
-      <InventorySection>
-        <Heading
-          text={item && item.name ? 'Edit product' : 'Create new product'} size='small'
-          noSpace
-        />
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <EditFormContainer>
-            <TextField
-              name='name'
-              label='Product Name'
-              value={fields.name}
-              variant='outlined'
-              onChange={handleFormChange}
-              fullWidth
-              required
-            />
-            <TextField
-              name='description'
-              label='Description'
-              value={fields.description}
-              variant='outlined'
-              onChange={handleFormChange}
-              fullWidth
-              multiline
-              rows={7}
-              required
-            />
-            <RowGroup>
-              <SelectInput
-                name='category'
-                label='Category'
-                value={fields.category}
-                variant='outlined'
-                handleChange={handleFormChange}
-                required
-                options={
-                  data.categories.map(category => ({
-                    name: _.startCase(category.name),
-                    value: category.name
-                  }))
-                }
-              />
-              <SelectInput
-                name='subCategory'
-                label='Sub Category'
-                value={fields.subCategory}
-                variant='outlined'
-                handleChange={handleFormChange}
-                required
-                disabled={!hasSelectedCategory}
-                options={
-                  hasSelectedCategory
-                    ? getSubCategoryFields(fields.category, data.categories)
-                    : []
-                }
-              />
-            </RowGroup>
-            <RowGroup>
+
+    <FixedSizeInventorySection>
+      <Heading
+        text={item && item.name ? 'Edit product' : 'Create new product'} size='small'
+        noSpace
+      />
+      {
+        data && data.categories ? (
+          <>
+            <EditFormContainer>
               <TextField
-                name='quantity'
-                label='Quantity'
-                value={fields.quantity}
+                name='name'
+                label='Product Name'
+                value={fields.name}
                 variant='outlined'
                 onChange={handleFormChange}
-                required
                 fullWidth
+                required
               />
               <TextField
-                name='price'
-                label='Price'
-                value={fields.price}
+                name='description'
+                label='Description'
+                value={fields.description}
                 variant='outlined'
                 onChange={handleFormChange}
-                required
                 fullWidth
-                InputProps={{
-                  startAdornment: <InputAdornment position='start'>£</InputAdornment>
-                }}
+                multiline
+                rows={5}
+                required
               />
-            </RowGroup>
-            <ImageUploader onUpload={(imageUrl) => handleImageChange(imageUrl, 'upload')} />
-          </EditFormContainer>
-          <ActionButton
-            text='save'
-            onClick={handleUpdateProduct}
-            loading={loading}
-          />
-        </div>
-      </InventorySection>
-    ) : null
+              <RowGroup>
+                <SelectInput
+                  name='category'
+                  label='Category'
+                  value={fields.category}
+                  variant='outlined'
+                  handleChange={handleFormChange}
+                  required
+                  options={
+                    data.categories.map(category => ({
+                      name: _.startCase(category.name),
+                      value: category.name
+                    }))
+                  }
+                />
+                <SelectInput
+                  name='subCategory'
+                  label='Sub Category'
+                  value={fields.subCategory}
+                  variant='outlined'
+                  handleChange={handleFormChange}
+                  required
+                  disabled={!hasSelectedCategory}
+                  options={
+                    hasSelectedCategory
+                      ? getSubCategoryFields(fields.category, data.categories)
+                      : []
+                  }
+                />
+              </RowGroup>
+              <RowGroup>
+                <TextField
+                  name='quantity'
+                  label='Quantity'
+                  value={fields.quantity}
+                  variant='outlined'
+                  onChange={handleFormChange}
+                  required
+                  fullWidth
+                />
+                <TextField
+                  name='price'
+                  label='Price'
+                  value={fields.price}
+                  variant='outlined'
+                  onChange={handleFormChange}
+                  required
+                  fullWidth
+                  InputProps={{
+                    startAdornment: <InputAdornment position='start'>£</InputAdornment>
+                  }}
+                />
+              </RowGroup>
+              <ImageUploader
+                onUpload={(imageUrl) => handleImageChange(imageUrl, 'upload')}
+                images={fields.images}
+              />
+            </EditFormContainer>
+            <ActionButton
+              text='save'
+              onClick={handleUpdateProduct}
+              loading={loading}
+              customStyles={{
+                position: 'absolute',
+                bottom: '1rem',
+                right: '1rem',
+                backgroundColor: 'rgba(63, 81, 181, 1)',
+                borderColor: '#fff',
+                color: '#fff',
+                width: '6rem',
+                height: '2.5rem'
+              }}
+            />
+          </>
+        ) : (
+          <DataLoading>
+            <ProgressSpinner size='3rem' colour='blue' />
+          </DataLoading>
+        )
+      }
+    </FixedSizeInventorySection>
   );
 };
 

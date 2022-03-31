@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from '@mui/material';
+import { Dialog } from '@mui/material';
 
 import DeliverySection from './DeliverySection.js';
 import PaymentSection from './PaymentSection.js';
 import StatusSection from './StatusSection.js';
+import DialogHeading from '../DialogHeading.js';
 import { SINGLE_ORDER_DETAILED } from '../../../../graphql/queries.js';
 
 import { DialogContentWrapper } from '../../styledComponents.js';
@@ -31,24 +26,24 @@ const OrderDetails = ({ open, handleClose, orderId }) => {
   }, [data, loading]);
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='80vw'>
-      <DialogTitle>Manage Orders</DialogTitle>
-      <DialogContent>
-        <DialogContentWrapper>
-          {
-            order
-              ? <>
-                <DeliverySection order={order} />
-                <PaymentSection order={order} />
-                <StatusSection order={order} />
-              </>
-              : null
-          }
-        </DialogContentWrapper>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
+    <Dialog
+      open={open}
+      fullScreen
+      sx={{
+        '.MuiDialog-paper': {
+          backgroundColor: 'rgba(63, 81, 181, 1)'
+        }
+      }}
+    >
+      <DialogHeading
+        heading='Manage Orders'
+        closeDialog={handleClose}
+      />
+      <DialogContentWrapper>
+        <DeliverySection order={order || {}} />
+        <PaymentSection order={order || {}} />
+        <StatusSection order={order || {}} />
+      </DialogContentWrapper>
     </Dialog>
   );
 };

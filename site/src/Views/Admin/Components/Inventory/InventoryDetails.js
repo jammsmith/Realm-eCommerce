@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  Dialog,
-  DialogActions
-} from '@mui/material';
+import { Dialog } from '@mui/material';
 import _ from 'lodash';
 
-import Heading from '../../../../Components/Heading.js';
-import { DialogContentWrapper, DialogStyle } from '../../styledComponents.js';
-import { DialogHeading } from './styledComponents.js';
+import DialogHeading from '../DialogHeading.js';
+
+import { DialogContentWrapper } from '../../styledComponents.js';
 
 const InventoryDetails = ({ tableSection, editSection, inventoryType, open, handleClose }) => {
   const [tableRows, setTableRows] = useState([]);
@@ -25,30 +21,33 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={handleClose} fullScreen>
-      <DialogStyle>
-        <DialogHeading>
-          <Heading
-            text={inventoryType ? `Manage ${_.startCase(inventoryType)}` : 'Manage Inventory'}
-          />
-        </DialogHeading>
-        <DialogContentWrapper>
-          <TableComponent
-            rows={tableRows}
-            updateRows={setTableRows}
-            reset={!open}
-            handleItemSelected={setItemToEdit}
-          />
-          <EditComponent
-            item={itemToEdit}
-            tableRows={tableRows}
-            updateTableRows={setTableRows}
-          />
-        </DialogContentWrapper>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </DialogStyle>
+    <Dialog
+      open={open}
+      fullScreen
+      sx={{
+        '.MuiDialog-paper': {
+          backgroundColor: 'rgba(63, 81, 181, 1)'
+        }
+      }}
+    >
+      <DialogHeading
+        heading={inventoryType ? `Manage ${_.startCase(inventoryType)}` : 'Manage Inventory'}
+        closeDialog={handleClose}
+      />
+      <DialogContentWrapper>
+        <TableComponent
+          rows={tableRows}
+          updateRows={setTableRows}
+          selectedRow={itemToEdit}
+          reset={!open}
+          handleItemSelected={setItemToEdit}
+        />
+        <EditComponent
+          item={itemToEdit}
+          tableRows={tableRows}
+          updateTableRows={setTableRows}
+        />
+      </DialogContentWrapper>
     </Dialog>
   );
 };

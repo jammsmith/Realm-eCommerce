@@ -11,12 +11,14 @@ import mutations from '../../../../graphql/mutations.js';
 // Styled components
 import {
   DataSection as Section,
-  OrderStatusRow,
+  CurrentStatusRow,
+  DataRow,
   DataRowLeftItem,
   DataRowRightItem,
   StatusButtons,
   OrderStatusContainer
-} from '../../styledComponents.js';
+} from './styledComponents.js';
+import { DataLoading } from '../../styledComponents.js';
 
 const StatusSection = ({ order }) => {
   const [loading, setLoading] = useState({});
@@ -48,43 +50,46 @@ const StatusSection = ({ order }) => {
   };
 
   return (
-    status
-      ? <Section>
-        <Heading text='Order Status' size='small' />
-        <OrderStatusContainer>
-          <OrderStatusRow>
-            <DataRowLeftItem>Current Status</DataRowLeftItem>
-            <DataRowRightItem>{_.startCase(status)}</DataRowRightItem>
-          </OrderStatusRow>
-          <StatusButtons>
-            <ActionButton
-              text={loading.status === true && loading.button === 'accepted'
-                ? <ProgressSpinner size='1.5rem' />
-                : 'Accept Order'}
-              onClick={(e) => updateOrderStatus(e, 'accepted')}
-              fullWidth
-              disabled={status === 'accepted' || status === 'dispatched' || status === 'archived'}
-            />
-            <ActionButton
-              text={loading.status === true && loading.button === 'dispatched'
-                ? <ProgressSpinner size='1.5rem' />
-                : 'Mark as dispatched'}
-              onClick={(e) => updateOrderStatus(e, 'dispatched')}
-              fullWidth
-              disabled={status === 'dispatched' || status === 'archived'}
-            />
-            <ActionButton
-              text={loading.status === true && loading.button === 'archived'
-                ? <ProgressSpinner size='1.5rem' />
-                : 'Archive Order'}
-              onClick={(e) => updateOrderStatus(e, 'archived')}
-              fullWidth
-              disabled={status === 'archived'}
-            />
-          </StatusButtons>
-        </OrderStatusContainer>
-        </Section>
-      : null
+    <Section>
+      <Heading text='Order Status' size='small' />
+      {
+        order && status ? (
+          <OrderStatusContainer>
+            <CurrentStatusRow>
+              <DataRowLeftItem>Current Status</DataRowLeftItem>
+              <DataRowRightItem>{_.startCase(status)}</DataRowRightItem>
+            </CurrentStatusRow>
+            <StatusButtons>
+              <ActionButton
+                text='Accept Order'
+                onClick={(e) => updateOrderStatus(e, 'accepted')}
+                fullWidth
+                disabled={status === 'accepted' || status === 'dispatched' || status === 'archived'}
+                loading={loading.status === true && loading.button === 'accepted'}
+              />
+              <ActionButton
+                text='Mark as dispatched'
+                onClick={(e) => updateOrderStatus(e, 'dispatched')}
+                fullWidth
+                disabled={status === 'dispatched' || status === 'archived'}
+                loading={loading.status === true && loading.button === 'dispatched'}
+              />
+              <ActionButton
+                text='Archive Order'
+                onClick={(e) => updateOrderStatus(e, 'archived')}
+                fullWidth
+                disabled={status === 'archived'}
+                loading={loading.status === true && loading.button === 'archived'}
+              />
+            </StatusButtons>
+          </OrderStatusContainer>
+        ) : (
+          <DataLoading>
+            <ProgressSpinner size='3rem' colour='blue' />
+          </DataLoading>
+        )
+      }
+    </Section>
   );
 };
 

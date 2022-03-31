@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -11,9 +11,17 @@ import {
 } from '@mui/material';
 import uniqueString from 'unique-string';
 
-import PaginationActions from './PaginationActions';
+import PaginationActions from './PaginationActions.js';
+import ProgressSpinner from '../ProgressSpinner.js';
 
-const PaginatedTable = ({ name, rows, columns, size, handleRowClick, rowsNum }) => {
+const DataLoading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick, rowsNum, selectionLoading }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsNum || 10);
 
@@ -32,20 +40,9 @@ const PaginatedTable = ({ name, rows, columns, size, handleRowClick, rowsNum }) 
     setPage(0);
   };
 
+  useEffect(() => console.log('selectionLoading', selectionLoading), [selectionLoading]);
   return (
-    <Table
-      aria-label={name}
-      size={size || 'medium'}
-      sx={{
-        width: '100%',
-        '.MuiTable-root': {
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          justifyContent: 'space-between'
-        }
-      }}
-    >
+    <Table aria-label={name} size={size || 'medium'}>
       <TableBody>
         <TableRow>
           {
@@ -55,31 +52,39 @@ const PaginatedTable = ({ name, rows, columns, size, handleRowClick, rowsNum }) 
           }
         </TableRow>
         {
-          (rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : sortedRows
-          ).map((row) => (
-            <TableRow
-              key={uniqueString()}
-              component='tr'
-              sx={{
-                '&:last-child td, &:last-child th': { border: 0 },
-                ':hover': {
-                  cursor: handleRowClick ? 'pointer' : 'cursor'
+          selectionLoading && selectionLoading.state === true ? (
+            <DataLoading style={{ height: 53 * rowsPerPage, backgroundColor: 'pink' }}> // need to get the width to centralise the spinner
+              <ProgressSpinner size='3rem' colour='blue' />
+            </DataLoading>
+          ) : (
+            (rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : sortedRows
+            ).map((row) => (
+              <TableRow
+                key={uniqueString()}
+                component='tr'
+                sx={{
+                  '&:last-child td, &:last-child th': { border: 0 },
+                  ':hover': {
+                    cursor: handleRowClick ? 'pointer' : 'cursor'
+                  },
+                  height: '53px'
+                }}
+                hover={!!handleRowClick}
+                onClick={handleRowClick ? () => handleRowClick(row.id) : null}
+                selected={selectedRow && row.id === selectedRow[`${row.id.split('-')[0]}_id`]}
+              >
+                {
+                  columns.map(col => (
+                    <TableCell key={uniqueString()} component='td'>
+                      {row[col.name]}
+                    </TableCell>
+                  ))
                 }
-              }}
-              hover={!!handleRowClick}
-              onClick={handleRowClick ? () => handleRowClick(row.id) : null}
-            >
-              {
-                columns.map(col => (
-                  <TableCell key={uniqueString()} component='td'>
-                    {row[col.name]}
-                  </TableCell>
-                ))
-              }
-            </TableRow>
-          ))
+              </TableRow>
+            ))
+          )
         }
         {
           emptyRows > 0 &&
@@ -91,7 +96,7 @@ const PaginatedTable = ({ name, rows, columns, size, handleRowClick, rowsNum }) 
       <TableFooter>
         <TableRow>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 20]}
+            rowsPerPageOptions={[8, 16, 24]}
             count={rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
@@ -129,6 +134,8 @@ PaginatedTable.propTypes = {
   name: PropTypes.string.isRequired,
   rows: PropTypes.array.isRequired,
   columns: PropTypes.array.isRequired,
+  selectionLoading: PropTypes.object,
+  selectedRow: PropTypes.object,
   size: PropTypes.string,
   handleRowClick: PropTypes.func
 };

@@ -7,14 +7,24 @@ import colours from '../styles/colours.js';
 const { darkFade, dark } = colours;
 
 export const StyledHeading = styled.h4`
-  color: ${props => props.color || dark};
-  ${props => !props.noSpace && ({
+  color: ${({ color }) => color || dark};
+  ${({ noSpace }) => noSpace ? ({
+    margin: 0
+  }) : ({
     paddingTop: '0.5rem',
     paddingBottom: '0.25rem',
     marginBottom: '0.25rem'
   })};
-  border-bottom: 1px solid ${props => props.color || darkFade};
-  font-size: ${props => props.size === 'small' ? '1.25rem' : '1.5rem'}
+  border-bottom: 1px solid ${({ color }) => color || darkFade};
+  font-size: ${({ size }) => {
+    switch (size) {
+      case 'x-small':
+        return '1rem';
+      case 'small':
+        return '1.25rem';
+      default: return '1.5rem';
+    }
+  }}
 `;
 
 const Heading = ({ text, ...other }) => {

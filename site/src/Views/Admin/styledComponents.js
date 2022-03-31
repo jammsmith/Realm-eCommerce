@@ -29,6 +29,8 @@ const GridItem = styled.div`
 export const OrdersWrapper = styled(GridItem)`
   grid-column: 1 / 7;
   grid-row: 1 / 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const InventoryWrapper = styled(GridItem)`
@@ -46,78 +48,6 @@ export const SiteStatsWrapper = styled(GridItem)`
   grid-row: 2 / 2;
 `;
 
-//
-export const DataSection = styled.div`
-  border-radius: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  min-height: 400px;
-  justify-content: flex-start;
-  padding: 1rem;
-  -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
-  box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
-  width: 400px;
-`;
-export const DataRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 0.03px solid rgba(0,0,0,0.2);
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.25rem;
-`;
-export const DataRowLeftItem = styled.h6`
-  margin: 0;
-`;
-export const DataRowRightItem = styled.h4`
-  margin: 0;
-`;
-export const DialogContentWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 1rem;
-  gap: 1rem;
-`;
-
-// Delivery details
-export const AddressWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-`;
-
-// Billing details
-export const RefundWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-// Order Status
-export const OrderStatusContainer = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-export const OrderStatusRow = styled(DataRow)`
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  border: none;
-`;
-export const StatusButtons = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem
-`;
-
-// Inventory
 export const InventoryButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
@@ -126,6 +56,16 @@ export const InventoryButtonWrapper = styled.div`
   width: 100%;
 `;
 
-export const DialogStyle = styled.div`
-  background-color: rgba(63, 81, 181, 0.1);
+export const DialogContentWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem;
+`;
+
+export const DataLoading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 `;

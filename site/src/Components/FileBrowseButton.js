@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import colours from '../styles/colours.js';
@@ -31,9 +32,18 @@ const FileBrowseButton = ({ onChange }) => {
       <Label htmlFor='file-upload'>
         BROWSE
       </Label>
-      <input id='file-upload' type='file' style={{ display: 'none' }} onChange={onChange} />
+      <input
+        id='file-upload'
+        type='file'
+        style={{ display: 'none' }}
+        onChange={onChange}
+      />
     </div>
   );
+};
+
+FileBrowseButton.propTypes = {
+  onChange: PropTypes.func.isRequired
 };
 
 export default FileBrowseButton;
