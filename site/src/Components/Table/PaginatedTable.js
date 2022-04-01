@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {
   Table,
@@ -13,13 +12,6 @@ import uniqueString from 'unique-string';
 
 import PaginationActions from './PaginationActions.js';
 import ProgressSpinner from '../ProgressSpinner.js';
-
-const DataLoading = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-`;
 
 const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick, rowsNum, selectionLoading }) => {
   const [page, setPage] = useState(0);
@@ -40,7 +32,6 @@ const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick
     setPage(0);
   };
 
-  useEffect(() => console.log('selectionLoading', selectionLoading), [selectionLoading]);
   return (
     <Table aria-label={name} size={size || 'medium'}>
       <TableBody>
@@ -52,15 +43,17 @@ const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick
           }
         </TableRow>
         {
-          selectionLoading && selectionLoading.state === true ? (
-            <DataLoading style={{ height: 53 * rowsPerPage, backgroundColor: 'pink' }}> // need to get the width to centralise the spinner
-              <ProgressSpinner size='3rem' colour='blue' />
-            </DataLoading>
-          ) : (
-            (rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : sortedRows
-            ).map((row) => (
+          (rowsPerPage > 0
+            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : sortedRows
+          ).map((row) => (
+            selectionLoading && selectionLoading.state === true && selectionLoading.id === row.id ? (
+              <TableRow style={{ height: 53 }}>
+                <TableCell colSpan={6}>
+                  <ProgressSpinner size='1.5rem' />
+                </TableCell>
+              </TableRow>
+            ) : (
               <TableRow
                 key={uniqueString()}
                 component='tr'
@@ -83,8 +76,8 @@ const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick
                   ))
                 }
               </TableRow>
-            ))
-          )
+            )
+          ))
         }
         {
           emptyRows > 0 &&

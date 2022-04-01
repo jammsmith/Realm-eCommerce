@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
 import { TextField, InputAdornment } from '@mui/material';
 import _ from 'lodash';
+import uniqueString from 'unique-string';
 
 import ActionButton from '../../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
@@ -10,27 +11,44 @@ import Heading from '../../../../../Components/Heading.js';
 import ImageUploader from '../../../../../Components/ImageUploader.js';
 import RowGroup from '../../../../../Components/Forms/RowGroup.js';
 import SelectInput from '../../../../../Components/Forms/SelectInput.js';
+import UserMessage from '../../../../../Components/UserMessage.js';
 import { ALL_CATEGORIES_AND_SUBCATEGORIES } from '../../../../../graphql/queries.js';
 import mutations from '../../../../../graphql/mutations.js';
 import useDDMutation from '../../../../../hooks/useDDMutation.js';
+import { validateProductFields } from '../../../../../helpers/inventory.js';
 
-import { FixedSizeInventorySection, EditFormContainer } from '../styledComponents.js';
+import {
+  FixedSizeInventorySection,
+  EditFormContainer,
+  SubmitButtons
+} from '../styledComponents.js';
 import { DataLoading } from '../../../styledComponents.js';
 
 const ProductEdit = ({ item, tableRows, updateTableRows }) => {
-  const [loading, setLoading] = useState(false);
-  const { data } = useQuery(ALL_CATEGORIES_AND_SUBCATEGORIES);
-  const [updateProduct] = useDDMutation(mutations.UpdateProductAndRelations);
+  const [loading, setLoading] = useState({
+    type: '',
+    state: false
+  });
+  const [error, setError] = useState(null);
+  const [deleteRequested, setDeleteRequested] = useState(false);
 
-  const [fields, setFields] = useState({
+  const { data } = useQuery(ALL_CATEGORIES_AND_SUBCATEGORIES);
+  const [upsertProduct] = useDDMutation(mutations.UpsertProduct);
+  const [deleteProduct] = useDDMutation(mutations.DeleteProduct);
+
+  const shouldCreateNewProduct = !item || !item.product_id;
+
+  const initialFields = {
     name: '',
     description: '',
     images: [],
     category: '',
     subCategory: '',
-    quantity: 0,
-    price: 0
-  });
+    quantity: '',
+    price: ''
+  };
+
+  const [fields, setFields] = useState(initialFields);
   const hasSelectedCategory = fields.category && fields.category !== '';
 
   const handleFormChange = (e) => {
@@ -51,55 +69,98 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
     setFields(prev => ({ ...prev, images: updatedImages }));
   };
 
-  const getSubCategoryFields = (selectedCategory, allCategories) => {
+  const getSubCategoryDetails = (selectedCategory, allCategories) => {
     if (!selectedCategory || selectedCategory === '' || !allCategories || !allCategories.length) {
       return undefined;
     }
     const selected = allCategories.find(category => category.name === selectedCategory);
 
     return selected.subCategories.map(subCat => ({
+      id: subCat.subCategory_id,
       name: _.startCase(subCat.name),
       value: subCat.name
     }));
   };
 
-  const handleUpdateProduct = async () => {
-    setLoading(true);
+  const handleUpsertProduct = async () => {
     try {
-      // update product document (also updates subcategory relationships if changed)
-      const { data } = await updateProduct({
-        variables: {
-          _id: item._id,
-          product_id: item.product_id,
-          name: fields.name,
-          images: fields.images,
-          category: fields.category,
-          subCategory: fields.subCategory,
-          description: fields.description,
-          price: fields.price,
-          numInStock: fields.quantity
-        }
-      });
+      setLoading({ type: 'upsert', state: true });
+      const { result } = validateProductFields();
 
-      const { __typename, _id, product_id, ...updatedFields } = data.updateProductAndRelations;
-      setFields(prev => ({ ...prev, ...updatedFields }));
+      if (result === 'failed') {
+        setError('Some form fields have failed validation, please check and resubmit');
+        return;
+      }
+
+      const variables = {
+        product_id: shouldCreateNewProduct ? `product-${await uniqueString()}` : item.product_id,
+        name: fields.name.trim(),
+        images: fields.images,
+        category: fields.category,
+        subCategory: fields.subCategory,
+        description: fields.description.trim(),
+        price: parseFloat(fields.price),
+        numInStock: parseInt(fields.quantity)
+      };
+      if (!shouldCreateNewProduct) {
+        variables._id = item._id;
+      }
+      // update product document (also updates subcategory relationships if changed)
+      const { data } = await upsertProduct({ variables });
+
+      const { __typename, _id, product_id: productId, ...upsertedProduct } = data.upsertProduct;
+      setFields(prev => ({ ...prev, upsertedProduct }));
+
+      const formattedProduct = {
+        id: productId,
+        name: upsertedProduct.name,
+        numInStock: upsertedProduct.numInStock,
+        price: upsertedProduct.price,
+        category: _.startCase(upsertedProduct.category),
+        subcategory: _.startCase(upsertedProduct.subCategory)
+      };
 
       const clonedTableRows = JSON.parse(JSON.stringify(tableRows));
-      const indexOfUpdatedRow = clonedTableRows.findIndex(row => row.id === item.product_id);
 
-      clonedTableRows[indexOfUpdatedRow] = {
-        id: item.product_id,
-        name: updatedFields.name,
-        numInStock: updatedFields.numInStock,
-        price: updatedFields.price,
-        category: _.startCase(updatedFields.category),
-        subcategory: _.startCase(updatedFields.subCategory)
-      };
+      if (item && item.product_id) {
+        const indexOfUpdatedRow = clonedTableRows.findIndex(row => row.id === item.product_id);
+        clonedTableRows[indexOfUpdatedRow] = formattedProduct;
+      } else {
+        clonedTableRows.push(formattedProduct);
+      }
       updateTableRows(clonedTableRows);
     } catch (err) {
-      console.error(err);
+      setError(err);
     } finally {
-      setLoading(false);
+      setLoading({ type: '', state: false });
+    }
+  };
+
+  const handleDeleteRequested = () => {
+    if (!item || !Object.keys(item).length) {
+      setError('Must select a product to delete');
+      return;
+    }
+    setDeleteRequested(true);
+  };
+
+  const handleDeleteProduct = async () => {
+    try {
+      setLoading({ type: 'delete', state: true });
+      const { data } = await deleteProduct({
+        variables: { productId: item.product_id }
+      });
+
+      if (data.deleteProduct && data.deleteProduct.isDeleted) {
+        const updatedRows = tableRows.filter(row => row.id !== item.product_id);
+        updateTableRows(updatedRows);
+        setFields(initialFields);
+      }
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading({ type: '', state: false });
+      setDeleteRequested(false);
     }
   };
 
@@ -117,11 +178,13 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
       if (itemFields !== fields) {
         setFields(itemFields);
       }
+      if (error) {
+        setError(null);
+      }
     }
   }, [item]);
 
   return (
-
     <FixedSizeInventorySection>
       <Heading
         text={item && item.name ? 'Edit product' : 'Create new product'} size='small'
@@ -154,7 +217,7 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
               <RowGroup>
                 <SelectInput
                   name='category'
-                  label='Category'
+                  label='Category*'
                   value={fields.category}
                   variant='outlined'
                   handleChange={handleFormChange}
@@ -168,7 +231,7 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
                 />
                 <SelectInput
                   name='subCategory'
-                  label='Sub Category'
+                  label='Sub Category*'
                   value={fields.subCategory}
                   variant='outlined'
                   handleChange={handleFormChange}
@@ -176,7 +239,7 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
                   disabled={!hasSelectedCategory}
                   options={
                     hasSelectedCategory
-                      ? getSubCategoryFields(fields.category, data.categories)
+                      ? getSubCategoryDetails(fields.category, data.categories)
                       : []
                   }
                 />
@@ -206,24 +269,42 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
               </RowGroup>
               <ImageUploader
                 onUpload={(imageUrl) => handleImageChange(imageUrl, 'upload')}
+                onDelete={(imageUrl) => handleImageChange(imageUrl, 'delete')}
                 images={fields.images}
+                placeholderText='No images yet! You must upload at least one image per product'
               />
             </EditFormContainer>
-            <ActionButton
-              text='save'
-              onClick={handleUpdateProduct}
-              loading={loading}
-              customStyles={{
-                position: 'absolute',
-                bottom: '1rem',
-                right: '1rem',
-                backgroundColor: 'rgba(63, 81, 181, 1)',
-                borderColor: '#fff',
-                color: '#fff',
-                width: '6rem',
-                height: '2.5rem'
-              }}
-            />
+            <SubmitButtons>
+              <ActionButton
+                text='save'
+                onClick={handleUpsertProduct}
+                loading={loading.state === true && loading.type === 'upsert'}
+                customStyles={{
+                  backgroundColor: 'rgba(63, 81, 181, 1)',
+                  borderColor: '#fff',
+                  color: '#fff',
+                  width: '6rem',
+                  height: '2.5rem'
+                }}
+              />
+              <ActionButton
+                text={deleteRequested ? 'confirm deletion' : 'delete product'}
+                onClick={
+                  deleteRequested
+                    ? handleDeleteProduct
+                    : handleDeleteRequested
+                }
+                loading={loading.state === true && loading.type === 'delete'}
+                customStyles={{
+                  backgroundColor: '#fff',
+                  borderColor: 'red',
+                  color: 'red',
+                  height: '2.5rem',
+                  width: '10rem'
+                }}
+              />
+              {error && <UserMessage text={error} type='error' />}
+            </SubmitButtons>
           </>
         ) : (
           <DataLoading>

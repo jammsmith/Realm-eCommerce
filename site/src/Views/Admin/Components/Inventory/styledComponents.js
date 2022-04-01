@@ -39,3 +39,11 @@ export const EditFormContainer = styled.div`
   gap: 0.75rem;
   margin-top: 1rem;
 `;
+
+export const SubmitButtons = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  margin-top: 1.75rem;
+`;

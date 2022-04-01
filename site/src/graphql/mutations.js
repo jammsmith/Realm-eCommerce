@@ -157,74 +157,20 @@ const mutations = {
     }
   `,
   // Shop Inventory -->
-  AddProduct: gql`
-    ${PRODUCT_DETAILS}
+  UpsertProduct: gql`
+  ${PRODUCT_DETAILS}
     mutation(
-      $product_id: String!
+      $_id: ObjectId,
+      $product_id: String!,
       $name: String!,
       $images: [String]!,
       $category: String!,
       $subCategory: String!,
       $description: String!,
       $price: Int!,
-      $numInStock: Int!,
+      $numInStock: Int!
     ) {
-      insertOneProduct(data: {
-        product_id: $product_id
-        name: $name,
-        images: $images,
-        category: $category,
-        subCategory: $subCategory,
-        description: $description,
-        price: $price,
-        numInStock: $numInStock
-        } ) {
-          ...ProductDetails
-      }
-    }
-  `,
-  UpdateProduct: gql`
-    ${PRODUCT_DETAILS}
-    mutation(
-      $id: ObjectId!
-      $name: String,
-      $images: [String],
-      $category: String,
-      $subCategory: String,
-      $description: String,
-      $price: Int,
-      $numInStock: Int
-    ) {
-      updateOneProduct(
-        query: { _id: $id },
-        set: {
-          productId: $productId,
-          name: $name,
-          images: $images,
-          category: $category,
-          subCategory: $subCategory,
-          description: $description,
-          price: $price,
-          numInStock: $numInStock
-        } ) {
-        ...ProductDetails
-      }
-    }
-  `,
-  UpdateProductAndRelations: gql`
-  ${PRODUCT_DETAILS}
-    mutation(
-      $_id: ObjectId!,
-      $product_id: String!,
-      $name: String,
-      $images: [String],
-      $category: String,
-      $subCategory: String,
-      $description: String,
-      $price: Int,
-      $numInStock: Int
-    ) {
-      updateProductAndRelations(input: {
+      upsertProduct(input: {
           _id: $_id,
           product_id: $product_id,
           name: $name,
@@ -241,10 +187,10 @@ const mutations = {
     }
   `,
   DeleteProduct: gql`
-    ${PRODUCT_DETAILS}
-    mutation($id: ObjectId!) {
-      deleteOneProduct(query: { _id: $id }) {
-        ...ProductDetails
+    mutation($productId: String!) {
+      deleteProduct(input: $productId) {
+        productId
+        isDeleted
       }
     }
   `,

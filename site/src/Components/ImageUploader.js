@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
-import { uploadFile } from 'react-s3';
+import { uploadFile, deleteFile } from 'react-s3';
 import styled from 'styled-components';
+import { TiDeleteOutline } from 'react-icons/ti';
 
 import { S3_CONFIG } from '../graphql/queries.js';
 import ActionButton from './ActionButton.js';
@@ -36,6 +37,8 @@ const SelectedFile = styled.p`
   white-space: nowrap;
   align-self: flex-end;
 `;
+
+// All images
 const ThumbnailsWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -43,16 +46,31 @@ const ThumbnailsWrapper = styled.div`
   flex-wrap: wrap;
   width: 100%;
 `;
-const Thumbnail = styled.img`
+
+// One image
+const ThumbnailWrapper = styled.div`
+  position: relative;
+`;
+const ThumbnailImage = styled.img`
   border-radius: 4px;
   height: 50px;
   width: auto;
+`;
+const ThumbnailDeleteIcon = styled(TiDeleteOutline)`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  color: grey;
+  :hover {
+    color: black;
+    cursor: pointer;
+  }
 `;
 const ImagePlaceholder = styled.div`
   height: 50px;
 `;
 
-const ImageUploader = ({ onUpload, images }) => {
+const ImageUploader = ({ onUpload, onDelete, images, placeholderText }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -92,6 +110,12 @@ const ImageUploader = ({ onUpload, images }) => {
     }
   };
 
+  const handleDelete = (e, imageUrl) => {
+    e.preventDefault();
+    setMessage(null);
+    onDelete(imageUrl);
+  };
+
   return (
     <Wrapper>
       <Heading text='Upload an image' size='x-small' />
@@ -121,8 +145,13 @@ const ImageUploader = ({ onUpload, images }) => {
       <ThumbnailsWrapper>
         {
           images && images.length
-            ? images.map((imageUrl, index) => <Thumbnail key={index} src={imageUrl} />)
-            : <ImagePlaceholder>No images yet!</ImagePlaceholder>
+            ? images.map((imageUrl, index) => (
+              <ThumbnailWrapper key={index}>
+                <ThumbnailDeleteIcon size='1.5rem' onClick={(e) => handleDelete(e, imageUrl)} />
+                <ThumbnailImage src={imageUrl} />
+              </ThumbnailWrapper>
+            ))
+            : <ImagePlaceholder>{placeholderText || 'No images yet!'}</ImagePlaceholder>
         }
       </ThumbnailsWrapper>
     </Wrapper>
@@ -131,7 +160,9 @@ const ImageUploader = ({ onUpload, images }) => {
 
 ImageUploader.propTypes = {
   onUpload: PropTypes.func.isRequired,
-  images: PropTypes.array
+  onDelete: PropTypes.func.isRequired,
+  images: PropTypes.array,
+  placeholderText: PropTypes.string
 };
 
 export default ImageUploader;

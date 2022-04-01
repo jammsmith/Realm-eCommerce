@@ -15,7 +15,10 @@ import { DataLoading } from '../../../styledComponents.js';
 
 const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected }) => {
   const [error, setError] = useState('');
-  const [productLoading, setProductLoading] = useState(false);
+  const [productLoading, setProductLoading] = useState({
+    id: null,
+    state: false
+  });
 
   const searchTerm = useRef('');
 

@@ -1,33 +1,10 @@
 [
     {
-        "name": "resetPassword",
-        "private": false
-    },
-    {
-        "name": "createPaymentIntent",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "db_updateProduct",
-        "private": false
-    },
-    {
-        "name": "generateId",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "getDbUserData",
+        "name": "db_deleteProduct",
         "private": false
     },
     {
         "name": "refundPaymentIntent",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "retrievePaymentIntent",
         "private": false,
         "run_as_system": true
     },
@@ -41,7 +18,34 @@
         "run_as_system": true
     },
     {
+        "name": "createPaymentIntent",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "getDbUserData",
+        "private": false
+    },
+    {
         "name": "productSearch",
         "private": false
+    },
+    {
+        "name": "resetPassword",
+        "private": false
+    },
+    {
+        "name": "db_upsertProduct",
+        "private": false
+    },
+    {
+        "name": "generateId",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "retrievePaymentIntent",
+        "private": false,
+        "run_as_system": true
     }
 ]
