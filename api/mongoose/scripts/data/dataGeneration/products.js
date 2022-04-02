@@ -1,6 +1,7 @@
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const _ = require('lodash');
-const categories = require('../data/categories.js');
+
+const categories = require('../sampleData/categories.js');
 
 const generateProducts = () => {
   const generatedProducts = [];
@@ -20,10 +21,18 @@ const generateProducts = () => {
     // Returns a single sub-category from the sub-category array of the above object.
     const randomSubCategory = faker.random.arrayElement(currentCategory.subCategories);
 
+    // Returns a random number (1-5) of images
+    const images = [];
+    const numberBetweenOneAndFive = Math.ceil(Math.random() * 5);
+    const image = 'https://placekitten.com/350?random';
+    for (let i = 0; i < numberBetweenOneAndFive; i++) {
+      images.push(image);
+    }
+
     generatedProducts.push({
       product_id: `product-00${i}`,
       name: faker.commerce.productName(),
-      images: ['https://placedog.net/350?random'],
+      images: images,
       category: randomCategory,
       subCategory: randomSubCategory,
       description: faker.commerce.productDescription(),

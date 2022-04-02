@@ -15,10 +15,10 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
   const EditComponent = editSection;
 
   useEffect(() => {
-    if (!open && itemToEdit) {
+    if (!open && Object.keys(itemToEdit).length) {
       setItemToEdit({});
     }
-  }, [open]);
+  }, [open, itemToEdit]);
 
   return (
     <Dialog

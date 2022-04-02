@@ -12,7 +12,6 @@ import mutations from '../../../../graphql/mutations.js';
 import {
   DataSection as Section,
   CurrentStatusRow,
-  DataRow,
   DataRowLeftItem,
   DataRowRightItem,
   StatusButtons,
@@ -27,7 +26,7 @@ const StatusSection = ({ order }) => {
     if (order && order.orderStatus !== status) {
       setStatus(order.orderStatus);
     }
-  }, [order]);
+  }, [order, status]);
 
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
   const updateOrderStatus = async (e, status) => {

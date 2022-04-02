@@ -1,7 +1,7 @@
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
-const categories = require('../data/categories.js');
-const subCategories = require('../data/subCategories.js');
+const categories = require('../sampleData/categories.js');
+const subCategories = require('../sampleData/subCategories.js');
 
 const generateCategories = () => {
   const generatedCategories = categories.map(category => {
@@ -11,7 +11,7 @@ const generateCategories = () => {
     return {
       name: category.name,
       description: faker.commerce.productDescription(),
-      image: 'https://placedog.net/350?random',
+      image: 'https://placekitten.com/350?random',
       subCategories: subCategoryIds
     };
   });

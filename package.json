@@ -8,9 +8,10 @@
     "lodash": "^4.17.21"
   },
   "scripts": {
-    "db:seed": "node api/mongoose/seeder/seeder.js",
-    "db:delete-all": "node api/mongoose/seeder/seeder.js -d",
-    "db:clear-shop": "node api/mongoose/scripts/clearShopHistory.js",
+    "db:seedInventory": "node api/mongoose/scripts/resetInventory.js",
+    "db:deleteInventory": "node api/mongoose/scripts/resetInventory.js -d",
+    "db:deleteUsers": "node api/mongoose/scripts/deleteUsers.js",
+    "db:deleteOrderHistory": "node api/mongoose/scripts/deleteOrderHistory.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

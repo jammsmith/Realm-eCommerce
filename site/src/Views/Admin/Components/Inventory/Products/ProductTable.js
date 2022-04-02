@@ -50,13 +50,13 @@ const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected
     onError: setError
   });
 
-  const searchProducts = useCallback(searchFunc, [searchTerm.current]);
+  const searchProducts = useCallback(searchFunc, [searchTerm.current, searchFunc]);
 
   useEffect(() => {
     if (!rows || !rows.length || reset) {
       searchProducts();
     }
-  }, [rows, reset]);
+  }, [rows, reset, searchProducts]);
 
   const [getSelectedProduct] = useLazyQuery(SINGLE_PRODUCT, {
     onCompleted: (data) => {

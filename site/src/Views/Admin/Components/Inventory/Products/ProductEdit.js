@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
 import { TextField, InputAdornment } from '@mui/material';
@@ -29,8 +29,9 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
     type: '',
     state: false
   });
-  const [error, setError] = useState(null);
+  const [message, setMessage] = useState({ type: '', text: '' });
   const [deleteRequested, setDeleteRequested] = useState(false);
+  const selectedRowId = useRef(item.product_id);
 
   const { data } = useQuery(ALL_CATEGORIES_AND_SUBCATEGORIES);
   const [upsertProduct] = useDDMutation(mutations.UpsertProduct);
@@ -85,10 +86,13 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
   const handleUpsertProduct = async () => {
     try {
       setLoading({ type: 'upsert', state: true });
-      const { result } = validateProductFields();
+      const { result } = validateProductFields(fields);
 
       if (result === 'failed') {
-        setError('Some form fields have failed validation, please check and resubmit');
+        setMessage({
+          type: 'error',
+          text: 'Some form fields have failed validation, please check and resubmit'
+        });
         return;
       }
 
@@ -129,8 +133,16 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
         clonedTableRows.push(formattedProduct);
       }
       updateTableRows(clonedTableRows);
+      setMessage({
+        type: 'success',
+        text: shouldCreateNewProduct ? 'Product added!' : 'Product updated!'
+      });
     } catch (err) {
-      setError(err);
+      console.error(err);
+      setMessage({
+        type: 'error',
+        text: shouldCreateNewProduct ? 'Failed to create new product' : 'Failed to update product'
+      });
     } finally {
       setLoading({ type: '', state: false });
     }
@@ -138,7 +150,10 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
 
   const handleDeleteRequested = () => {
     if (!item || !Object.keys(item).length) {
-      setError('Must select a product to delete');
+      setMessage({
+        type: 'error',
+        text: 'Must select a product to delete'
+      });
       return;
     }
     setDeleteRequested(true);
@@ -157,32 +172,34 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
         setFields(initialFields);
       }
     } catch (err) {
-      setError(err);
+      console.error(err);
     } finally {
       setLoading({ type: '', state: false });
       setDeleteRequested(false);
     }
   };
 
+  const populateFormFields = useCallback(() => {
+    const itemFields = {
+      name: item.name,
+      description: item.description,
+      images: item.images,
+      category: item.category,
+      subCategory: item.subCategory,
+      quantity: item.numInStock,
+      price: item.price
+    };
+    itemFields !== fields && setFields(itemFields);
+  }, [item, fields]);
+
   useEffect(() => {
-    if (item && item.name) {
-      const itemFields = {
-        name: item.name,
-        description: item.description,
-        images: item.images,
-        category: item.category,
-        subCategory: item.subCategory,
-        quantity: item.numInStock,
-        price: item.price
-      };
-      if (itemFields !== fields) {
-        setFields(itemFields);
-      }
-      if (error) {
-        setError(null);
-      }
+    if (item && item.product_id && item.product_id !== selectedRowId.current) {
+      populateFormFields();
+      message && setMessage(null);
+      deleteRequested && setDeleteRequested(false);
+      selectedRowId.current = item.product_id;
     }
-  }, [item]);
+  }, [item, populateFormFields, message, deleteRequested]);
 
   return (
     <FixedSizeInventorySection>
@@ -272,6 +289,7 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
                 onDelete={(imageUrl) => handleImageChange(imageUrl, 'delete')}
                 images={fields.images}
                 placeholderText='No images yet! You must upload at least one image per product'
+                reset={message && message.type === 'success'}
               />
             </EditFormContainer>
             <SubmitButtons>
@@ -303,7 +321,7 @@ const ProductEdit = ({ item, tableRows, updateTableRows }) => {
                   width: '10rem'
                 }}
               />
-              {error && <UserMessage text={error} type='error' />}
+              {message && message.type && <UserMessage text={message.text} type={message.type} />}
             </SubmitButtons>
           </>
         ) : (

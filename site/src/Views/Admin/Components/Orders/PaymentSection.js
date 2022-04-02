@@ -102,7 +102,7 @@ const PaymentSection = ({ order }) => {
     if (order && order.paymentIntentId && !paymentIntent) {
       getPaymentIntent();
     }
-  }, [order, getPaymentIntent]);
+  }, [order, paymentIntent, getPaymentIntent]);
 
   useEffect(() => {
     if (error && loading) {

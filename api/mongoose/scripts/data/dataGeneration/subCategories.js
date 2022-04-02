@@ -1,5 +1,6 @@
-const subCategories = require('../data/subCategories.js');
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
+
+const subCategories = require('../sampleData/subCategories.js');
 
 const generateSubCategories = (products) => {
   const generatedSubCategories = subCategories.map(subCategory => {

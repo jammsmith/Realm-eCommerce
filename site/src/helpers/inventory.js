@@ -13,30 +13,35 @@ export const validateProductFields = (requestedFields) => {
 
   for (const field in requestedFields) {
     const item = requestedFields[field];
-
+    console.log('field', field);
+    console.log('item', item);
     switch (field) {
       case 'name':
       case 'description':
         if (typeof item !== 'string' || item.trim().length < 1) {
-          failedItems.push(item);
+          failedItems.push(field);
         }
         break;
       case 'images':
         if (!item.length) {
-          failedItems.push(item);
+          failedItems.push(field);
         }
         break;
-      case 'price':
-        if (typeof item !== 'number' || item === 0) {
-          failedItems.push(item);
+      case 'price': {
+        const parsed = parseFloat(item);
+        if (parsed === 0) {
+          failedItems.push(field);
         }
+      }
         break;
-      case 'quantity':
-        if (typeof item !== 'number') {
-          failedItems.push(item);
+      case 'quantity': {
+        const parsed = parseInt(item);
+        if (typeof parsed !== 'number') {
+          failedItems.push(field);
         }
+      }
         break;
-      default: console.error('Unknown field type');
+      default: console.log('Skipping field. Field:', field);
     }
   }
   return failedItems.length

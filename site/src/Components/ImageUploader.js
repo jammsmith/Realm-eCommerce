@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
-import { uploadFile, deleteFile } from 'react-s3';
+import { uploadFile } from 'react-s3';
 import styled from 'styled-components';
 import { TiDeleteOutline } from 'react-icons/ti';
 
@@ -70,7 +70,7 @@ const ImagePlaceholder = styled.div`
   height: 50px;
 `;
 
-const ImageUploader = ({ onUpload, onDelete, images, placeholderText }) => {
+const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -115,6 +115,12 @@ const ImageUploader = ({ onUpload, onDelete, images, placeholderText }) => {
     setMessage(null);
     onDelete(imageUrl);
   };
+
+  useEffect(() => {
+    if (reset) {
+      message.type && setMessage(null);
+    }
+  }, [reset]);
 
   return (
     <Wrapper>
@@ -162,7 +168,8 @@ ImageUploader.propTypes = {
   onUpload: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   images: PropTypes.array,
-  placeholderText: PropTypes.string
+  placeholderText: PropTypes.string,
+  reset: PropTypes.bool
 };
 
 export default ImageUploader;

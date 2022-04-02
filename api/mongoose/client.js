@@ -9,8 +9,7 @@ module.exports = () => {
   mongoose
     .connect(MONGO_CONNECTION_URI, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
+      useUnifiedTopology: true
     })
     .catch(err => console.log(err));
 
