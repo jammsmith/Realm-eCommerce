@@ -118,9 +118,9 @@ const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) =
 
   useEffect(() => {
     if (reset) {
-      message.type && setMessage(null);
+      message && message.type && setMessage(null);
     }
-  }, [reset]);
+  }, [reset, message]);
 
   return (
     <Wrapper>

@@ -35,8 +35,8 @@ const Inventory = () => {
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
         inventoryType={selectedType}
-        tableSection={selectedType ? components[selectedType].table : null}
-        editSection={selectedType ? components[selectedType].edit : null}
+        tableSection={selectedType ? components[selectedType].table : ProductTable}
+        editSection={selectedType ? components[selectedType].edit : ProductEdit}
       />
       <InventoryButtonWrapper>
         <BigButton

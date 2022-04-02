@@ -17,8 +17,6 @@ const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsNum || 10);
 
-  const sortedRows = rows.sort((a, b) => (a.calories < b.calories ? -1 : 1));
-
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -43,41 +41,39 @@ const PaginatedTable = ({ name, rows, columns, selectedRow, size, handleRowClick
           }
         </TableRow>
         {
-          (rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : sortedRows
-          ).map((row) => (
-            selectionLoading && selectionLoading.state === true && selectionLoading.id === row.id ? (
-              <TableRow style={{ height: 53 }}>
-                <TableCell colSpan={6}>
-                  <ProgressSpinner size='1.5rem' />
-                </TableCell>
-              </TableRow>
-            ) : (
-              <TableRow
-                key={uniqueString()}
-                component='tr'
-                sx={{
-                  '&:last-child td, &:last-child th': { border: 0 },
-                  ':hover': {
-                    cursor: handleRowClick ? 'pointer' : 'cursor'
-                  },
-                  height: '53px'
-                }}
-                hover={!!handleRowClick}
-                onClick={handleRowClick ? () => handleRowClick(row.id) : null}
-                selected={selectedRow && row.id === selectedRow[`${row.id.split('-')[0]}_id`]}
-              >
-                {
-                  columns.map(col => (
-                    <TableCell key={uniqueString()} component='td'>
-                      {row[col.name]}
-                    </TableCell>
-                  ))
-                }
-              </TableRow>
-            )
-          ))
+          rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((row) => (
+              selectionLoading && selectionLoading.state === true && selectionLoading.id === row.id ? (
+                <TableRow key={uniqueString()} style={{ height: 53 }}>
+                  <TableCell colSpan={6}>
+                    <ProgressSpinner size='1.5rem' />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <TableRow
+                  key={uniqueString()}
+                  component='tr'
+                  sx={{
+                    '&:last-child td, &:last-child th': { border: 0 },
+                    ':hover': {
+                      cursor: handleRowClick ? 'pointer' : 'cursor'
+                    },
+                    height: '53px'
+                  }}
+                  hover={!!handleRowClick}
+                  onClick={handleRowClick ? () => handleRowClick(row.id) : null}
+                  selected={selectedRow && row.id === selectedRow[`${row.id.split('-')[0]}_id`]}
+                >
+                  {
+                    columns.map(col => (
+                      <TableCell key={uniqueString()} component='td'>
+                        {row[col.name]}
+                      </TableCell>
+                    ))
+                  }
+                </TableRow>
+              )
+            ))
         }
         {
           emptyRows > 0 &&

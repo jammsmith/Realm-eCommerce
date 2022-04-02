@@ -48,3 +48,13 @@ export const validateProductFields = (requestedFields) => {
     ? { result: 'failed', failedItems }
     : { result: 'passed' };
 };
+
+export const validateSubCategoryFields = () => {};
+
+export const getTrimmedFormFields = (fields) => {
+  const clonedFields = Object.assign(fields, {});
+  for (const field in clonedFields) {
+    clonedFields[field] = field.trim();
+  }
+  return clonedFields;
+};

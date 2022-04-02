@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
-import { TextField, InputAdornment } from '@mui/material';
+import { TextField } from '@mui/material';
 import _ from 'lodash';
 import uniqueString from 'unique-string';
 
@@ -15,7 +15,7 @@ import UserMessage from '../../../../../Components/UserMessage.js';
 import { ALL_CATEGORIES_AND_SUBCATEGORIES } from '../../../../../graphql/queries.js';
 import mutations from '../../../../../graphql/mutations.js';
 import useDDMutation from '../../../../../hooks/useDDMutation.js';
-import { validateProductFields } from '../../../../../helpers/inventory.js';
+import { validateSubCategoryFields, getTrimmedFormFields } from '../../../../../helpers/inventory.js';
 
 import {
   EditInventorySection,
@@ -25,33 +25,29 @@ import {
 import { DataLoading } from '../../../styledComponents.js';
 import { HeadingWrapper } from '../../DialogHeading.js';
 
-const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
+const SubCategoryEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
   const [loading, setLoading] = useState({
     type: '',
     state: false
   });
   const [message, setMessage] = useState({ type: '', text: '' });
   const [deleteRequested, setDeleteRequested] = useState(false);
-  const selectedRowId = useRef(item.product_id);
+  const selectedRowId = useRef(item.subCategory_id);
 
   const { data } = useQuery(ALL_CATEGORIES_AND_SUBCATEGORIES);
-  const [upsertProduct] = useDDMutation(mutations.UpsertProduct);
-  const [deleteProduct] = useDDMutation(mutations.DeleteProduct);
+  const [upsertSubCategory] = useDDMutation(mutations.UpsertSubCategory);
+  const [deleteSubCategory] = useDDMutation(mutations.DeleteSubCategory);
 
-  const shouldCreateNewProduct = !item || Object.keys(item).length === 0;
+  const shouldCreateNewSubCategory = !item || Object.keys(item).length === 0;
 
   const initialFields = {
     name: '',
     description: '',
-    images: [],
-    category: '',
-    subCategory: '',
-    quantity: '',
-    price: ''
+    image: '',
+    category: ''
   };
 
   const [fields, setFields] = useState(initialFields);
-  const hasSelectedCategory = fields.category && fields.category !== '';
 
   const handleFormChange = (e) => {
     setFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -60,34 +56,19 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
   const handleImageChange = (imageUrl, action) => {
     if (!imageUrl || typeof imageUrl !== 'string') return;
 
-    let updatedImages = [];
+    let updatedImage;
     if (action === 'upload') {
-      updatedImages = [...fields.images, imageUrl];
+      updatedImage = imageUrl;
     } else if (action === 'delete') {
-      updatedImages = fields.images.filter(image => image !== imageUrl);
-    } else {
-      throw new Error(`Unknown action of '${action}' supplied to handleImageChange`);
+      updatedImage = '';
     }
-    setFields(prev => ({ ...prev, images: updatedImages }));
+    setFields(prev => ({ ...prev, image: updatedImage }));
   };
 
-  const getSubCategoryDetails = (selectedCategory, allCategories) => {
-    if (!selectedCategory || selectedCategory === '' || !allCategories || !allCategories.length) {
-      return undefined;
-    }
-    const selected = allCategories.find(category => category.name === selectedCategory);
-
-    return selected.subCategories.map(subCat => ({
-      id: subCat.subCategory_id,
-      name: _.startCase(subCat.name),
-      value: subCat.name
-    }));
-  };
-
-  const handleUpsertProduct = async () => {
+  const handleUpsertSubCategory = async () => {
     try {
       setLoading({ type: 'upsert', state: true });
-      const { result } = validateProductFields(fields);
+      const { result } = validateSubCategoryFields(fields);
 
       if (result === 'failed') {
         setMessage({
@@ -97,52 +78,45 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
         return;
       }
 
+      const trimmedFields = getTrimmedFormFields(fields);
+
       const variables = {
-        product_id: shouldCreateNewProduct ? `product-${await uniqueString()}` : item.product_id,
-        name: fields.name.trim(),
-        images: fields.images,
-        category: fields.category,
-        subCategory: fields.subCategory,
-        description: fields.description.trim(),
-        price: parseFloat(fields.price),
-        numInStock: parseInt(fields.quantity)
+        subCategory_id: shouldCreateNewSubCategory ? `subCategory-${await uniqueString()}` : item.subCategory_id,
+        ...trimmedFields
       };
-      if (!shouldCreateNewProduct) {
+      if (!shouldCreateNewSubCategory) {
         variables._id = item._id;
       }
       // update product document (also updates subcategory relationships if changed)
-      const { data } = await upsertProduct({ variables });
+      const { data } = await upsertSubCategory({ variables });
 
-      const { __typename, _id, product_id: productId, ...upsertedProduct } = data.upsertProduct;
-      setFields(prev => ({ ...prev, upsertedProduct }));
+      const { __typename, _id, subCategory_id: subCategoryId, ...upsertedSubCategory } = data.upsertSubCategory;
+      setFields(prev => ({ ...prev, upsertedSubCategory }));
 
-      const formattedProduct = {
-        id: productId,
-        name: upsertedProduct.name,
-        numInStock: upsertedProduct.numInStock,
-        price: upsertedProduct.price,
-        category: _.startCase(upsertedProduct.category),
-        subcategory: _.startCase(upsertedProduct.subCategory)
+      const formattedSubCategory = {
+        id: subCategoryId,
+        name: upsertedSubCategory.name,
+        category: upsertedSubCategory.category
       };
 
       const clonedTableRows = JSON.parse(JSON.stringify(tableRows));
 
-      if (item && item.product_id) {
-        const indexOfUpdatedRow = clonedTableRows.findIndex(row => row.id === item.product_id);
-        clonedTableRows[indexOfUpdatedRow] = formattedProduct;
+      if (!shouldCreateNewSubCategory) {
+        const indexOfUpdatedRow = clonedTableRows.findIndex(row => row.id === item.subCategory_id);
+        clonedTableRows[indexOfUpdatedRow] = formattedSubCategory;
       } else {
-        clonedTableRows.push(formattedProduct);
+        clonedTableRows.push(formattedSubCategory);
       }
       updateTableRows(clonedTableRows);
       setMessage({
         type: 'success',
-        text: shouldCreateNewProduct ? 'Product added!' : 'Product updated!'
+        text: shouldCreateNewSubCategory ? 'Sub-category added!' : 'Sub-category updated!'
       });
     } catch (err) {
       console.error(err);
       setMessage({
         type: 'error',
-        text: shouldCreateNewProduct ? 'Failed to create new product' : 'Failed to update product'
+        text: shouldCreateNewSubCategory ? 'Failed to create new sub-category' : 'Failed to update sub-category'
       });
     } finally {
       setLoading({ type: '', state: false });
@@ -153,22 +127,22 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
     if (!item || !Object.keys(item).length) {
       setMessage({
         type: 'error',
-        text: 'Must select a product to delete'
+        text: 'Must select a sub-category to delete'
       });
       return;
     }
     setDeleteRequested(true);
   };
 
-  const handleDeleteProduct = async () => {
+  const handleDeleteSubCategory = async () => {
     try {
       setLoading({ type: 'delete', state: true });
-      const { data } = await deleteProduct({
-        variables: { productId: item.product_id }
+      const { data } = await deleteSubCategory({
+        variables: { subCategoryId: item.subCategory_id }
       });
 
-      if (data.deleteProduct && data.deleteProduct.isDeleted) {
-        const updatedRows = tableRows.filter(row => row.id !== item.product_id);
+      if (data.deleteSubCategory && data.deleteSubCategory.isDeleted) {
+        const updatedRows = tableRows.filter(row => row.id !== item.subCategory_id);
         updateTableRows(updatedRows);
         setFields(initialFields);
       }
@@ -184,11 +158,8 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
     const itemFields = {
       name: item.name,
       description: item.description,
-      images: item.images,
-      category: item.category,
-      subCategory: item.subCategory,
-      quantity: item.numInStock,
-      price: item.price
+      image: item.images,
+      category: item.category
     };
     itemFields !== fields && setFields(itemFields);
   }, [item, fields]);
@@ -197,11 +168,11 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
     if (item && Object.keys(item).length === 0) {
       setFields(initialFields);
     }
-    if (item && item.product_id && item.product_id !== selectedRowId.current) {
+    if (item && item.subCategory_id && item.subCategory_id !== selectedRowId.current) {
       populateFormFields();
       message && setMessage(null);
       deleteRequested && setDeleteRequested(false);
-      selectedRowId.current = item.product_id;
+      selectedRowId.current = item.subCategory_id;
     }
   }, [item, populateFormFields, message, deleteRequested]);
 
@@ -210,13 +181,13 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
       <HeadingWrapper subHeading>
         <div style={{ flex: 1 }}>
           <Heading
-            text={item && item.name ? 'Edit product' : 'Create new product'}
+            text={item && item.name ? 'Edit sub-category' : 'Create new sub-category'}
             noSpace
             size='small'
           />
         </div>
         {
-          !shouldCreateNewProduct &&
+          !shouldCreateNewSubCategory &&
             <ActionButton
               text='create new'
               onClick={resetItem}
@@ -229,7 +200,7 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
             <EditFormContainer>
               <TextField
                 name='name'
-                label='Product Name'
+                label='Sub-Category Name'
                 value={fields.name}
                 variant='outlined'
                 onChange={handleFormChange}
@@ -262,56 +233,19 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
                     }))
                   }
                 />
-                <SelectInput
-                  name='subCategory'
-                  label='Sub Category*'
-                  value={fields.subCategory}
-                  variant='outlined'
-                  handleChange={handleFormChange}
-                  required
-                  disabled={!hasSelectedCategory}
-                  options={
-                    hasSelectedCategory
-                      ? getSubCategoryDetails(fields.category, data.categories)
-                      : []
-                  }
-                />
-              </RowGroup>
-              <RowGroup>
-                <TextField
-                  name='quantity'
-                  label='Quantity'
-                  value={fields.quantity}
-                  variant='outlined'
-                  onChange={handleFormChange}
-                  required
-                  fullWidth
-                />
-                <TextField
-                  name='price'
-                  label='Price'
-                  value={fields.price}
-                  variant='outlined'
-                  onChange={handleFormChange}
-                  required
-                  fullWidth
-                  InputProps={{
-                    startAdornment: <InputAdornment position='start'>£</InputAdornment>
-                  }}
-                />
               </RowGroup>
               <ImageUploader
                 onUpload={(imageUrl) => handleImageChange(imageUrl, 'upload')}
                 onDelete={(imageUrl) => handleImageChange(imageUrl, 'delete')}
-                images={fields.images}
-                placeholderText='No images yet! You must upload at least one image per product'
+                images={[fields.image]}
+                placeholderText='No images yet! You must upload an image for each sub-category'
                 reset={message && message.type === 'success'}
               />
             </EditFormContainer>
             <SubmitButtons>
               <ActionButton
                 text='save'
-                onClick={handleUpsertProduct}
+                onClick={handleUpsertSubCategory}
                 loading={loading.state === true && loading.type === 'upsert'}
                 customStyles={{
                   backgroundColor: 'rgba(63, 81, 181, 1)',
@@ -322,10 +256,10 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
                 }}
               />
               <ActionButton
-                text={deleteRequested ? 'confirm deletion' : 'delete product'}
+                text={deleteRequested ? 'confirm deletion' : 'delete subcategory'}
                 onClick={
                   deleteRequested
-                    ? handleDeleteProduct
+                    ? handleDeleteSubCategory
                     : handleDeleteRequested
                 }
                 loading={loading.state === true && loading.type === 'delete'}
@@ -350,11 +284,11 @@ const ProductEdit = ({ item, resetItem, tableRows, updateTableRows }) => {
   );
 };
 
-ProductEdit.propTypes = {
+SubCategoryEdit.propTypes = {
   item: PropTypes.object,
   resetItem: PropTypes.func.isRequired,
   tableRows: PropTypes.array.isRequired,
   updateTableRows: PropTypes.func.isRequired
 };
 
-export default ProductEdit;
+export default SubCategoryEdit;
