@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import Heading from '../../../Components/Heading.js';
 import ActionButton from '../../../Components/ActionButton.js';
 
-const HeadingWrapper = styled.div`
+export const HeadingWrapper = styled.div`
   display: flex;
   gap: 1rem;
   align-items: flex-end;
-  margin: 0 1rem;
+  margin: ${(props) => props.subHeading ? '0' : '0 1rem'};
   justify-content: space-between;
 `;
 

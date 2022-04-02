@@ -1,5 +1,6 @@
 const categories = [
   {
+    category_id: 'category-001',
     name: 'gents-wear',
     subCategories: [
       'outer-wear',
@@ -11,6 +12,7 @@ const categories = [
     ]
   },
   {
+    category_id: 'category-002',
     name: 'ladies-wear',
     subCategories: [
       'skirts-dresses-and-ensembles',
@@ -19,6 +21,7 @@ const categories = [
     ]
   },
   {
+    category_id: 'category-003',
     name: 'old-west-leather',
     subCategories: [
       'cartridge-belt-rigs',

@@ -29,7 +29,7 @@ export const InventorySection = styled.div`
   border-radius: 10px;
   position: relative;
 `;
-export const FixedSizeInventorySection = styled(InventorySection)`
+export const EditInventorySection = styled(InventorySection)`
   height: 90vh;
 `;
 
@@ -45,5 +45,5 @@ export const SubmitButtons = styled.div`
   align-items: flex-end;
   justify-content: flex-start;
   gap: 0.25rem;
-  margin-top: 1.75rem;
+  margin-top: 1.5rem;
 `;

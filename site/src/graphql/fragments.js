@@ -15,6 +15,7 @@ export const USER_DETAILS = gql`
 export const CATEGORY_DETAILS = gql`
   fragment CategoryDetails on Category {
     _id
+    category_id
     description
     image
     name

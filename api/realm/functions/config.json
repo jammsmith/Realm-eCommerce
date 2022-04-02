@@ -27,7 +27,15 @@
         "private": false
     },
     {
-        "name": "productSearch",
+        "name": "db_productSearch",
+        "private": false
+    },
+    {
+        "name": "db_subCategorySearch",
+        "private": false
+    },
+    {
+        "name": "db_categorySearch",
         "private": false
     },
     {

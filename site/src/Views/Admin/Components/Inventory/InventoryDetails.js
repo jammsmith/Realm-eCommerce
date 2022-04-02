@@ -14,6 +14,10 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
   const TableComponent = tableSection;
   const EditComponent = editSection;
 
+  const handleResetItem = () => {
+    setItemToEdit({});
+  };
+
   useEffect(() => {
     if (!open && Object.keys(itemToEdit).length) {
       setItemToEdit({});
@@ -44,6 +48,7 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
         />
         <EditComponent
           item={itemToEdit}
+          resetItem={handleResetItem}
           tableRows={tableRows}
           updateTableRows={setTableRows}
         />

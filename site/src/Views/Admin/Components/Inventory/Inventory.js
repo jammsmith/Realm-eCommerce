@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 import Heading from '../../../../Components/Heading.js';
 import BigButton from './BigButton.js';
 import InventoryDetails from './InventoryDetails.js';
+import CategoryTable from './Categories/CategoryTable.js';
+import CategoryEdit from './Categories/CategoryEdit.js';
+import SubCategoryTable from './SubCategories/SubCategoryTable.js';
+import SubCategoryEdit from './SubCategories/SubCategoryEdit.js';
 import ProductTable from './Products/ProductTable.js';
 import ProductEdit from './Products/ProductEdit.js';
 
@@ -11,11 +15,17 @@ import { InventoryWrapper, InventoryButtonWrapper } from '../../styledComponents
 
 const Inventory = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState(null);
 
   const handleSelection = (type) => {
     setSelectedType(type);
     setDialogOpen(true);
+  };
+
+  const components = {
+    category: { edit: ProductEdit, table: CategoryTable },
+    subCategory: { edit: SubCategoryEdit, table: SubCategoryTable },
+    product: { edit: ProductEdit, table: ProductTable }
   };
 
   return (
@@ -25,21 +35,21 @@ const Inventory = () => {
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
         inventoryType={selectedType}
-        tableSection={ProductTable}
-        editSection={ProductEdit}
+        tableSection={selectedType ? components[selectedType].table : null}
+        editSection={selectedType ? components[selectedType].edit : null}
       />
       <InventoryButtonWrapper>
         <BigButton
           type='products'
-          handleSelection={() => handleSelection('products')}
+          handleSelection={() => handleSelection('product')}
         />
         <BigButton
           type='subcategories'
-          handleSelection={() => handleSelection('subcategories')}
+          handleSelection={() => handleSelection('subCategory')}
         />
         <BigButton
           type='categories'
-          handleSelection={() => handleSelection('categories')}
+          handleSelection={() => handleSelection('category')}
         />
       </InventoryButtonWrapper>
     </InventoryWrapper>

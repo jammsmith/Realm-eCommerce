@@ -59,6 +59,15 @@ export const USER_DETAILED = gql`
 // Shop Categories
 export const SINGLE_CATEGORY = gql`
 ${CATEGORY_DETAILS}
+ query($categoryId: String!) {
+   category(query: { category_id: $categoryId, }) {
+     ...CategoryDetails
+   }
+ }
+`;
+
+export const SINGLE_CATEGORY_BY_NAME = gql`
+${CATEGORY_DETAILS}
 ${SUBCATEGORY_DETAILS}
  query($name: String!) {
    category(query: { name: $name, }) {
@@ -74,6 +83,15 @@ export const ALL_CATEGORIES = gql`
   ${CATEGORY_DETAILS}
   query {
     categories {
+      ...CategoryDetails
+    }
+  }
+`;
+
+export const CATEGORY_SEARCH = gql`
+  ${CATEGORY_DETAILS}
+  query($name: String) {
+    categorySearch(input: $name) {
       ...CategoryDetails
     }
   }
@@ -96,7 +114,7 @@ export const SINGLE_SUBCATEGORY_BY_NAME = gql`
 ${SUBCATEGORY_DETAILS}
 ${PRODUCT_DETAILS}
  query($name: String!, $category: String!) {
-   subCategory(query: { 
+   subCategory(query: {
      AND: [
        { name: $name },
        { category: $category }
@@ -132,6 +150,15 @@ export const ALL_SUBCATEGORIES = gql`
   }
 `;
 
+export const SUBCATEGORY_SEARCH = gql`
+  ${SUBCATEGORY_DETAILS}
+  query($name: String) {
+    subCategorySearch(input: $name) {
+      ...SubCategoryDetails
+    }
+  }
+`;
+
 // Shop products
 export const SINGLE_PRODUCT = gql`
   ${PRODUCT_DETAILS}
@@ -140,9 +167,9 @@ export const SINGLE_PRODUCT = gql`
     $productId: String
   ) {
     product(
-      query: { 
+      query: {
         _id: $id,
-        product_id: $productId 
+        product_id: $productId
       } ) {
       ...ProductDetails
     }
@@ -167,6 +194,7 @@ export const PRODUCTS_SEARCH = gql`
   }
 `;
 
+// Orders
 export const SINGLE_ORDER_DETAILED = gql`
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}

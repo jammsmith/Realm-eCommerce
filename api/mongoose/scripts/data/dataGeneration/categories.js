@@ -9,6 +9,7 @@ const generateCategories = () => {
     const subCategoryIds = subCategoriesInCategory.map(item => item.subCategory_id);
 
     return {
+      category_id: category.category_id,
       name: category.name,
       description: faker.commerce.productDescription(),
       image: 'https://placekitten.com/350?random',

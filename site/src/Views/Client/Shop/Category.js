@@ -7,7 +7,7 @@ import _ from 'lodash';
 import TextSection from '../../../Components/TextSection.js';
 import SubCategoryTile from '../../../Components/Tiles/CategoryTile.js';
 import TileList from '../../../Components/Tiles/TileList.js';
-import SingleCategory from '../../../Components/Queries/SingleCategory.js';
+import SingleCategoryByName from '../../../Components/Queries/SingleCategoryByName.js';
 
 // Return a selection of sub-categories within the named category.
 const Category = () => {
@@ -15,7 +15,7 @@ const Category = () => {
   const { category } = useParams();
 
   return (
-    <SingleCategory name={category}>
+    <SingleCategoryByName name={category}>
       {
         category =>
           <>
@@ -37,7 +37,7 @@ const Category = () => {
             </TileList>
           </>
       }
-    </SingleCategory>
+    </SingleCategoryByName>
   );
 };
 
