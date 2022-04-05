@@ -19,7 +19,7 @@ const Category = () => {
       {
         category =>
           <>
-            <TextSection heading={_.startCase(category.name)} text={category.description} />
+            <TextSection heading={_.startCase(category.name)} text={category.description} align='left' />
             <TileList>
               {
                 category.subCategories.map((subCategory, index) => {

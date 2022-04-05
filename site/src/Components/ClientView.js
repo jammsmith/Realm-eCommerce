@@ -8,7 +8,13 @@ import BackgroundShadow from './BackgroundShadow/BackgroundShadow';
 import Footer from './Footer/Footer.js';
 
 const ClientStyles = styled.section`
+  min-height: 100vh;
   background-color: rgba(230,231,203,1);
+  display: flex;
+  flex-direction: column;
+`;
+const Spacer = styled.div`
+  flex: 1
 `;
 
 const ClientView = ({ children }) => {
@@ -31,6 +37,7 @@ const ClientView = ({ children }) => {
           </>
       }
       {children}
+      <Spacer />
       <Footer />
     </ClientStyles>
   );

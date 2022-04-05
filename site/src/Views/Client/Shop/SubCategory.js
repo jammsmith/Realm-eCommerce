@@ -1,11 +1,10 @@
-// External imports
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import _ from 'lodash';
 
-// Components
 import ProductTile from '../../../Components/Tiles/ProductTile/ProductTile.js';
+import TileList from '../../../Components/Tiles/TileList.js';
 import TextSection from '../../../Components/TextSection.js';
 import SingleSubCategoryByName from '../../../Components/Queries/SingleSubCategoryByName.js';
 
@@ -21,19 +20,21 @@ const SubCategory = (props) => {
           const { name, description, products } = subCategory;
           return (
             <>
-              <TextSection heading={_.startCase(name)} text={description} />
-              {
-                products.map((product, index) => {
-                  return (
-                    <ProductTile
-                      key={index}
-                      product={product}
-                      linkTo={`${url}/${product._id}`}
-                      {...props}
-                    />
-                  );
-                })
-              }
+              <TextSection heading={_.startCase(name)} text={description} align='left' />
+              <TileList>
+                {
+                  products.map((product, index) => {
+                    return (
+                      <ProductTile
+                        key={index}
+                        product={product}
+                        linkTo={`${url}/${product._id}`}
+                        {...props}
+                      />
+                    );
+                  })
+                }
+              </TileList>
             </>
           );
         }

@@ -24,7 +24,7 @@ const generateProducts = () => {
     // Returns a random number (1-5) of images
     const images = [];
     const numberBetweenOneAndFive = Math.ceil(Math.random() * 5);
-    const image = 'https://placekitten.com/350?random';
+    const image = 'https://via.placeholder.com/300';
     for (let i = 0; i < numberBetweenOneAndFive; i++) {
       images.push(image);
     }

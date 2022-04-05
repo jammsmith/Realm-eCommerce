@@ -16,7 +16,6 @@ export const Wrapper = styled(ResponsiveTileWrapper)`
   display: flex;
   justify-content: center;
   position: relative;
-  margin: 8px auto;
 `;
 
 const Image = styled.img`

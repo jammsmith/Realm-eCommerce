@@ -6,8 +6,8 @@ const { dark } = colours;
 
 export const OuterContainer = styled(ResponsiveTileWrapper)`
   gap: 0.5rem;
-  margin: 1rem auto;
-  justify-content: space-between;
+  margin: 1rem 0;
+  justify-content: center;
 `;
 
 export const Text = styled.h2`
@@ -55,6 +55,7 @@ export const ButtonContainer = styled.div`
 
 export const Description = styled.p`
   text-align: justify;
+  margin: 0 0.25rem;
 `;
 
 export const LineBreak = styled.div`

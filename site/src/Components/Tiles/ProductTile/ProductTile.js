@@ -26,7 +26,7 @@ const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
   const { name, price, images, numInStock, description } = product;
 
   return (
-    <OuterContainer productTile viewAsSingleProduct={viewAsSingleProduct}>
+    <OuterContainer viewAsSingleProduct={viewAsSingleProduct}>
       <ProductContent>
         <Image src={images[0]} alt={name} />
         <ProductTextContent>
@@ -53,10 +53,12 @@ const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
               customStyles={{ width: '100%' }}
             />
         }
-        <AddToCart
-          product={product}
-          {...other}
-        />
+        <div style={{ marginBottom: '0.5rem' }}>
+          <AddToCart
+            product={product}
+            {...other}
+          />
+        </div>
       </ButtonContainer>
     </OuterContainer>
   );

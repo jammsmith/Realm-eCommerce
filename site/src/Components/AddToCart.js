@@ -58,13 +58,13 @@ const AddToCart = ({
       setButtonText(
         <>
           Add To Cart
-          <IoCartOutline />
+          &nbsp;<IoCartOutline />
         </>);
     } else {
       setButtonText(
         <>
         Request this product
-          <IoMailOutline />
+          &nbsp;<IoMailOutline />
         </>);
     }
   }, [setButtonText, productInCart, product, activeOrder]);

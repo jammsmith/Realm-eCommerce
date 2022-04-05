@@ -379,12 +379,12 @@ const mutations = {
       $orderItem_id: String!,
       $order_id: String!,
       $product_id: String!,
-      $size: String,
+      $info: String,
       $quantity: Int = 1
     ) {
       insertOneOrderItem(data: {
         orderItem_id: $orderItem_id,
-        size: $size,
+        info: $info,
         quantity: $quantity,
         order: {
           link: $order_id
@@ -452,13 +452,13 @@ const mutations = {
     ${PRODUCT_DETAILS}
     mutation(
       $id: ObjectId!,
-      $size: String,
+      $info: String,
       $quantity: Int
     ) {
       updateOneOrderItem(
         query: { _id: $id },
         set: {
-          size: $size,
+          info: $info,
           quantity: $quantity
         } ) {
         ...OrderItemDetails

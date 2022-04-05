@@ -10,6 +10,7 @@ import Heading from '../../../../Components/Heading.js';
 
 // Hook / helpers
 import useBreakpoints from '../../../../hooks/useBreakpoints.js';
+import useScrollToTop from '../../../../hooks/useScrollToTop.js';
 import { getCartSubTotal } from '../../../../helpers/cart.js';
 
 // Styled Components
@@ -17,6 +18,7 @@ import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.
 
 // A view of all products that have been added to basket
 const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
+  useScrollToTop();
   const [subTotal, setSubTotal] = useState();
   const { isXs } = useBreakpoints();
 

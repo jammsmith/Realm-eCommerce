@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 
-// Components / Views
 import CheckoutForms from './CheckoutForms.js';
 import Summary from './Summary.js';
+import useScrollToTop from '../../../../hooks/useScrollToTop.js';
 
 const Checkout = (props) => {
+  useScrollToTop();
   const [urlParams, setUrlParams] = useState();
   const history = useHistory();
 

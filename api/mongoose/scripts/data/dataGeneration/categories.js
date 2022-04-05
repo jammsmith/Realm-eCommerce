@@ -12,7 +12,7 @@ const generateCategories = () => {
       category_id: category.category_id,
       name: category.name,
       description: faker.commerce.productDescription(),
-      image: 'https://placekitten.com/350?random',
+      image: 'https://via.placeholder.com/300',
       subCategories: subCategoryIds
     };
   });
