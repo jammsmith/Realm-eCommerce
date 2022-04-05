@@ -47,3 +47,7 @@ export const SubmitButtons = styled.div`
   gap: 0.25rem;
   margin-top: 1.5rem;
 `;
+
+export const Spacer = styled.div`
+  flex: 1;
+`;

@@ -13,7 +13,7 @@ import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
 import { SearchWrapper, InventorySection } from '../styledComponents.js';
 import { DataLoading } from '../../../styledComponents.js';
 
-const SubCategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected }) => {
+const SubCategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected, lastSelectedItem }) => {
   const [error, setError] = useState('');
   const [subCategoryLoading, setSubCategoryLoading] = useState({
     id: null,
@@ -73,7 +73,15 @@ const SubCategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSele
       id: subCategoryId,
       state: true
     });
-    getSelectedSubCategory({ variables: { subCategoryId } });
+    if (lastSelectedItem.current.subCategory_id === subCategoryId) {
+      handleItemSelected(lastSelectedItem.current);
+      setSubCategoryLoading({
+        id: null,
+        state: false
+      });
+    } else {
+      getSelectedSubCategory({ variables: { subCategoryId } });
+    }
   };
 
   const columns = [
@@ -121,7 +129,10 @@ const SubCategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSele
 SubCategoryTable.propTypes = {
   rows: PropTypes.array.isRequired,
   updateRows: PropTypes.func.isRequired,
-  reset: PropTypes.bool.isRequired
+  selectedRow: PropTypes.object,
+  reset: PropTypes.bool.isRequired,
+  handleItemSelected: PropTypes.func.isRequired,
+  lastSelectedItem: PropTypes.object.isRequired
 };
 
 export default SubCategoryTable;

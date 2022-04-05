@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client';
 import { uploadFile } from 'react-s3';
 import styled from 'styled-components';
 import { TiDeleteOutline } from 'react-icons/ti';
+import uniqueString from 'unique-string';
 
 import { S3_CONFIG } from '../graphql/queries.js';
 import ActionButton from './ActionButton.js';
@@ -152,7 +153,7 @@ const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) =
         {
           images && images.length
             ? images.map((imageUrl, index) => (
-              <ThumbnailWrapper key={index}>
+              <ThumbnailWrapper key={uniqueString()}>
                 <ThumbnailDeleteIcon size='1.5rem' onClick={(e) => handleDelete(e, imageUrl)} />
                 <ThumbnailImage src={imageUrl} />
               </ThumbnailWrapper>

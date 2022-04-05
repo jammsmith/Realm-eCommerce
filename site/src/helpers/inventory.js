@@ -1,5 +1,20 @@
-export const validateProductFields = (requestedFields) => {
-  const requiredFields = ['name', 'description', 'category', 'subCategory', 'images', 'price', 'quantity'];
+import _ from 'lodash';
+
+export const validateInventoryFields = (requestedFields, type) => {
+  let requiredFields;
+  switch (type) {
+    case 'product':
+      requiredFields = ['name', 'description', 'category', 'subCategory', 'images', 'price', 'numInStock'];
+      break;
+    case 'subCategory':
+      requiredFields = ['name', 'description', 'category', 'image'];
+      break;
+    case 'category':
+      requiredFields = ['name', 'description', 'image'];
+      break;
+    default: throw new Error(`Invalid type '${type}' supplied to validateInventoryFields`);
+  }
+
   const failedItems = [];
 
   for (const field of requiredFields) {
@@ -13,11 +28,10 @@ export const validateProductFields = (requestedFields) => {
 
   for (const field in requestedFields) {
     const item = requestedFields[field];
-    console.log('field', field);
-    console.log('item', item);
     switch (field) {
       case 'name':
       case 'description':
+      case 'image':
         if (typeof item !== 'string' || item.trim().length < 1) {
           failedItems.push(field);
         }
@@ -34,14 +48,14 @@ export const validateProductFields = (requestedFields) => {
         }
       }
         break;
-      case 'quantity': {
+      case 'numInStock': {
         const parsed = parseInt(item);
         if (typeof parsed !== 'number') {
           failedItems.push(field);
         }
       }
         break;
-      default: console.log('Skipping field. Field:', field);
+      default:
     }
   }
   return failedItems.length
@@ -49,12 +63,71 @@ export const validateProductFields = (requestedFields) => {
     : { result: 'passed' };
 };
 
-export const validateSubCategoryFields = () => {};
-
 export const getTrimmedFormFields = (fields) => {
   const clonedFields = Object.assign(fields, {});
   for (const field in clonedFields) {
-    clonedFields[field] = field.trim();
+    let item = clonedFields[field];
+    if (typeof item === 'string') {
+      item = item.trim();
+    }
   }
   return clonedFields;
+};
+
+export const getInitialFormFields = (type) => {
+  switch (type) {
+    case 'product':
+      return {
+        name: '',
+        description: '',
+        images: [],
+        category: '',
+        subCategory: '',
+        numInStock: '',
+        price: ''
+      };
+    case 'subCategory':
+      return {
+        name: '',
+        description: '',
+        image: '',
+        category: ''
+      };
+    case 'category':
+      return {
+        name: '',
+        description: '',
+        image: ''
+      };
+    default: throw new Error(`Invalid inventory type '${type}' supplied to getInitialFormFields`);
+  }
+};
+
+export const getFormattedRow = (item, type) => {
+  if (!item || Object.keys(item).length === 0 || !type || typeof type !== 'string') {
+    throw new Error('Failed to supply proper input to getFormattedRow');
+  }
+
+  const sharedFields = {
+    id: item[`${type}_id`],
+    name: _.startCase(item.name)
+  };
+  switch (type) {
+    case 'product':
+      return {
+        ...sharedFields,
+        numInStock: item.numInStock,
+        price: item.price,
+        category: _.startCase(item.category),
+        subcategory: _.startCase(item.subCategory)
+      };
+    case 'subCategory':
+      return {
+        ...sharedFields,
+        category: _.startCase(item.category)
+      };
+    case 'category':
+      return sharedFields;
+    default: throw new Error(`Invalid inventory type '${type}' supplied to getFormattedRow`);
+  }
 };

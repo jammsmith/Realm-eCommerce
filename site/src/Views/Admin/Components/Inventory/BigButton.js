@@ -8,7 +8,8 @@ const style = {
   color: 'white',
   width: '220px',
   height: '200px',
-  fontSize: '1.25rem'
+  fontSize: '1.25rem',
+  borderRadius: '25px'
 };
 
 const BigButton = ({ type, handleSelection }) => (

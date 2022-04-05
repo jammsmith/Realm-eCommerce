@@ -52,8 +52,9 @@ export const InventoryButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
   justify-content: space-between;
-  margin-top: 1rem;
+  align-items: center;
   width: 100%;
+  height: 87%;
 `;
 
 export const DialogContentWrapper = styled.div`

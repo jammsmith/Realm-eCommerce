@@ -26,7 +26,9 @@ exports = async function (
     const targetDocument = await collection.findOne(query);
     console.log('targetDocument.name', targetDocument.name);
 
-    const updatedTargetDocumentRelations = [...targetDocument[arrayKey], documentId];
+    const updatedTargetDocumentRelations = targetDocument[arrayKey]
+      ? [...targetDocument[arrayKey], documentId]
+      : [documentId];
     console.log('updatedTargetDocumentRelations', updatedTargetDocumentRelations);
 
     await collection.findOneAndUpdate(
@@ -45,10 +47,15 @@ exports = async function (
   // Remove from existing array if its an update rather than a new creation
   if (!isNewItem && result.addedToTarget) {
     try {
-      const query = { [arrayKey]: { $in: [documentId] } };
+      const query = {
+        $and: [
+          { [arrayKey]: { $in: [documentId] } },
+          { _id: { $ne: targetCollectionId } }
+        ]
+      };
 
       const existingCollection = await collection.findOne(query);
-      console.log('collection.name', collection.name);
+      console.log('existingCollection.name', existingCollection.name);
 
       const updatedArray = existingCollection[arrayKey].filter(item => item !== documentId);
       console.log('updatedArray', updatedArray);

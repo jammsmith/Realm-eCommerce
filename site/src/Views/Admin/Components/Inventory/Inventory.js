@@ -15,7 +15,7 @@ import { InventoryWrapper, InventoryButtonWrapper } from '../../styledComponents
 
 const Inventory = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState('product');
 
   const handleSelection = (type) => {
     setSelectedType(type);
@@ -23,7 +23,7 @@ const Inventory = () => {
   };
 
   const components = {
-    category: { edit: ProductEdit, table: CategoryTable },
+    category: { edit: CategoryEdit, table: CategoryTable },
     subCategory: { edit: SubCategoryEdit, table: SubCategoryTable },
     product: { edit: ProductEdit, table: ProductTable }
   };

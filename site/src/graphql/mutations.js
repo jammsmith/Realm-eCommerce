@@ -5,6 +5,7 @@ import {
   ORDER_ITEM_DETAILS,
   PRODUCT_DETAILS,
   SUBCATEGORY_DETAILS,
+  CATEGORY_DETAILS,
   DELIVERY_DETAILS,
   ADDRESS_DETAILS
 } from './fragments.js';
@@ -187,68 +188,32 @@ const mutations = {
     }
   `,
   DeleteProduct: gql`
-    mutation($productId: String!) {
-      deleteProduct(input: $productId) {
+    mutation($product_id: String!) {
+      deleteProduct(input: $product_id) {
         productId
         isDeleted
       }
     }
   `,
-  AddSubCategory: gql`
-    ${SUBCATEGORY_DETAILS}
+  UpsertSubCategory: gql`
+  ${SUBCATEGORY_DETAILS}
     mutation(
+      $_id: ObjectId,
       $subCategory_id: String!
       $name: String!,
       $description: String!,
       $image: String!,
       $category: String!
     ) {
-      insertOneSubCategory(data: {
+      upsertSubCategory(input: {
+        _id: $_id,
         subCategory_id: $subCategory_id
         name: $name,
         description: $description,
         image: $image,
         category: $category
-        } ) {
-          ...SubCategoryDetails
-      }
-    }
-  `,
-  UpdateSubCategory: gql`
-    ${SUBCATEGORY_DETAILS}
-    mutation(
-      $subCategory_id: String!
-      $name: String,
-      $description: String,
-      $image: String,
-      $category: String
-    ) {
-      updateOneSubCategory(
-        query: { subCategory_id: $subCategory_id },
-        set: {
-        name: $name,
-        description: $description,
-        image: $image,
-        category: $category
-        } ) {
-          ...SubCategoryDetails
-      }
-    }
-  `,
-  UpdateSubCategoryProducts: gql`
-    ${SUBCATEGORY_DETAILS}
-    mutation(
-      $subCategory_id: String!,
-      $products: [String]!
-    ) {
-      updateOneSubCategory(
-        query: { subCategory_id: $subCategory_id },
-        set: {
-          products: {
-            link: $products
-          }
-        } ) {
-          ...SubCategoryDetails
+      } ) {
+        ...SubCategoryDetails
       }
     }
   `,
@@ -258,9 +223,41 @@ const mutations = {
       $subCategory_id: String!
     ) {
       deleteOneSubCategory(query: { 
-        subCategory_id: $subCategory_id 
+        subCategory_id: $subCategory_id
       } ) {
         ...SubCategoryDetails
+      }
+    }
+  `,
+  UpsertCategory: gql`
+  ${CATEGORY_DETAILS}
+    mutation(
+      $_id: ObjectId,
+      $category_id: String!
+      $name: String!,
+      $description: String!,
+      $image: String!
+    ) {
+      upsertCategory(input: {
+        _id: $_id,
+        category_id: $category_id
+        name: $name,
+        description: $description,
+        image: $image
+      } ) {
+        ...CategoryDetails
+      }
+    }
+  `,
+  DeleteCategory: gql`
+    ${CATEGORY_DETAILS}
+    mutation(
+      $category_id: String!
+    ) {
+      deleteOneCategory(query: { 
+        category_id: $category_id
+      } ) {
+        ...CategoryDetails
       }
     }
   `,

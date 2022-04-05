@@ -13,7 +13,7 @@ import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
 import { SearchWrapper, InventorySection } from '../styledComponents.js';
 import { DataLoading } from '../../../styledComponents.js';
 
-const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected }) => {
+const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected, lastSelectedItem }) => {
   const [error, setError] = useState('');
   const [productLoading, setProductLoading] = useState({
     id: null,
@@ -59,8 +59,8 @@ const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected
   }, [rows, reset, searchProducts]);
 
   const [getSelectedProduct] = useLazyQuery(SINGLE_PRODUCT, {
-    onCompleted: (data) => {
-      handleItemSelected(data.product);
+    onCompleted: ({ product }) => {
+      handleItemSelected(product);
       setProductLoading({
         id: null,
         state: false
@@ -79,7 +79,16 @@ const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected
       id: productId,
       state: true
     });
-    getSelectedProduct({ variables: { productId } });
+
+    if (lastSelectedItem.current.product_id === productId) {
+      handleItemSelected(lastSelectedItem.current);
+      setProductLoading({
+        id: null,
+        state: false
+      });
+    } else {
+      getSelectedProduct({ variables: { productId } });
+    }
   };
 
   const columns = [
@@ -130,7 +139,10 @@ const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected
 ProductTable.propTypes = {
   rows: PropTypes.array.isRequired,
   updateRows: PropTypes.func.isRequired,
-  reset: PropTypes.bool.isRequired
+  selectedRow: PropTypes.object,
+  reset: PropTypes.bool.isRequired,
+  handleItemSelected: PropTypes.func.isRequired,
+  lastSelectedItem: PropTypes.object.isRequired
 };
 
 export default ProductTable;

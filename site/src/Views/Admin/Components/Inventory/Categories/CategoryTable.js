@@ -13,7 +13,7 @@ import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
 import { SearchWrapper, InventorySection } from '../styledComponents.js';
 import { DataLoading } from '../../../styledComponents.js';
 
-const CategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected }) => {
+const CategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected, lastSelectedItem }) => {
   const [error, setError] = useState('');
   const [categoryLoading, setCategoryLoading] = useState({
     id: null,
@@ -71,7 +71,15 @@ const CategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSelecte
       id: categoryId,
       state: true
     });
-    getSelectedCategory({ variables: { categoryId } });
+    if (lastSelectedItem.current.category_id === categoryId) {
+      handleItemSelected(lastSelectedItem.current);
+      setCategoryLoading({
+        id: null,
+        state: false
+      });
+    } else {
+      getSelectedCategory({ variables: { categoryId } });
+    }
   };
 
   const columns = [
@@ -118,7 +126,10 @@ const CategoryTable = ({ rows, updateRows, selectedRow, reset, handleItemSelecte
 CategoryTable.propTypes = {
   rows: PropTypes.array.isRequired,
   updateRows: PropTypes.func.isRequired,
-  reset: PropTypes.bool.isRequired
+  selectedRow: PropTypes.object,
+  reset: PropTypes.bool.isRequired,
+  handleItemSelected: PropTypes.func.isRequired,
+  lastSelectedItem: PropTypes.object.isRequired
 };
 
 export default CategoryTable;
