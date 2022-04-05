@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { LoginIcon } from './NavbarElements';
 import { RealmAppContext } from '../../realmApolloClient.js';
-import { isAuthenticated } from '../../helpers/auth.js';
+import { isAuthenticated, isAdmin } from '../../helpers/auth.js';
 
 const MyAccountMenu = () => {
   const app = useContext(RealmAppContext);
@@ -62,6 +62,10 @@ const MyAccountMenu = () => {
             ? <MenuList sx={menuStyles}>
               <MenuItem>{app.currentUser.dbUser.email}</MenuItem>
               <MenuItem divider />
+              {
+                isAdmin(app.currentUser) &&
+                  <MenuItem onClick={(e) => handleMenuSeletion(e, 'admin')}>Admin Dashboard</MenuItem>
+              }
               <MenuItem onClick={(e) => handleMenuSeletion(e, 'my-account')}>My Account</MenuItem>
               <MenuItem onClick={(e) => handleMenuSeletion(e, 'logout')}>Logout</MenuItem>
               </MenuList>

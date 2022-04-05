@@ -80,3 +80,7 @@ export const isAuthenticated = (user) => {
     return false;
   }
 };
+
+export const isAdmin = (user) => {
+  return !!(isAuthenticated(user) && user.dbUser.type === 'admin');
+};

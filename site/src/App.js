@@ -13,7 +13,8 @@ import Error404 from './Views/Error/Error404.js';
 
 // Other
 import ClientView from './Components/ClientView.js';
-import PrivateRoute from './Components/PrivateRoute.js';
+import PrivateClientRoute from './Components/PrivateRoutes/PrivateClientRoute.js';
+import PrivateAdminRoute from './Components/PrivateRoutes/PrivateAdminRoute.js';
 import { RealmAppContext } from './realmApolloClient.js';
 
 const App = () => {
@@ -27,10 +28,10 @@ const App = () => {
   }, [app]);
 
   return (
-    appReady
-      ? <Router>
+    appReady ? (
+      <Router>
         <Switch>
-          <Route
+          <PrivateAdminRoute
             exact
             path='/admin'
             component={Admin}
@@ -67,7 +68,7 @@ const App = () => {
                 <Login />
               </ClientView>}
           />
-          <PrivateRoute
+          <PrivateClientRoute
             exact
             path='/my-account'
             component={() =>
@@ -90,8 +91,8 @@ const App = () => {
               </ClientView>}
           />
         </Switch>
-        </Router>
-      : null
+      </Router>
+    ) : null
   );
 };
 
