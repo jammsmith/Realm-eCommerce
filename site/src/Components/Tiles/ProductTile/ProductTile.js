@@ -23,12 +23,12 @@ import {
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
 const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
-  const { name, price, image, numInStock, description } = product;
+  const { name, price, images, numInStock, description } = product;
 
   return (
     <OuterContainer productTile viewAsSingleProduct={viewAsSingleProduct}>
       <ProductContent>
-        <Image src={image} alt={name} />
+        <Image src={images[0]} alt={name} />
         <ProductTextContent>
           <TextContainer>
             <Text>{name}</Text>

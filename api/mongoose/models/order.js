@@ -8,6 +8,7 @@ const orderSchema = new Schema({
   orderStatus: { type: String, required: true },
   paymentIntentId: { type: String, required: true },
   paymentStatus: { type: String, required: true },
+  stripeAmountPaid: Number,
   dateCreated: Date,
   dateDispatched: Date,
   datePaid: Date,

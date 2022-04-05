@@ -1,25 +1,10 @@
 [
     {
-        "name": "refundPaymentIntent",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "getS3Config",
+        "name": "db_upsertCategory",
         "private": false
     },
     {
-        "name": "incomingStripeEvents",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "createPaymentIntent",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "getDbUserData",
+        "name": "resetPassword",
         "private": false
     },
     {
@@ -27,11 +12,7 @@
         "private": false
     },
     {
-        "name": "db_productSearch",
-        "private": false
-    },
-    {
-        "name": "db_deleteProduct",
+        "name": "getDbUserData",
         "private": false
     },
     {
@@ -39,16 +20,21 @@
         "private": false
     },
     {
-        "name": "db_subCategorySearch",
+        "name": "getS3Config",
         "private": false
     },
     {
-        "name": "db_upsertCategory",
+        "name": "db_deleteProduct",
         "private": false
     },
     {
-        "name": "db_categorySearch",
+        "name": "db_productSearch",
         "private": false
+    },
+    {
+        "name": "createPaymentIntent",
+        "private": false,
+        "run_as_system": true
     },
     {
         "name": "generateId",
@@ -61,7 +47,25 @@
         "run_as_system": true
     },
     {
-        "name": "resetPassword",
+        "name": "db_updateRelations",
+        "private": false
+    },
+    {
+        "name": "db_subCategorySearch",
+        "private": false
+    },
+    {
+        "name": "refundPaymentIntent",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "incomingStripeEvents",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "db_categorySearch",
         "private": false
     }
 ]

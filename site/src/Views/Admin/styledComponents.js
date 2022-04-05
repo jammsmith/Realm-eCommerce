@@ -1,12 +1,5 @@
 import styled from 'styled-components';
 
-// Not inside the grid wrapper
-export const NavbarWrapper = styled.div`
-  border: 2px solid yellow;
-  height: 65px;
-  margin-bottom: 16px;
-`;
-
 // Parent grid wrapper
 export const AdminWrapper = styled.div`
   display: grid;
@@ -28,24 +21,14 @@ const GridItem = styled.div`
 `;
 export const OrdersWrapper = styled(GridItem)`
   grid-column: 1 / 7;
-  grid-row: 1 / 1;
+  grid-row: 1 / 3;
   display: flex;
   flex-direction: column;
 `;
 
 export const InventoryWrapper = styled(GridItem)`
   grid-column: 7 / 14;
-  grid-row: 1 / 1;
-`;
-
-export const SalesGraphWrapper = styled(GridItem)`
-  grid-column: 1 / 7;
-  grid-row: 2 / 2;
-`;
-
-export const SiteStatsWrapper = styled(GridItem)`
-  grid-column: 7 / 14;
-  grid-row: 2 / 2;
+  grid-row: 1 / 2;
 `;
 
 export const InventoryButtonWrapper = styled.div`

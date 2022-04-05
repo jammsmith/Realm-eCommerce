@@ -15,7 +15,8 @@ exports = async (payload, response) => {
     await updateOrderStatus({
       orderStatus: 'awaitingConfirmation',
       paymentStatus: 'successful',
-      datePaid: new Date(Date.now())
+      datePaid: new Date(Date.now()),
+      stripeAmountPaid: event.data.object.amount
     });
     // add google analytics sales
     // send confirmation email

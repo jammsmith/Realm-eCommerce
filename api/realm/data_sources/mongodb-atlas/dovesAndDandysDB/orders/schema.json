@@ -45,6 +45,9 @@
         "paymentStatus": {
             "bsonType": "string"
         },
+        "stripeAmountPaid": {
+            "bsonType": "int"
+        },
         "refunds": {
             "bsonType": "array",
             "items": {

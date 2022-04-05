@@ -18,7 +18,7 @@
         "quantity": {
             "bsonType": "int"
         },
-        "size": {
+        "info": {
             "bsonType": "string"
         }
     },

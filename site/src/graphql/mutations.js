@@ -509,7 +509,6 @@ const mutations = {
       }
     }
   `,
-  //
   // Addresses ->
   CreateAddress: gql`
     ${ADDRESS_DETAILS}

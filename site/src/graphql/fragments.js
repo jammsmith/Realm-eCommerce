@@ -59,6 +59,7 @@ export const ORDER_DETAILS = gql`
     dateCreated
     datePaid
     dateDispatched
+    stripeAmountPaid
   }
 `;
 
