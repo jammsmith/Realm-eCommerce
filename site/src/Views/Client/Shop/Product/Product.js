@@ -59,7 +59,12 @@ const Product = (props) => {
                     <ActionButton
                       text={`Back to ${_.upperCase(subCategory)}`}
                       linkTo={goBackUrl}
-                      customStyles={{ width: '200px' }}
+                      customStyles={{
+                        width: '100%',
+                        '@media (min-width: 768px)': {
+                          width: '200px'
+                        }
+                      }}
                     />
                   </PrimaryButtons>
                 </MainContent>

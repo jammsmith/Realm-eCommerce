@@ -9,13 +9,14 @@ const { dark } = colours;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 316px;
+  width: 100%;
+  max-width: 398px;
 `;
 const MainImage = styled.img`
   border: 0.2px solid ${dark};
   border-radius: 10px;
-  width: 316px;
-  height: 316px;
+  width: 100%;
+  height: auto;
 `;
 const AllImages = styled.div`
   display: flex;
@@ -26,8 +27,8 @@ const AllImages = styled.div`
 const MiniImage = styled.img`
   border: 0.2px solid ${dark};
   border-radius: 10px;
-  width: 100px;
-  height: 100px;
+  width: 32%;
+  height: auto;
   margin-top: 0.5rem;
   :hover {
     cursor: pointer;
