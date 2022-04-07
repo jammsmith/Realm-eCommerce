@@ -15,18 +15,16 @@ import {
   TextContainer,
   Text,
   InStockInfo,
-  ButtonContainer,
-  LineBreak,
-  Description
+  ButtonContainer
 } from './ProductTileElements.js';
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
-const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
-  const { name, price, images, numInStock, description } = product;
+const ProductTile = ({ product, linkTo, ...other }) => {
+  const { name, price, images, numInStock } = product;
 
   return (
-    <OuterContainer viewAsSingleProduct={viewAsSingleProduct}>
+    <OuterContainer>
       <ProductContent>
         <Image src={images[0]} alt={name} />
         <ProductTextContent>
@@ -37,22 +35,12 @@ const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
           <InStockInfo>{numInStock > 0 ? 'In Stock' : 'Out of Stock'}</InStockInfo>
         </ProductTextContent>
       </ProductContent>
-      {
-        viewAsSingleProduct &&
-          <>
-            <LineBreak />
-            <Description>{description}</Description>
-          </>
-      }
       <ButtonContainer>
-        {
-          !viewAsSingleProduct &&
-            <ActionButton
-              text='Item Description'
-              linkTo={linkTo}
-              customStyles={{ width: '100%' }}
-            />
-        }
+        <ActionButton
+          text='Item Description'
+          linkTo={linkTo}
+          customStyles={{ width: '100%' }}
+        />
         <div style={{ marginBottom: '0.5rem' }}>
           <AddToCart
             product={product}
@@ -66,7 +54,6 @@ const ProductTile = ({ product, viewAsSingleProduct, linkTo, ...other }) => {
 
 ProductTile.propTypes = {
   product: PropTypes.object.isRequired,
-  viewAsSingleProduct: PropTypes.bool,
   linkTo: PropTypes.string,
   currentUser: PropTypes.object.isRequired,
   updateCurrentUser: PropTypes.func.isRequired,

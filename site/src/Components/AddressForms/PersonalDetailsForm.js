@@ -7,7 +7,15 @@ import TextInput from '../Forms/TextInput.js';
 import { formatUserDetails } from '../../helpers/user.js';
 import { validateInputFields } from '../../helpers/address.js';
 
-const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, successMessage, disableOnComplete }) => {
+const PersonalDetailsForm = ({
+  dbUser,
+  onValidDetails,
+  onEditting,
+  buttonText,
+  successMessage,
+  disableOnComplete,
+  requiredFields
+}) => {
   const [personalDetailsFields, setPersonalDetailsFields] = useState({
     firstName: dbUser.firstName || '',
     lastName: dbUser.lastName || '',
@@ -36,7 +44,6 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, s
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const requiredFields = ['email'];
     const { isValid, message } = validateInputFields(personalDetailsFields, requiredFields);
 
     if (isValid) {
@@ -82,7 +89,7 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, s
           value={personalDetailsFields.firstName}
           label='First name'
           handleChange={handleInputChange}
-          required={false}
+          required={requiredFields.includes('firstName')}
           variant='outlined'
           margin='normal'
           type='text'
@@ -93,7 +100,7 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, s
           value={personalDetailsFields.lastName}
           label='Last name'
           handleChange={handleInputChange}
-          required={false}
+          required={requiredFields.includes('lastName')}
           variant='outlined'
           margin='normal'
           type='text'
@@ -109,6 +116,7 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, s
         margin='normal'
         type='email'
         disabled={formDisabled}
+        required={requiredFields.includes('email')}
       />
       <TextInput
         name='phone'
@@ -120,6 +128,7 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, s
         margin='normal'
         type='text'
         disabled={formDisabled}
+        required={requiredFields.includes('phone')}
       />
       <FormSubmit
         formDisabled={formDisabled}
@@ -133,9 +142,14 @@ const PersonalDetailsForm = ({ dbUser, onValidDetails, onEditting, buttonText, s
   );
 };
 
+PersonalDetailsForm.defaultProps = {
+  requiredFields: ['email']
+};
+
 PersonalDetailsForm.propTypes = {
   dbUser: PropTypes.object.isRequired,
   onValidDetails: PropTypes.func.isRequired,
+  requiredFields: PropTypes.array.isRequired,
   onEditting: PropTypes.func,
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,

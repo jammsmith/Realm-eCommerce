@@ -57,7 +57,7 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
       } else {
         const { address_id: addressId, ...fieldsToFormat } = addressFields;
         const formattedFields = formatUserDetails(fieldsToFormat);
-        onAddressValid({ ...formattedFields, address_id: addressId });
+        onAddressValid({ ...formattedFields, address_id: addressId }, 'delivery');
         if (disableOnComplete) {
           handleFormComplete();
         }

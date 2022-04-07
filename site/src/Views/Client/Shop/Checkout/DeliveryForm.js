@@ -5,6 +5,7 @@ import AddressFormBasic from '../../../../Components/AddressForms/AddressFormBas
 import PersonalDetailsForm from '../../../../Components/AddressForms/PersonalDetailsForm.js';
 import Heading from '../../../../Components/Heading.js';
 import { getDefaultAddress } from '../../../../helpers/address.js';
+import { isAuthenticated } from '../../../../helpers/auth.js';
 
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';
@@ -24,7 +25,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
   const defaultAddress = getDefaultAddress(dbUser.addresses);
 
   useEffect(() => {
-    if (dbUser.type === 'customer') {
+    if (dbUser.type === 'customer' || dbUser.type === 'admin') {
       const { firstName, lastName, email, phone } = dbUser;
       if (defaultAddress) {
         handleValidDetails({ address_id: defaultAddress.address_id, firstName, lastName, email, phone });
@@ -52,6 +53,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
           buttonText='confirm details'
           successMessage='Personal details confirmed'
           disableOnComplete
+          requiredFields={['firstName', 'lastName', 'email']}
         />
       </CheckoutItem>
       <CheckoutItem>
@@ -65,16 +67,6 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
           defaultAddress={defaultAddress}
         />
       </CheckoutItem>
-      {/*
-          Not using this anymore (for now).  Could add back in but would need to refactor a bit to pass
-          out a full address and handled as above
-
-          formType === 'lookup' &&
-            <AddressFormWithLookup
-              deliveryDetails={deliveryDetails}
-              updateDeliveryDetails={updateDeliveryDetails}
-            />
-      */}
     </>
   );
 };

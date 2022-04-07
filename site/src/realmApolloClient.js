@@ -2,8 +2,6 @@ import { createContext, useState, useEffect, useCallback } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
-import { isObjectEmpty } from './helpers/global.js';
-
 export const appId = 'doves-and-dandys-fkaex';
 const graphqlUri = `https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/${appId}/graphql`;
 const app = new Realm.App(appId);
@@ -78,20 +76,25 @@ export const RealmAppProvider = ({ children }) => {
     return { error };
   };
 
-  const attachDbUser = useCallback(async () => {
-    try {
-      const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
-      setCurrentUser(prev => ({ ...prev, dbUser: dbUser || {} }));
-    } catch (err) {
-      throw new Error('Failed to retrieve user details from db. Error:', err);
-    }
-  }, [setCurrentUser]);
-
   useEffect(() => {
-    if (currentUser && (!currentUser.dbUser || isObjectEmpty(currentUser.dbUser))) {
+    const attachDbUser = async () => {
+      try {
+        const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
+        if (dbUser) {
+          if (currentUser.dbUser !== dbUser) {
+            setCurrentUser(prev => ({ ...prev, dbUser: dbUser }));
+          }
+        } else if (!currentUser.dbUser || Object.keys(currentUser.dbUser).length) {
+          setCurrentUser(prev => ({ ...prev, dbUser: {} }));
+        }
+      } catch (err) {
+        console.error('Failed to retrieve user details from db. Error:', err);
+      }
+    };
+    if (currentUser && (!currentUser.dbUser || !currentUser.dbUser._id)) {
       attachDbUser();
     }
-  }, [currentUser, attachDbUser]);
+  }, [currentUser]);
 
   const wrapped = {
     ...realmApp,

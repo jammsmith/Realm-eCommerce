@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import colours from '../../../styles/colours.js';
 
 import ResponsiveTileWrapper from '../ResponsiveTileWrapper.js';
-const { dark } = colours;
 
 export const OuterContainer = styled(ResponsiveTileWrapper)`
   gap: 0.5rem;
@@ -51,17 +49,4 @@ export const ButtonContainer = styled.div`
   justify-content: center;
   gap: 0.25rem;
   margin: 0.25rem;
-`;
-
-export const Description = styled.p`
-  text-align: justify;
-  margin: 0 0.25rem;
-`;
-
-export const LineBreak = styled.div`
-  background: ${dark};
-  border-radius: 10px;
-  height: 0.25rem;
-  margin: auto;
-  width: 100%;
 `;

@@ -3,9 +3,9 @@ import { Route, Switch } from 'react-router-dom';
 
 // Views
 import Home from '../Home/Home.js';
-import Category from './Category';
-import SubCategory from './SubCategory';
-import Product from './Product';
+import Category from './Category.js';
+import SubCategory from './SubCategory.js';
+import Product from './Product/Product.js';
 import Cart from './Cart/Cart.js';
 import Checkout from './Checkout/Checkout.js';
 

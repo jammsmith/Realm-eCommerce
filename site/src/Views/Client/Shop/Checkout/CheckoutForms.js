@@ -63,8 +63,6 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     }
   }, [activeOrder, updateDeliveryDetails]);
 
-  useEffect(() => console.log('deliveryDetails', deliveryDetails), [deliveryDetails]);
-
   // Payment Element styling
   const paymentElementStyles = {
     theme: 'flat',
