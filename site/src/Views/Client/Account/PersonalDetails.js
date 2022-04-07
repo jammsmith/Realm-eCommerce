@@ -18,7 +18,7 @@ const PersonalDetails = ({ dbUser, updateDbUser }) => {
         ...fields
       }
     });
-    updateDbUser(data.updateOneUser);
+    await updateDbUser(data.updateOneUser);
   };
 
   return (

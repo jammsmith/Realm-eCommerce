@@ -4,7 +4,7 @@ const ResponsiveTileWrapper = styled.div`
   border-radius: 6px;
   display: flex;
   flex-direction: column;
-  margin: 0;
+  margin: 0 auto;
   -webkit-box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
   box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
   height: auto;

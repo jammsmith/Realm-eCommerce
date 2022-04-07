@@ -146,14 +146,14 @@ const Login = ({ form }) => {
           // delete the old guest user from db & anon user from realm
           await deleteUser({ variables: { id: guestUser._id } });
         } else {
-          const { data: addUserData } = await addUser({ standardVars });
+          const { data: addUserData } = await addUser({ variables: standardVars });
           newUser = addUserData.insertOneUser;
         }
 
-        app.setCurrentUser({
-          ...app.currentUser,
+        await app.setCurrentUser(user => ({
+          ...user,
           dbUser: newUser
-        });
+        }));
 
         history.push('/my-account');
       } else {
@@ -167,8 +167,10 @@ const Login = ({ form }) => {
   useEffect(() => {
     if (!isAuthenticated(app.currentUser)) {
       setFormType('register');
+    } else {
+      history.push('/my-account');
     }
-  }, [app.currentUser]);
+  }, [app.currentUser, history]);
 
   return (
     <LoginWrapper>
@@ -201,8 +203,8 @@ const Login = ({ form }) => {
         }
       </div>
       {
-        formType === 'login'
-          ? <ButtonsWrapper>
+        formType === 'login' ? (
+          <ButtonsWrapper>
             <ActionButton
               text='register new account'
               onClick={() => setFormType('register')}
@@ -212,8 +214,9 @@ const Login = ({ form }) => {
               onClick={handleLogin}
               customStyles={{ borderWidth: '0.15rem', borderColor: colours.dark }}
             />
-            </ButtonsWrapper>
-          : <ButtonsWrapper>
+          </ButtonsWrapper>
+        ) : (
+          <ButtonsWrapper>
             <ActionButton
               text='login to your account'
               onClick={() => setFormType('login')}
@@ -223,7 +226,8 @@ const Login = ({ form }) => {
               onClick={handleRegister}
               customStyles={{ borderWidth: '0.15rem', borderColor: colours.dark }}
             />
-            </ButtonsWrapper>
+          </ButtonsWrapper>
+        )
       }
       {errorMessage && <UserMessage text={errorMessage} type='error' />}
     </LoginWrapper>

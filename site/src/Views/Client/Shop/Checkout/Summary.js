@@ -84,10 +84,10 @@ const Summary = ({ urlParams }) => {
         }
       });
 
-      app.setCurrentUser({
-        ...app.currentUser,
+      await app.setCurrentUser(user => ({
+        ...user,
         dbUser: data.updateOneUser
-      });
+      }));
     } catch (err) {
       throw new Error('Failed to update user with order details. Error:', err.message);
     }

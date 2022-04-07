@@ -22,11 +22,12 @@ const MyAccountMenu = () => {
     e.preventDefault();
     if (selection === 'logout') {
       await app.logOut();
+      handleCloseMenu();
       history.push('/');
     } else {
+      handleCloseMenu();
       history.push(`/${selection}`);
     }
-    handleCloseMenu();
   };
 
   const menuStyles = {

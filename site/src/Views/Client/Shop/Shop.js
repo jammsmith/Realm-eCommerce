@@ -44,8 +44,8 @@ const Shop = () => {
   }, [app.currentUser, activeOrder]);
 
   // Handlers
-  const updateCurrentUser = (user) => {
-    app.setCurrentUser(prev => ({ ...prev, dbUser: user }));
+  const updateCurrentUser = async (user) => {
+    await app.setCurrentUser(prev => ({ ...prev, dbUser: user }));
   };
   const updateActiveOrder = (order) => {
     setActiveOrder(order);

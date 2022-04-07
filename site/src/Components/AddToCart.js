@@ -154,8 +154,8 @@ const AddToCart = ({
           }
         });
         updateActiveOrder(data.insertOneOrder.customer.orders[0]);
-        updateCurrentUser(data.insertOneOrder.customer);
         updateAddingToCart(false);
+        await updateCurrentUser(data.insertOneOrder.customer);
       } catch (err) {
         throw new Error(`Failed to create guest order. Error: ${err}`);
       }

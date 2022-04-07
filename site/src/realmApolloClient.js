@@ -1,6 +1,8 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+
+import { isObjectEmpty } from './helpers/global.js';
 
 export const appId = 'doves-and-dandys-fkaex';
 const graphqlUri = `https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/${appId}/graphql`;
@@ -8,12 +10,16 @@ const app = new Realm.App(appId);
 
 // Guarantee that there's a logged in user with a valid access token
 const getValidAccessToken = async () => {
-  if (!app.currentUser) {
-    await app.logIn(Realm.Credentials.anonymous());
-  } else {
-    await app.currentUser.refreshCustomData();
+  try {
+    if (!app.currentUser) {
+      await app.logIn(Realm.Credentials.anonymous());
+    } else {
+      await app.currentUser.refreshCustomData();
+    }
+    return app.currentUser.accessToken;
+  } catch (err) {
+    throw new Error('Failed to get valid access token. Error:', err);
   }
-  return app.currentUser.accessToken;
 };
 
 // Setup Graphql Apollo client
@@ -35,16 +41,6 @@ export const RealmAppContext = createContext();
 export const RealmAppProvider = ({ children }) => {
   const [realmApp] = useState(app);
   const [currentUser, setCurrentUser] = useState(app.currentUser);
-
-  useEffect(() => {
-    const attachDbUser = async () => {
-      if (!currentUser.dbUser) {
-        const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
-        setCurrentUser(prev => ({ ...prev, dbUser: dbUser || {} }));
-      }
-    };
-    attachDbUser();
-  }, [currentUser]);
 
   const logIn = async (email, password) => {
     let error;
@@ -71,16 +67,31 @@ export const RealmAppProvider = ({ children }) => {
           setCurrentUser(app.currentUser);
         } else {
           // Otherwise, create a new anonymous user and log them in.
-          const user = await app.logIn(Realm.Credentials.anonymous());
+          const credentials = Realm.Credentials.anonymous();
+          const user = await app.logIn(credentials);
           setCurrentUser(user);
         }
       }
     } catch (err) {
       error = err;
     }
-
     return { error };
   };
+
+  const attachDbUser = useCallback(async () => {
+    try {
+      const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
+      setCurrentUser(prev => ({ ...prev, dbUser: dbUser || {} }));
+    } catch (err) {
+      throw new Error('Failed to retrieve user details from db. Error:', err);
+    }
+  }, [setCurrentUser]);
+
+  useEffect(() => {
+    if (currentUser && (!currentUser.dbUser || isObjectEmpty(currentUser.dbUser))) {
+      attachDbUser();
+    }
+  }, [currentUser, attachDbUser]);
 
   const wrapped = {
     ...realmApp,

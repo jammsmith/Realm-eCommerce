@@ -11,11 +11,11 @@ const MyAccount = () => {
   const app = useContext(RealmAppContext);
   const { dbUser } = app.currentUser;
 
-  const updateDbUser = (updatedUser) => {
-    app.setCurrentUser({
-      ...app.currentUser,
+  const updateDbUser = async (updatedUser) => {
+    await app.setCurrentUser(user => ({
+      ...user,
       dbUser: updatedUser
-    });
+    }));
   };
 
   const sections = [

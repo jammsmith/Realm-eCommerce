@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import uniqueString from 'unique-string';
 
 import AddressFormBasic from '../../../Components/AddressForms/AddressFormBasic.js';
 import mutations from '../../../graphql/mutations.js';
@@ -20,21 +19,18 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
       if (!dbUser.addresses || !dbUser.addresses.length) {
         const { data: addressData } = await createAddress({
           variables: {
-            address_id: `address-${await uniqueString()}`,
-            isDefault: !(dbUser.addresses && dbUser.addresses.length),
-            ...fields
+            ...fields,
+            isDefault: !(dbUser.addresses && dbUser.addresses.length)
           }
         });
         const { data: userData } = await updateUserAddresses({
           variables: {
-            user_id: dbUser.user_id,
-            addresses: dbUser.addresses
-              ? [...dbUser.addresses, addressData.insertOneAddress.address_id]
-              : [addressData.insertOneAddress.address_id]
+            id: dbUser._id,
+            addresses: [addressData.insertOneAddress.address_id]
           }
         });
 
-        updateDbUser(userData.updateOneUser);
+        await updateDbUser(userData.updateOneUser);
       } else {
         const { data } = await updateAddress({
           variables: fields
@@ -44,7 +40,7 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
         const addressListLessUpdated = addressListClone.filter(address => address.address_id !== update.address_id);
         const updatedAddressList = [...addressListLessUpdated, update];
 
-        updateDbUser({
+        await updateDbUser({
           ...dbUser,
           addresses: updatedAddressList
         });
