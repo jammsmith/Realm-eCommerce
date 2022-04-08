@@ -83,7 +83,8 @@ const Product = (props) => {
                   customStyles={{
                     background: dark,
                     color: light,
-                    width: '300px',
+                    width: '100%',
+                    maxWidth: '300px',
                     height: '60px',
                     borderRadius: '6px'
                   }}

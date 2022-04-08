@@ -22,7 +22,11 @@ const AllImages = styled.div`
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  @media (max-width: 414px) {
+    gap: 0.35rem;
+  }
 `;
 const MiniImage = styled.img`
   border: 0.2px solid ${dark};

@@ -13,7 +13,14 @@ import mutations from '../../../../graphql/mutations.js';
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';
 
-const PaymentForm = ({ deliveryDetails, checkoutFormsComplete, updateCheckoutCompletion }) => {
+const PaymentForm = ({
+  activeOrder,
+  deliveryDetails,
+  additionalInfo,
+  checkoutFormsComplete,
+  updateCheckoutCompletion,
+  updateOrder
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
@@ -61,6 +68,15 @@ const PaymentForm = ({ deliveryDetails, checkoutFormsComplete, updateCheckoutCom
         phone: deliveryDetails.phone
       }
     });
+
+    if (additionalInfo && additionalInfo.length) {
+      await updateOrder({
+        variables: {
+          id: activeOrder._id,
+          extraInfo: additionalInfo
+        }
+      });
+    }
 
     const { error: stripeError } = await stripe.confirmPayment({
       elements,
@@ -119,9 +135,12 @@ const PaymentForm = ({ deliveryDetails, checkoutFormsComplete, updateCheckoutCom
 };
 
 PaymentForm.propTypes = {
+  activeOrder: PropTypes.object.isRequired,
   deliveryDetails: PropTypes.object.isRequired,
+  additionalInfo: PropTypes.string.isRequired,
   checkoutFormsComplete: PropTypes.bool.isRequired,
-  updateCheckoutCompletion: PropTypes.func.isRequired
+  updateCheckoutCompletion: PropTypes.func.isRequired,
+  updateOrder: PropTypes.func.isRequired
 };
 
 export default PaymentForm;

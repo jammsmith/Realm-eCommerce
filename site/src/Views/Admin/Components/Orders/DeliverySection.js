@@ -59,7 +59,7 @@ const DeliverySection = ({ order }) => {
             <DeliveryNotesWrapper>
               <DataRowLeftItem>Notes</DataRowLeftItem>
               <DeliveryNotes>
-                {delivery.notes}
+                {order.extraInfo}
               </DeliveryNotes>
             </DeliveryNotesWrapper>
           </div>

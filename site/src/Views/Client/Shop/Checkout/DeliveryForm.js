@@ -42,7 +42,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
   }, [dbUser, defaultAddress, handleValidDetails, updateCheckoutCompletion]);
 
   return (
-    <>
+    <div>
       <CheckoutItem>
         <Heading text='Your details' size='small' />
         <PersonalDetailsForm
@@ -66,7 +66,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
           defaultAddress={defaultAddress}
         />
       </CheckoutItem>
-    </>
+    </div>
   );
 };
 

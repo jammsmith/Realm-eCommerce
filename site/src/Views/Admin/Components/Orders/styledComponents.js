@@ -44,7 +44,8 @@ export const DeliveryNotesWrapper = styled(DataRow)`
   margin-top: 1rem;
   height: 12rem;
 `;
-export const DeliveryNotes = styled.h6`
+export const DeliveryNotes = styled.p`
+  font-size: 1.15rem;
   margin: 0;
   line-height: 1.5rem;
   height: 12rem;

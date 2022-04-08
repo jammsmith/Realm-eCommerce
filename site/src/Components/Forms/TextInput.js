@@ -14,7 +14,8 @@ const TextInput = ({
   type,
   disabled,
   variant,
-  margin
+  margin,
+  multiline
 }) => {
   return (
     <TextField
@@ -32,6 +33,7 @@ const TextInput = ({
       autoFocus={autoFocus}
       disabled={disabled}
       type={type}
+      multiline={multiline}
       sx={{
         backgroundColor: 'transparent',
         background: 'transparent',
@@ -55,7 +57,8 @@ TextInput.propTypes = {
   type: PropTypes.string, // html input type
   disabled: PropTypes.bool,
   variant: PropTypes.string,
-  margin: PropTypes.string
+  margin: PropTypes.string,
+  multiline: PropTypes.bool
 };
 
 export default TextInput;

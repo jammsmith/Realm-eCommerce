@@ -55,8 +55,9 @@ export const CurrentStatus = styled.div`
   font-size: 1.75rem;
   background-color: ${colours.green};
   color: #fff;
-  padding: 1.5rem;
+  padding: 1.5rem 0;
   overflow: hidden;
+    width: 340px;
   @media (max-width: 768px) {
     width: 100%;
   }

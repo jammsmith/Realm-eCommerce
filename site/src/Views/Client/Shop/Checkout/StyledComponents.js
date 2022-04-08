@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const CheckoutFormsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 600px;
   margin: 0.5rem auto;
   width: 96%;
   @media (min-width: 1024px) {

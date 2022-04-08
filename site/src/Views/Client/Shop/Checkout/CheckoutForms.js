@@ -4,25 +4,19 @@ import { useHistory } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import uniqueString from 'unique-string';
 
-// Styled components
-import { CheckoutFormsWrapper } from './StyledComponents.js';
-
-// Components
-import LoadingView from '../../../../Components/LoadingView.js';
 import PaymentForm from './PaymentForm.js';
 import DeliveryForm from './DeliveryForm.js';
+import AdditionalInfo from './AdditionalInfo.js';
 import Cart from '../Cart/Cart.js';
-
-// Helpers/hooks
+import LoadingView from '../../../../Components/LoadingView.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 
+import { CheckoutFormsWrapper } from './StyledComponents.js';
+
 const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const app = useContext(RealmAppContext);
-
-  const history = useHistory();
-  const [updateOrder] = useDDMutation(mutations.UpdateOrder);
 
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [deliveryDetails, setDeliveryDetails] = useState({
@@ -34,11 +28,15 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     email: '',
     phone: null
   });
+  const [additionalInfo, setAdditionalInfo] = useState('');
   const [checkoutCompletion, setCheckoutCompletion] = useState({
     personalFormComplete: false,
     deliveryFormComplete: false,
     paymentFormComplete: false
   });
+
+  const history = useHistory();
+  const [updateOrder] = useDDMutation(mutations.UpdateOrder);
 
   const { personalFormComplete, deliveryFormComplete, paymentFormComplete } = checkoutCompletion;
   const checkoutFormsComplete = !!(personalFormComplete && deliveryFormComplete && paymentFormComplete);
@@ -148,10 +146,17 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             dbUser={app.currentUser.dbUser}
             updateCheckoutCompletion={updateCheckoutCompletion}
           />
+          <AdditionalInfo
+            additionalInfo={additionalInfo}
+            updateAdditionalInfo={setAdditionalInfo}
+          />
           <PaymentForm
+            activeOrder={activeOrder}
             deliveryDetails={deliveryDetails}
+            additionalInfo={additionalInfo}
             checkoutFormsComplete={checkoutFormsComplete}
             updateCheckoutCompletion={updateCheckoutCompletion}
+            updateOrder={updateOrder}
           />
         </CheckoutFormsWrapper>
         </Elements>
