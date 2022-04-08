@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import _ from 'lodash';
 
 import AddToCart from '../../../../Components/AddToCart.js';
@@ -8,10 +9,11 @@ import LinkedHeading from '../../../../Components/Headings/LinkedHeading.js';
 import TextSection from '../../../../Components/TextSection.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
-import SingleProduct from '../../../../Components/Queries/SingleProduct.js';
-import colours from '../../../../styles/colours.js';
+import LoadingView from '../../../../Components/LoadingView.js';
 import ImageViewer from './ImageViewer.js';
+import colours from '../../../../styles/colours.js';
 import useScrollToTop from '../../../../hooks/useScrollToTop.js';
+import { SINGLE_PRODUCT } from '../../../../graphql/queries.js';
 
 import {
   ProductWrapper,
@@ -30,62 +32,60 @@ const Product = (props) => {
   useScrollToTop();
   const { category, subCategory, productId } = useParams();
 
+  const { data } = useQuery(SINGLE_PRODUCT, {
+    variables: { id: productId }
+  });
+
   return (
-    <SingleProduct id={productId}>
-      {
-        product => {
-          return (
-            <>
-              <ProductWrapper>
-                <ImageViewer images={product.images} />
-                <MainContent>
-                  <ProductInfo>
-                    <div>
-                      <HeadingWrapper>
-                        <LinkedHeading
-                          text={product.name}
-                          size='large'
-                          buttonText={`back to ${_.startCase(subCategory)}`}
-                          linkTo={`/shop/browse/${category}/${subCategory}`}
-                        />
-                      </HeadingWrapper>
-                      <p>{product.description}</p>
-                    </div>
-                    <div>
-                      <h5>{product.numInStock ? 'In stock ready for delivery!' : 'Please contact us to request this item'}</h5>
-                      <h5>£{product.price}</h5>
-                    </div>
-                  </ProductInfo>
-                  <Spacer />
-                  <AddToCartWrapper>
-                    <AddToCart product={product} {...props} />
-                  </AddToCartWrapper>
-                </MainContent>
-              </ProductWrapper>
-              <SectionSpacer dark spaceAbove spaceBelow />
-              <ContactUsWrapper>
-                <TextSection
-                  heading="Not quite what you're looking for?"
-                  text="We pride ourselves on our bespoke service, if there's something specific you would like then please get in touch - we can almost certainly do it!"
-                />
-                <ActionButton
-                  text='Get in touch'
-                  linkTo='/contact-us'
-                  customStyles={{
-                    background: dark,
-                    color: light,
-                    width: '100%',
-                    maxWidth: '300px',
-                    height: '60px',
-                    borderRadius: '6px'
-                  }}
-                />
-              </ContactUsWrapper>
-            </>
-          );
-        }
-      }
-    </SingleProduct>
+    data && data.product ? (
+      <>
+        <ProductWrapper>
+          <ImageViewer images={data.product.images} />
+          <MainContent>
+            <ProductInfo>
+              <div>
+                <HeadingWrapper>
+                  <LinkedHeading
+                    text={data.product.name}
+                    headingSize='large'
+                    buttonText={`back to ${_.startCase(subCategory)}`}
+                    linkTo={`/shop/browse/${category}/${subCategory}`}
+                  />
+                </HeadingWrapper>
+                <p>{data.product.description}</p>
+              </div>
+              <div>
+                <h5>{data.product.numInStock ? 'In stock ready for delivery!' : 'Please contact us to request this item'}</h5>
+                <h5>£{data.product.price}</h5>
+              </div>
+            </ProductInfo>
+            <Spacer />
+            <AddToCartWrapper>
+              <AddToCart product={data.product} {...props} />
+            </AddToCartWrapper>
+          </MainContent>
+        </ProductWrapper>
+        <SectionSpacer dark spaceAbove spaceBelow />
+        <ContactUsWrapper>
+          <TextSection
+            heading="Not quite what you're looking for?"
+            text="We pride ourselves on our bespoke service, if there's something specific you would like then please get in touch - we can almost certainly do it!"
+          />
+          <ActionButton
+            text='Get in touch'
+            linkTo='/contact-us'
+            customStyles={{
+              background: dark,
+              color: light,
+              width: '100%',
+              maxWidth: '300px',
+              height: '60px',
+              borderRadius: '6px'
+            }}
+          />
+        </ContactUsWrapper>
+      </>
+    ) : <LoadingView />
   );
 };
 

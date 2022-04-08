@@ -37,12 +37,12 @@ const LinkedHeading = ({ text, onClick, linkTo, buttonText, headingSize, color }
 );
 
 LinkedHeading.propTypes = {
-  heading: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   linkTo: PropTypes.string,
   buttonText: PropTypes.string.isRequired,
   headingSize: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired
+  color: PropTypes.string
 };
 
 export default LinkedHeading;

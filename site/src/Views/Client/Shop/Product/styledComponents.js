@@ -29,7 +29,7 @@ export const ProductInfo = styled.div`
 export const AddToCartWrapper = styled.div`
   width: 100%;
   @media (min-width: 768px) {
-    width: 200px;
+    width: 300px;
   }
 `;
 

@@ -5,15 +5,10 @@ import { IoCartOutline, IoMailOutline } from 'react-icons/io5';
 import { useHistory } from 'react-router-dom';
 import uniqueString from 'unique-string';
 
-// Components
 import ActionButton from './ActionButton.js';
 import ProgressSpinner from './ProgressSpinner.js';
-
-//
 import mutations from '../graphql/mutations.js';
 import useDDMutation from '../hooks/useDDMutation.js';
-
-// Styles
 import fonts from '../styles/fonts.js';
 import colours from '../styles/colours.js';
 
@@ -163,8 +158,8 @@ const AddToCart = ({
   };
 
   return (
-    product.numInStock > 0
-      ? <ActionButton
+    product.numInStock > 0 ? (
+      <ActionButton
         text={isLoading ? <ProgressSpinner colour='light' size='1.5rem' /> : buttonText}
         onClick={productInCart ? () => history.push('/shop/cart') : handleAddToCart}
         name='addToCart'
@@ -172,12 +167,14 @@ const AddToCart = ({
         variant='contained'
         customStyles={styles}
         disabled={isLoading}
-        />
-      : <ActionButton
+      />
+    ) : (
+      <ActionButton
         text={buttonText}
         customStyles={styles}
         onClick={() => history.push('/contact-us')}
-        />
+      />
+    )
   );
 };
 
