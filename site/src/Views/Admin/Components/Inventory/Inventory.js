@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import BigButton from './BigButton.js';
 import InventoryDetails from './InventoryDetails.js';
 import CategoryTable from './Categories/CategoryTable.js';

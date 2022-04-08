@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 // Colours
-import colours from '../styles/colours.js';
+import colours from '../../styles/colours.js';
 const { darkFade, dark } = colours;
 
 export const StyledHeading = styled.h4`
@@ -18,6 +18,8 @@ export const StyledHeading = styled.h4`
   border-bottom: 1px solid ${({ color }) => color || darkFade};
   font-size: ${({ size }) => {
     switch (size) {
+      case 'large':
+        return '1.75rem';
       case 'x-small':
         return '1rem';
       case 'small':

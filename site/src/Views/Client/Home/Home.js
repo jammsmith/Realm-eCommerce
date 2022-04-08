@@ -1,12 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
 
+import ActionButton from '../../../Components/ActionButton.js';
 import CategoryTile from '../../../Components/Tiles/CategoryTile.js';
 import TileList from '../../../Components/Tiles/TileList.js';
 import TextSection from '../../../Components/TextSection.js';
 import TestimonialCarousel from '../../../Components/Testimonials/TestimonialCarousel.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
-import AllCategories from '../../../Components/Queries/AllCategories.js';
+import colours from '../../../styles/colours.js';
+
+import { GoToShopWrapper, ImagesWrapper, PrimaryImage, SecondaryImages, SecondaryImage, GoToShopButton } from './styledComponents.js';
 
 const Home = (props) => {
   return (
@@ -18,21 +21,26 @@ const Home = (props) => {
         text='We specialise in individual designs and styles for both clothing and leather. We use only the finest materials available and all of our products are carefully researched and hand crafted by us.'
       />
       <SectionSpacer spaceBelow dark />
-      <TileList>
-        <AllCategories>
-          {categories => categories.map((category, index) => {
-            const { name } = category;
-            return (
-              <CategoryTile
-                key={index}
-                title={_.startCase(name)}
-                image={`/images/${name}-landing-page.jpg`}
-                linkTo={`/shop/browse/${name}`}
-              />
-            );
-          })}
-        </AllCategories>
-      </TileList>
+      <GoToShopWrapper>
+        <ImagesWrapper>
+          <PrimaryImage src='/images/gents-wear-landing-page.jpg' />
+          <SecondaryImages>
+            <SecondaryImage src='/images/ladies-wear-landing-page.jpg' />
+            <SecondaryImage src='/images/old-west-leather-landing-page.jpg' />
+          </SecondaryImages>
+        </ImagesWrapper>
+        <ActionButton
+          text='Browse Shop'
+          linkTo='/shop'
+          customStyles={{
+            height: '5rem',
+            backgroundColor: colours.dark,
+            borderRadius: '10px',
+            color: colours.light,
+            fontSize: '1.5rem'
+          }}
+        />
+      </GoToShopWrapper>
       <SectionSpacer spaceBelow spaceAbove dark />
       <TextSection
         headingFontSize='2rem'

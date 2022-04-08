@@ -90,3 +90,7 @@ export const StatusButtons = styled.div`
   flex-direction: column;
   gap: 1rem
 `;
+
+export const DialogHeadingWrapper = styled.div`
+  margin: 0 1rem;
+`;

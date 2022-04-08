@@ -4,7 +4,7 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import _ from 'lodash';
 
 import AddToCart from '../../../../Components/AddToCart.js';
-import Heading from '../../../../Components/Heading.js';
+import LinkedHeading from '../../../../Components/Headings/LinkedHeading.js';
 import TextSection from '../../../../Components/TextSection.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
@@ -18,21 +18,17 @@ import {
   MainContent,
   ProductInfo,
   AddToCartWrapper,
-  PrimaryButtons,
   ContactUsWrapper,
   Spacer
 } from './styledComponents.js';
+import { HeadingWrapper } from '../styledComponents.js';
 
 const { dark, light } = colours;
 
 // Return a single product
 const Product = (props) => {
   useScrollToTop();
-  const { url } = useRouteMatch();
-  const { subCategory, productId } = useParams();
-
-  // Create URL to navigate back to Sub-Category
-  const goBackUrl = url.replace(`/${productId}`, '');
+  const { category, subCategory, productId } = useParams();
 
   return (
     <SingleProduct id={productId}>
@@ -45,7 +41,14 @@ const Product = (props) => {
                 <MainContent>
                   <ProductInfo>
                     <div>
-                      <Heading text={product.name} />
+                      <HeadingWrapper>
+                        <LinkedHeading
+                          text={product.name}
+                          size='large'
+                          buttonText={`back to ${_.startCase(subCategory)}`}
+                          linkTo={`/shop/browse/${category}/${subCategory}`}
+                        />
+                      </HeadingWrapper>
                       <p>{product.description}</p>
                     </div>
                     <div>
@@ -54,21 +57,9 @@ const Product = (props) => {
                     </div>
                   </ProductInfo>
                   <Spacer />
-                  <PrimaryButtons>
-                    <AddToCartWrapper>
-                      <AddToCart product={product} {...props} />
-                    </AddToCartWrapper>
-                    <ActionButton
-                      text={`Back to ${_.upperCase(subCategory)}`}
-                      linkTo={goBackUrl}
-                      customStyles={{
-                        width: '100%',
-                        '@media (min-width: 768px)': {
-                          width: '200px'
-                        }
-                      }}
-                    />
-                  </PrimaryButtons>
+                  <AddToCartWrapper>
+                    <AddToCart product={product} {...props} />
+                  </AddToCartWrapper>
                 </MainContent>
               </ProductWrapper>
               <SectionSpacer dark spaceAbove spaceBelow />

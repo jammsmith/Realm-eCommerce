@@ -14,7 +14,9 @@ import {
   NavbarLinkList,
   NavbarLinkItem,
   NavbarLink,
-  NavbarToggleIcon
+  NavbarToggleIcon,
+  BrowseShop,
+  BrowseShopLink
 } from './NavbarElements';
 
 const Navbar = ({ handleToggle }) => {
@@ -27,6 +29,11 @@ const Navbar = ({ handleToggle }) => {
         <NavbarSpacer />
         <NavbarLinksContainer>
           <NavbarLinkList>
+            <BrowseShop>
+              <BrowseShopLink to='/shop'>
+                Browse Shop
+              </BrowseShopLink>
+            </BrowseShop>
             <NavbarLinkItem>
               <NavbarLink className='link' to='/about-us'>
                 About Us

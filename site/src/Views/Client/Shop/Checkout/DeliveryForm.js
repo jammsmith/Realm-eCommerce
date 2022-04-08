@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import AddressFormBasic from '../../../../Components/AddressForms/AddressFormBasic.js';
 import PersonalDetailsForm from '../../../../Components/AddressForms/PersonalDetailsForm.js';
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import { getDefaultAddress } from '../../../../helpers/address.js';
 
 // Styled components

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IoCheckmarkCircleSharp } from 'react-icons/io5';
 
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 
 // Styled components

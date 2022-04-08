@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import OrderDetails from './OrderDetails.js';
 import DDTable from '../../../../Components/Table/DDTable.js';
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import { ADMIN_ORDERS } from '../../../../graphql/queries.js';
 

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import CartProduct from './CartProduct.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 
 // Hook / helpers
 import useBreakpoints from '../../../../hooks/useBreakpoints.js';

@@ -6,12 +6,13 @@ import _ from 'lodash';
 
 import ActionButton from '../../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../../Components/ProgressSpinner.js';
-import Heading from '../../../../../Components/Heading.js';
+import Heading from '../../../../../Components/Headings/Heading.js';
 import ImageUploader from '../../../../../Components/ImageUploader.js';
 import RowGroup from '../../../../../Components/Forms/RowGroup.js';
 import SelectInput from '../../../../../Components/Forms/SelectInput.js';
 import UserMessage from '../../../../../Components/UserMessage.js';
 import { ALL_CATEGORIES_AND_SUBCATEGORIES } from '../../../../../graphql/queries.js';
+import { HeadingWrapper } from '../../../../../Components/Headings/LinkedHeading.js';
 
 import {
   EditInventorySection,
@@ -20,7 +21,6 @@ import {
   Spacer
 } from '../styledComponents.js';
 import { DataLoading } from '../../../styledComponents.js';
-import { HeadingWrapper } from '../../DialogHeading.js';
 
 const ProductEdit = ({
   fields,

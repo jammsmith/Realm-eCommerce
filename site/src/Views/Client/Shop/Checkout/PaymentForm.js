@@ -5,7 +5,7 @@ import uniqueString from 'unique-string';
 
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import UserMessage from '../../../../Components/UserMessage.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';

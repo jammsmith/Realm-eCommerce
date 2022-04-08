@@ -8,7 +8,7 @@ import SelectInput from '../Forms/SelectInput.js';
 import RowGroup from '../Forms/RowGroup.js';
 import Checkbox from '../Forms/Checkbox.js';
 import ActionButton from '../ActionButton.js';
-import Heading from '../Heading.js';
+import Heading from '../Headings/Heading.js';
 import UserMessage from '../UserMessage.js';
 
 // Styled components

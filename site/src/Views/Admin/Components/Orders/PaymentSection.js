@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { TextField, InputAdornment } from '@mui/material';
 
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import SelectInput from '../../../../Components/Forms/SelectInput.js';

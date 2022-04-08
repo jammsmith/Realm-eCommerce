@@ -10,7 +10,7 @@ import { S3_CONFIG } from '../graphql/queries.js';
 import ActionButton from './ActionButton.js';
 import FileBrowseButton from './FileBrowseButton.js';
 import UserMessage from './UserMessage.js';
-import Heading from './Heading.js';
+import Heading from './Headings/Heading.js';
 
 // Styled components
 const Wrapper = styled.div`

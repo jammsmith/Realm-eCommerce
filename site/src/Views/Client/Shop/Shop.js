@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import Home from '../Home/Home.js';
-import Category from './Category.js';
-import SubCategory from './SubCategory.js';
+import Categories from './Categories.js';
+import SubCategories from './SubCategories.js';
+import Products from './Products.js';
 import Product from './Product/Product.js';
 import Cart from './Cart/Cart.js';
 import Checkout from './Checkout/Checkout.js';
@@ -69,16 +69,21 @@ const Shop = () => {
       ? <>
         <SectionSpacer dark spaceBelow />
         <Switch>
-          <Route exact path='/shop' component={Home} />
+          <Route exact path='/shop' component={Categories} />
+          <Route
+            exact
+            path='/shop/browse'
+            component={Categories}
+          />
           <Route
             exact
             path='/shop/browse/:category'
-            component={Category}
+            component={SubCategories}
           />
           <Route
             exact
             path='/shop/browse/:category/:subCategory'
-            render={() => <SubCategory {...props} />}
+            render={() => <Products {...props} />}
           />
           <Route
             exact

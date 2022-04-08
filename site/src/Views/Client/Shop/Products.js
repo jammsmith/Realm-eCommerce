@@ -4,13 +4,15 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 import _ from 'lodash';
 
 import ProductTile from '../../../Components/Tiles/ProductTile/ProductTile.js';
+import LinkedHeading from '../../../Components/Headings/LinkedHeading.js';
 import TileList from '../../../Components/Tiles/TileList.js';
-import TextSection from '../../../Components/TextSection.js';
 import SingleSubCategoryByName from '../../../Components/Queries/SingleSubCategoryByName.js';
 import useScrollToTop from '../../../hooks/useScrollToTop.js';
 
+import { ShopBrowseWrapper, HeadingWrapper, Description } from './styledComponents.js';
+
 // Return a selection of products in a specific sub-category
-const SubCategory = (props) => {
+const Products = (props) => {
   useScrollToTop();
   const { url } = useRouteMatch();
   const { category, subCategory } = useParams();
@@ -21,8 +23,16 @@ const SubCategory = (props) => {
         subCategory => {
           const { name, description, products } = subCategory;
           return (
-            <>
-              <TextSection heading={_.startCase(name)} text={description} align='left' />
+            <ShopBrowseWrapper>
+              <HeadingWrapper>
+                <LinkedHeading
+                  text={_.startCase(name)}
+                  headingSize='large'
+                  buttonText={`back to ${_.startCase(category)}`}
+                  linkTo={`/shop/browse/${category}`}
+                />
+              </HeadingWrapper>
+              <Description>{description}</Description>
               <TileList>
                 {
                   products.map((product, index) => {
@@ -37,7 +47,7 @@ const SubCategory = (props) => {
                   })
                 }
               </TileList>
-            </>
+            </ShopBrowseWrapper>
           );
         }
       }
@@ -45,7 +55,7 @@ const SubCategory = (props) => {
   );
 };
 
-SubCategory.propTypes = {
+Products.propTypes = {
   currentUser: PropTypes.object.isRequired,
   updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
@@ -55,4 +65,4 @@ SubCategory.propTypes = {
   itemsInCart: PropTypes.array
 };
 
-export default SubCategory;
+export default Products;

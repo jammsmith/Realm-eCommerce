@@ -14,6 +14,7 @@ export const DrawerNav = styled.nav`
   left: 0;
   overflow: hidden;
   width: 80%;
+  max-width: 350px;
   z-index: 100;
   @media (min-width: 1024px) {
     display: none;

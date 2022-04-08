@@ -36,17 +36,6 @@ export const AddToCartWrapper = styled.div`
 export const Spacer = styled.div`
   flex: 1;
 `;
-export const PrimaryButtons = styled.div`
-  display: flex;  
-  flex-direction: column;
-  gap: 0.5rem;
-  @media (min-width: 768px) {
-    max-width: 416px;
-    flex-direction: row;
-    gap: 1rem;
-  }
-
-`;
 
 export const ContactUsWrapper = styled.div`
   display: flex;

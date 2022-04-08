@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import Heading from '../../../../Components/Heading.js';
+import Heading from '../../../../Components/Headings/Heading.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';

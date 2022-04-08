@@ -68,10 +68,30 @@ export const NavbarLink = styled(Link)`
   color: ${dark};
   font-family: ${normalHeading};
   text-decoration: none;
-
   :active,
   :hover {
     color: ${dark};
+  }
+`;
+
+export const BrowseShop = styled(NavbarLinkItem)`
+  border: 0.2px solid ${dark};
+  border-radius: 6px;
+  -webkit-box-shadow: -3px -1px 5px 2px rgba(0,0,0,0.1);
+  box-shadow: -3px -1px 5px 2px rgba(0,0,0,0.1);
+  :active,
+  :hover {
+    border: 2px solid ${dark};
+    cursor: pointer;
+  }
+  transition: border 0.1s ease-in-out;
+  width: 140px;
+  text-align: center;
+`;
+export const BrowseShopLink = styled(NavbarLink)`
+  :active,
+  :hover {
+    text-decoration: none;
   }
 `;
 

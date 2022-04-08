@@ -32,6 +32,21 @@ const CarouselWrapper = styled.div`
   }
 `;
 
+const ForwardArrow = styled(IoArrowForwardCircleOutline)`
+  font-size: 75px;
+  ${({ hidden }) => hidden && ({ color: 'transparent' })};
+  :hover {
+    cursor: pointer;
+  }
+`;
+const BackArrow = styled(IoArrowBackCircleOutline)`
+  font-size: 75px;
+  ${({ hidden }) => hidden && ({ color: 'transparent' })};
+  :hover {
+    cursor: pointer;
+  }
+`;
+
 // Return a selection of testimonials
 const TestimonialCarousel = () => {
   const testimonials = [
@@ -104,28 +119,17 @@ const TestimonialCarousel = () => {
 
   return (
     <CarouselWrapper>
-      {slideIndex > 0 ? (
-        <IoArrowBackCircleOutline
-          onClick={handleBackClick}
-          style={{ fontSize: '75px' }}
-        />
-      ) : (
-        <IoArrowBackCircleOutline
-          style={{ fontSize: '75px', color: transparent }}
-        />
-      )}
-      <Testimonial heading={content.heading} text={content.text} />
-
-      {slideIndex < testimonials.length - 1 ? (
-        <IoArrowForwardCircleOutline
-          onClick={handleNextClick}
-          style={{ fontSize: '75px' }}
-        />
-      ) : (
-        <IoArrowForwardCircleOutline
-          style={{ fontSize: '75px', color: transparent }}
-        />
-      )}
+      {slideIndex > 0
+        ? <BackArrow onClick={handleBackClick} />
+        : <BackArrow hidden />}
+      <Testimonial
+        heading={content.heading}
+        text={content.text}
+        isLastSlide={slideIndex === testimonials.length - 1}
+      />
+      {slideIndex < testimonials.length - 1
+        ? <ForwardArrow onClick={handleNextClick} />
+        : <ForwardArrow hidden />}
     </CarouselWrapper>
   );
 };

@@ -6,9 +6,10 @@ import { Dialog } from '@mui/material';
 import DeliverySection from './DeliverySection.js';
 import PaymentSection from './PaymentSection.js';
 import StatusSection from './StatusSection.js';
-import DialogHeading from '../DialogHeading.js';
+import LinkedHeading from '../../../../Components/Headings/LinkedHeading.js';
 import { SINGLE_ORDER_DETAILED } from '../../../../graphql/queries.js';
 
+import { DialogHeadingWrapper } from './styledComponents.js';
 import { DialogContentWrapper } from '../../styledComponents.js';
 
 const OrderDetails = ({ open, handleClose, orderId }) => {
@@ -35,10 +36,14 @@ const OrderDetails = ({ open, handleClose, orderId }) => {
         }
       }}
     >
-      <DialogHeading
-        heading='Manage Orders'
-        closeDialog={handleClose}
-      />
+      <DialogHeadingWrapper>
+        <LinkedHeading
+          text='Manage Orders'
+          onClick={handleClose}
+          buttonText='back to dashboard'
+          color='white'
+        />
+      </DialogHeadingWrapper>
       <DialogContentWrapper>
         <DeliverySection order={order || {}} />
         <PaymentSection order={order || {}} />

@@ -4,7 +4,7 @@ import { Dialog } from '@mui/material';
 import _ from 'lodash';
 import uniqueString from 'unique-string';
 
-import DialogHeading from '../DialogHeading.js';
+import LinkedHeading from '../../../../Components/Headings/LinkedHeading.js';
 import {
   getInitialFormFields,
   validateInventoryFields,
@@ -204,9 +204,11 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
         }
       }}
     >
-      <DialogHeading
-        heading={inventoryType ? `Manage ${_.startCase(inventoryType)}` : 'Manage Inventory'}
-        closeDialog={handleCloseAndReset}
+      <LinkedHeading
+        text={inventoryType ? `Manage ${_.startCase(inventoryType)}` : 'Manage Inventory'}
+        onClick={handleCloseAndReset}
+        buttonText='Back to dashboard'
+        color='white'
       />
       <DialogContentWrapper>
         <TableComponent

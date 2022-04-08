@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 
 import ActionButton from '../../../../../Components/ActionButton.js';
-import Heading from '../../../../../Components/Heading.js';
+import Heading from '../../../../../Components/Headings/Heading.js';
 import ImageUploader from '../../../../../Components/ImageUploader.js';
 import UserMessage from '../../../../../Components/UserMessage.js';
+import { HeadingWrapper } from '../../../../../Components/Headings/LinkedHeading.js';
 
 import {
   EditInventorySection,
@@ -13,7 +14,6 @@ import {
   SubmitButtons,
   Spacer
 } from '../styledComponents.js';
-import { HeadingWrapper } from '../../DialogHeading.js';
 
 const CategoryEdit = ({
   fields,
