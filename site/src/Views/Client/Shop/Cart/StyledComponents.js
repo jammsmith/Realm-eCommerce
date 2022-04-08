@@ -15,13 +15,14 @@ export const CartLine = styled.div`
 `;
 
 export const CartWrapper = styled.div`
-  ${props => props.isMinimised &&
-    ({
+  ${props => props.isMinimised ? ({
       borderRadius: '5px',
       boxShadow: '-3px -1px 10px 2px rgba(0,0,0,0.2)',
       padding: '0.5rem',
       marginBottom: '1rem',
       '-webkit-box-shadow': '-3px -1px 10px 2px rgba(0,0,0,0.2)'
+    }) : ({
+      margin: '0 0.5rem'
     })
   }
 `;

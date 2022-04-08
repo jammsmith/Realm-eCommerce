@@ -2,76 +2,75 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Custom styled components
+import SectionSpacer from '../SectionSpacer.js';
 import {
   DrawerNav,
   DrawerItems,
-  DrawerLink,
-  Spacer,
-  OuterFlexContainer,
+  DrawerLink as Link,
   LinkContainer
 } from './SideDrawerElements.js';
 
+const DrawerLink = ({ url, label, handleClick }) => (
+  <LinkContainer>
+    <Link
+      to={url}
+      onClick={handleClick}
+    >
+      {label}
+    </Link>
+  </LinkContainer>
+);
+DrawerLink.propTypes = {
+  url: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired
+};
+
 // Show a menu that appears from the side on small screens
 const SideDrawer = ({ handleDrawerLinkClick }) => {
+  const primaryLinks = [
+    { url: '/shop/browse/old-west-leather', label: 'Old West Leather' },
+    { url: '/shop/browse/gents-wear', label: 'Gents Wear' },
+    { url: '/shop/browse/ladies-wear', label: 'Ladies Wear' },
+    { url: '/shop/browse/accessories', label: 'Accessories' }
+  ];
+  const secondaryLinks = [
+    { url: '/shop/cart', label: 'My Cart' },
+    { url: '/my-account', label: 'My Account' },
+    { url: '/contact-us', label: 'Contact Us' }
+  ];
   return (
     <DrawerNav>
-      <OuterFlexContainer>
-        <DrawerItems>
-          <img
-            src='/images/site-decoration/western-flourish-top.png'
-            alt=''
-            style={{ width: '100%' }}
-          />
-          <Spacer />
-          <LinkContainer>
-            <DrawerLink to='/' onClick={handleDrawerLinkClick}>
-              Home
-            </DrawerLink>
-          </LinkContainer>
-          <Spacer />
-          <LinkContainer>
+      <DrawerItems>
+        <SectionSpacer light spaceBelow />
+        <DrawerLink
+          url='/'
+          label='Home'
+          handleClick={handleDrawerLinkClick}
+        />
+        <SectionSpacer light spaceBelow />
+        {
+          primaryLinks.map((link, index) => (
             <DrawerLink
-              to='/shop/old-west-leather'
-              onClick={handleDrawerLinkClick}
-            >
-              Old West Leather
-            </DrawerLink>
-          </LinkContainer>
-          <LinkContainer>
-            <DrawerLink to='/shop/gents-wear' onClick={handleDrawerLinkClick}>
-              Gents Wear
-            </DrawerLink>
-          </LinkContainer>
-          <LinkContainer>
-            <DrawerLink to='/shop/ladies-wear' onClick={handleDrawerLinkClick}>
-              Ladies Wear
-            </DrawerLink>
-          </LinkContainer>
-          <LinkContainer>
-            <DrawerLink to='/shop/accessories' onClick={handleDrawerLinkClick}>
-              Accessories
-            </DrawerLink>
-          </LinkContainer>
-          <Spacer />
-          <LinkContainer>
-            <DrawerLink to='/contact-us' onClick={handleDrawerLinkClick}>
-              Contact Us
-            </DrawerLink>
-          </LinkContainer>
-          <LinkContainer>
-            <DrawerLink to='/shop/cart' onClick={handleDrawerLinkClick}>
-              Cart
-            </DrawerLink>
-          </LinkContainer>
-          <Spacer />
-          <img
-            src='/images/site-decoration/western-flourish-bottom.png'
-            alt=''
-            style={{ width: '100%' }}
-          />
-        </DrawerItems>
-      </OuterFlexContainer>
+              key={index}
+              url={link.url}
+              label={link.label}
+              handleClick={handleDrawerLinkClick}
+            />
+          ))
+        }
+        <SectionSpacer light spaceBelow />
+        {
+          secondaryLinks.map((link, index) => (
+            <DrawerLink
+              key={index}
+              url={link.url}
+              label={link.label}
+              handleClick={handleDrawerLinkClick}
+            />
+          ))
+        }
+      </DrawerItems>
     </DrawerNav>
   );
 };

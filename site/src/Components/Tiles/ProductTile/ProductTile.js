@@ -16,7 +16,7 @@ import {
   Text,
   InStockInfo,
   ButtonContainer
-} from './ProductTileElements.js';
+} from './styledComponents.js';
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 

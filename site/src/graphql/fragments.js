@@ -58,6 +58,7 @@ export const ORDER_DETAILS = gql`
     paymentStatus
     dateCreated
     datePaid
+    dateAccepted
     dateDispatched
     stripeAmountPaid
   }

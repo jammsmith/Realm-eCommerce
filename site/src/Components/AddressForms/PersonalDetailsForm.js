@@ -123,7 +123,6 @@ const PersonalDetailsForm = ({
         value={personalDetailsFields.phone}
         label='Phone'
         handleChange={handleInputChange}
-        required={false}
         variant='outlined'
         margin='normal'
         type='text'

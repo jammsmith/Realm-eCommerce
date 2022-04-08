@@ -35,7 +35,6 @@ const Footer = () => {
             />
             <TopSectionInner>
               <TopSectionLinks>
-
                 <Link to='/testimonials'>
                   Testimonials
                 </Link>

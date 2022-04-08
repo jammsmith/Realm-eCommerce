@@ -1,26 +1,23 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-// Views
 import Home from '../Home/Home.js';
 import Category from './Category.js';
 import SubCategory from './SubCategory.js';
 import Product from './Product/Product.js';
 import Cart from './Cart/Cart.js';
 import Checkout from './Checkout/Checkout.js';
-
-// Components
 import SectionSpacer from '../../../Components/SectionSpacer.js';
-
-// Other
 import { getCartSubTotal } from '../../../helpers/cart.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
+import useScrollToTop from '../../../hooks/useScrollToTop.js';
 
 // Setup stripe
 import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZheUc4MkBtGeMj9ZrqNd3mQebbi9nnLcGkLjqDaCMFwtT5KyjuBmN00M3I7Ekl1');
 
 const Shop = () => {
+  useScrollToTop();
   const app = useContext(RealmAppContext);
   const [activeOrder, setActiveOrder] = useState();
   const [addingToCart, setAddingToCart] = useState({

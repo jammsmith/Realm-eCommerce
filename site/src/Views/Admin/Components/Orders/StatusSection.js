@@ -7,6 +7,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import ProgressSpinner from '../../../../Components/ProgressSpinner.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
+import { capitaliseFirstCharacter } from '../../../../helpers/global.js';
 
 // Styled components
 import {
@@ -22,23 +23,26 @@ import { DataLoading } from '../../styledComponents.js';
 const StatusSection = ({ order }) => {
   const [loading, setLoading] = useState({});
   const [status, setStatus] = useState(order ? order.orderStatus : null);
-  useEffect(() => {
-    if (order && order.orderStatus !== status) {
-      setStatus(order.orderStatus);
-    }
-  }, [order, status]);
 
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
+
   const updateOrderStatus = async (e, status) => {
     try {
       e.preventDefault();
       setLoading({ button: status, state: true });
-      await updateOrder({
-        variables: {
-          id: order._id,
-          orderStatus: status
-        }
-      });
+
+      const variables = {
+        id: order._id,
+        orderStatus: status
+      };
+      if (status !== 'archived') {
+        const capitalisedStatus = capitaliseFirstCharacter(status);
+        const dateUpdatedKey = `date${capitalisedStatus}`;
+        variables[dateUpdatedKey] = new Date(Date.now());
+      }
+
+      await updateOrder({ variables });
+
       setStatus(status);
       setLoading({ button: status, state: false });
     } catch (err) {
@@ -47,6 +51,12 @@ const StatusSection = ({ order }) => {
       loading.state === true && setLoading({});
     }
   };
+
+  useEffect(() => {
+    if (order && order.orderStatus !== status) {
+      setStatus(order.orderStatus);
+    }
+  }, [order, status]);
 
   return (
     <Section>

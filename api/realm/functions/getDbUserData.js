@@ -14,6 +14,7 @@ exports = async function (userId) {
 
   user.orders = await db.collection('orders')
     .find({ customer: user.user_id })
+    .sort({ dateCreated: -1 })
     .toArray();
 
   for (let i = 0; i < user.orders.length; i++) {

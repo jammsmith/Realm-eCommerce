@@ -11,6 +11,7 @@ import ActionButton from '../../../../Components/ActionButton.js';
 import SingleProduct from '../../../../Components/Queries/SingleProduct.js';
 import colours from '../../../../styles/colours.js';
 import ImageViewer from './ImageViewer.js';
+import useScrollToTop from '../../../../hooks/useScrollToTop.js';
 
 import {
   ProductWrapper,
@@ -26,6 +27,7 @@ const { dark, light } = colours;
 
 // Return a single product
 const Product = (props) => {
+  useScrollToTop();
   const { url } = useRouteMatch();
   const { subCategory, productId } = useParams();
 

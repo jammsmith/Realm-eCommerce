@@ -7,9 +7,11 @@ import ProductTile from '../../../Components/Tiles/ProductTile/ProductTile.js';
 import TileList from '../../../Components/Tiles/TileList.js';
 import TextSection from '../../../Components/TextSection.js';
 import SingleSubCategoryByName from '../../../Components/Queries/SingleSubCategoryByName.js';
+import useScrollToTop from '../../../hooks/useScrollToTop.js';
 
 // Return a selection of products in a specific sub-category
 const SubCategory = (props) => {
+  useScrollToTop();
   const { url } = useRouteMatch();
   const { category, subCategory } = useParams();
 

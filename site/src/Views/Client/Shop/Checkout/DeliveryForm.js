@@ -5,7 +5,6 @@ import AddressFormBasic from '../../../../Components/AddressForms/AddressFormBas
 import PersonalDetailsForm from '../../../../Components/AddressForms/PersonalDetailsForm.js';
 import Heading from '../../../../Components/Heading.js';
 import { getDefaultAddress } from '../../../../helpers/address.js';
-import { isAuthenticated } from '../../../../helpers/auth.js';
 
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';

@@ -26,10 +26,16 @@ export const NavbarBrand = styled.h1`
   font-family: ${fancyHeading};
   font-size: 1.5rem;
   margin-bottom: 0;
+  :hover {
+    color: ${dark};
+  }
 `;
 
 export const NavbarHomeLink = styled(Link)`
   color: ${dark};
+  :hover {
+    color: ${dark};
+  }
 `;
 
 export const NavbarSpacer = styled.div`

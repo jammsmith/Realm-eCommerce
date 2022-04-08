@@ -13,6 +13,10 @@ const ClientStyles = styled.section`
   display: flex;
   flex-direction: column;
 `;
+const ScrollDisabled = styled(ClientStyles)`
+  height: 100vh;
+  overflow-y: hidden;
+`;
 const Spacer = styled.div`
   flex: 1
 `;
@@ -23,23 +27,25 @@ const ClientView = ({ children }) => {
   const handleToggle = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
 
-  return (
-    <ClientStyles>
+  const content =
+    <>
       <Navbar handleToggle={handleToggle} />
       {
         menuInView &&
           <>
-            <SideDrawer
-              show={menuInView}
-              handleDrawerLinkClick={closeMenu}
-            />
+            <SideDrawer handleDrawerLinkClick={closeMenu} />
             <BackgroundShadow handleBackgroundClick={closeMenu} />
           </>
       }
       {children}
       <Spacer />
       <Footer />
-    </ClientStyles>
+    </>;
+
+  return (
+    menuInView
+      ? <ScrollDisabled>{content}</ScrollDisabled>
+      : <ClientStyles>{content}</ClientStyles>
   );
 };
 

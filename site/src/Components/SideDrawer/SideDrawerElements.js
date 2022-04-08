@@ -13,26 +13,18 @@ export const DrawerNav = styled.nav`
   top: 0;
   left: 0;
   overflow: hidden;
-  width: 70%;
+  width: 80%;
   z-index: 100;
-
   @media (min-width: 1024px) {
     display: none;
   }
 `;
 
-export const OuterFlexContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
 export const DrawerItems = styled.ul`
   display: flex;
-  height: 60%;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   list-style: none;
   padding: 0 1rem;
   margin: 0;
@@ -47,9 +39,12 @@ export const LinkContainer = styled.li`
 
 export const DrawerLink = styled(Link)`
   color: ${dark};
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
   text-decoration: none;
+  :hover {
+    color: ${dark};
+  }
 `;
 
 export const Divider = styled.hr`

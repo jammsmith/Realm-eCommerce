@@ -21,11 +21,9 @@ const Navbar = ({ handleToggle }) => {
   return (
     <NavbarContainer>
       <NavbarNavigation>
-        <div>
-          <NavbarHomeLink to='/'>
-            <NavbarBrand>Doves and Dandys Westernwear</NavbarBrand>
-          </NavbarHomeLink>
-        </div>
+        <NavbarHomeLink to='/'>
+          <NavbarBrand>Doves and Dandys Westernwear</NavbarBrand>
+        </NavbarHomeLink>
         <NavbarSpacer />
         <NavbarLinksContainer>
           <NavbarLinkList>
