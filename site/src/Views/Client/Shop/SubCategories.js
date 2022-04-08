@@ -1,13 +1,15 @@
 // External imports
 import React from 'react';
 import { useRouteMatch, useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import _ from 'lodash';
 
 // Components
 import LinkedHeading from '../../../Components/Headings/LinkedHeading.js';
 import SubCategoryTile from '../../../Components/Tiles/CategoryTile.js';
 import TileList from '../../../Components/Tiles/TileList.js';
-import SingleCategoryByName from '../../../Components/Queries/SingleCategoryByName.js';
+import LoadingView from '../../../Components/LoadingView.js';
+import { SINGLE_CATEGORY_BY_NAME } from '../../../graphql/queries.js';
 
 import { ShopBrowseWrapper, HeadingWrapper, Description } from './styledComponents.js';
 
@@ -16,23 +18,27 @@ const SubCategories = () => {
   const { url } = useRouteMatch();
   const { category } = useParams();
 
+  const { data } = useQuery(SINGLE_CATEGORY_BY_NAME, {
+    variables: { name: category }
+  });
+
   return (
-    <SingleCategoryByName name={category}>
+    <ShopBrowseWrapper>
+      <HeadingWrapper>
+        <LinkedHeading
+          text={_.startCase(category)}
+          headingSize='large'
+          linkTo='/shop'
+          buttonText='Back to categories'
+        />
+      </HeadingWrapper>
       {
-        category =>
-          <ShopBrowseWrapper>
-            <HeadingWrapper>
-              <LinkedHeading
-                text={_.startCase(category.name)}
-                headingSize='large'
-                linkTo='/shop'
-                buttonText='Back to categories'
-              />
-            </HeadingWrapper>
-            <Description>{category.description}</Description>
+        data && data.category ? (
+          <>
+            <Description>{data.category.description}</Description>
             <TileList>
               {
-                category.subCategories.map((subCategory, index) => {
+                data.category.subCategories.map((subCategory, index) => {
                   const { name, image } = subCategory;
                   return (
                     <SubCategoryTile
@@ -45,9 +51,10 @@ const SubCategories = () => {
                 })
               }
             </TileList>
-          </ShopBrowseWrapper>
+          </>
+        ) : <LoadingView />
       }
-    </SingleCategoryByName>
+    </ShopBrowseWrapper>
   );
 };
 

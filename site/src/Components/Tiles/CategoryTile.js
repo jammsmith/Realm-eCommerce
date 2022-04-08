@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-//
+import ProgressSpinner from '../ProgressSpinner.js';
 import ResponsiveTileWrapper from './ResponsiveTileWrapper.js';
 
 // Colours
@@ -50,7 +50,7 @@ const CategoryTile = ({ title, image, linkTo }) => {
   return (
     <Link to={linkTo}>
       <Wrapper>
-        <Image src={image} alt='' />
+        <Image src={image} alt={title} />
         <CategoryCaption>{title}</CategoryCaption>
       </Wrapper>
     </Link>
