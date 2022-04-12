@@ -1,12 +1,9 @@
-// External components
 import React from 'react';
-import { IoLogoFacebook, IoMailOutline } from 'react-icons/io5';
+import { useHistory } from 'react-router-dom';
 
-// Components
 import Link from '../Link';
 import Image from '../Image';
 
-// Custom styled components
 import {
   FooterOuterWrapper,
   FooterInner,
@@ -15,6 +12,8 @@ import {
   TopSectionLinks,
   GetInTouch,
   SocialIcons,
+  FindUsOnFacebook,
+  MailIcon,
   FooterBottomSection,
   ContactWrapper,
   InfoLinksWrapper,
@@ -23,7 +22,9 @@ import {
 
 //
 const Footer = () => {
+  const history = useHistory();
   const copyrightDate = new Date().getFullYear();
+
   return (
     <>
       <FooterOuterWrapper>
@@ -35,14 +36,15 @@ const Footer = () => {
             />
             <TopSectionInner>
               <TopSectionLinks>
-                <Link to='/testimonials'>
-                  Testimonials
-                </Link>
                 <GetInTouch>
-                  <h6 style={{ textDecoration: 'underline' }}>Get in touch</h6>
                   <SocialIcons>
-                    <IoLogoFacebook style={{ fontSize: '2rem' }} />
-                    <IoMailOutline style={{ fontSize: '2rem' }} />
+                    <FindUsOnFacebook
+                      src='/images/find-us-on-facebook.png'
+                      onClick={() => window.open('https://www.facebook.com/Doves-Dandys-143717172379125', '_blank')}
+                    />
+                    <MailIcon
+                      onClick={() => history.push('/contact-us')}
+                    />
                   </SocialIcons>
                 </GetInTouch>
               </TopSectionLinks>

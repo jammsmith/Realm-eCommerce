@@ -9,7 +9,7 @@ import colours from '../../../styles/colours.js';
 
 import { GoToShopWrapper, ImagesWrapper, PrimaryImage, SecondaryImages, SecondaryImage } from './styledComponents.js';
 
-const Home = (props) => {
+const Home = () => {
   return (
     <>
       <SectionSpacer spaceBelow dark />

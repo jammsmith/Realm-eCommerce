@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { IoLogoFacebook, IoMailOutline } from 'react-icons/io5';
+
 import colours from '../../styles/colours.js';
 const { dark, darkFade, light } = colours;
 
@@ -71,8 +73,19 @@ export const GetInTouch = styled.div`
 export const SocialIcons = styled.div`
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  flex-wrap: no-wrap;
+  gap: 2rem;
+`;
+
+export const FindUsOnFacebook = styled.img`
+  height: 1.75rem;
+  width: auto;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+export const MailIcon = styled(IoMailOutline)`
+  font-size: 2rem;
   :hover {
     cursor: pointer;
   }
