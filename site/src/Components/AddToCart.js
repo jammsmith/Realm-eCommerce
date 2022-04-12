@@ -105,7 +105,7 @@ const AddToCart = ({
     if (dbUser && dbUser.user_id && (!activeOrder || (activeOrder && !activeOrder.order_id))) {
       try {
         updateAddingToCart(true, productId);
-        const newOrderId = await currentUser.functions.generateId();
+        const newOrderId = await currentUser.functions.helper_createOrderId();
         const newOrderItemId = `orderItem-${await uniqueString()}`;
         const { data } = await createOrderForExistingCustomer({
           variables: {
@@ -135,7 +135,7 @@ const AddToCart = ({
     if (currentUser && (!dbUser || (dbUser && !dbUser.user_id))) {
       try {
         updateAddingToCart(true, productId);
-        const newOrderId = await currentUser.functions.generateId();
+        const newOrderId = await currentUser.functions.helper_createOrderId();
         const newOrderItemId = `orderItem-${await uniqueString()}`;
         const newUserId = `user-${await uniqueString()}`;
         const { data } = await createGuestOrder({

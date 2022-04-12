@@ -33,7 +33,7 @@ const Summary = ({ urlParams }) => {
 
   useEffect(() => {
     const retrievePaymentIntent = async () => {
-      const intent = await app.currentUser.functions.retrievePaymentIntent(urlParams.paymentIntentId);
+      const intent = await app.currentUser.functions.stripe_retrievePaymentIntent(urlParams.paymentIntentId);
       setPaymentIntent(intent);
     };
     retrievePaymentIntent();

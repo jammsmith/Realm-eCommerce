@@ -56,7 +56,7 @@ const PaymentSection = ({ order }) => {
       const stripeAmount = convertPriceToStripeAmount(refundAmount);
 
       // refund payment through stripe & add refund to db collection
-      const stripeRefund = await app.currentUser.functions.refundPaymentIntent(
+      const stripeRefund = await app.currentUser.functions.stripe_refundPaymentIntent(
         paymentIntent.id,
         stripeAmount,
         refundAmount,
@@ -91,7 +91,7 @@ const PaymentSection = ({ order }) => {
 
   const getPaymentIntent = useCallback(async () => {
     try {
-      const paymentIntent = await app.currentUser.functions.retrievePaymentIntent(order.paymentIntentId);
+      const paymentIntent = await app.currentUser.functions.stripe_retrievePaymentIntent(order.paymentIntentId);
       setPaymentIntent(paymentIntent);
     } catch (err) {
       console.error('Failed to retrieve payment intent', err);

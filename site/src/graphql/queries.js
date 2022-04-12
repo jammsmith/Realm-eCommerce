@@ -323,14 +323,3 @@ export const ADDRESSES_BY_ID = gql`
     }
   }
 `;
-
-export const S3_CONFIG = gql`
-  query {
-    getS3Config {
-      bucketName
-      region
-      accessKeyId
-      secretAccessKey
-    }
-  }
-`;

@@ -106,7 +106,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   useEffect(() => {
     if (activeOrder && activeOrder.orderItems && !activeOrder.paymentIntentId) {
       const createPaymentIntent = async () => {
-        const intent = await app.currentUser.functions.createPaymentIntent(activeOrder);
+        const intent = await app.currentUser.functions.stripe_createPaymentIntent(activeOrder);
         const { data } = await updateOrder({
           variables: {
             id: activeOrder._id,
@@ -119,7 +119,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
       createPaymentIntent();
     } else if (activeOrder && activeOrder.paymentIntentId) {
       const retrievePaymentIntent = async () => {
-        const intent = await app.currentUser.functions.retrievePaymentIntent(activeOrder.paymentIntentId);
+        const intent = await app.currentUser.functions.stripe_retrievePaymentIntent(activeOrder.paymentIntentId);
         setPaymentIntent(intent);
       };
       retrievePaymentIntent();

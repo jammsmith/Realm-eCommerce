@@ -2,19 +2,9 @@
     {
         "route": "/stripe",
         "http_method": "POST",
-        "function_name": "incomingStripeEvents",
+        "function_name": "stripe_webhookEvents",
         "validation_method": "NO_VALIDATION",
         "respond_result": false,
-        "fetch_custom_user_data": false,
-        "create_user_on_auth": false,
-        "disabled": false
-    },
-    {
-        "route": "/resetPassword",
-        "http_method": "POST",
-        "function_name": "resetPassword",
-        "validation_method": "NO_VALIDATION",
-        "respond_result": true,
         "fetch_custom_user_data": false,
         "create_user_on_auth": false,
         "disabled": false

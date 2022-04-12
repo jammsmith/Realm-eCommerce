@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
 import { uploadFile } from 'react-s3';
@@ -6,11 +6,11 @@ import styled from 'styled-components';
 import { TiDeleteOutline } from 'react-icons/ti';
 import uniqueString from 'unique-string';
 
-import { S3_CONFIG } from '../graphql/queries.js';
 import ActionButton from './ActionButton.js';
 import FileBrowseButton from './FileBrowseButton.js';
 import UserMessage from './UserMessage.js';
 import Heading from './Headings/Heading.js';
+import { RealmAppContext } from '../realmApolloClient.js';
 
 // Styled components
 const Wrapper = styled.div`
@@ -72,10 +72,11 @@ const ImagePlaceholder = styled.div`
 `;
 
 const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) => {
+  const app = useContext(RealmAppContext);
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const { data } = useQuery(S3_CONFIG);
 
   const handleFileInput = (e) => {
     setMessage(null);
@@ -87,20 +88,16 @@ const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) =
     setLoading(true);
 
     try {
-      if (data && data.getS3Config) {
-        const imageUpload = await uploadFile(file, data.getS3Config);
-        onUpload(imageUpload.location);
-        setMessage({
-          type: 'success',
-          text: 'Image upload successful!'
-        });
-        setSelectedFile(null);
-      } else {
-        setMessage({
-          type: 'error',
-          text: 'Failed to find S3 credentials'
-        });
-      }
+      const imageUpload = await uploadFile(
+        file,
+        await app.currentUser.functions.s3_getConfig()
+      );
+      onUpload(imageUpload.location);
+      setMessage({
+        type: 'success',
+        text: 'Image upload successful!'
+      });
+      setSelectedFile(null);
     } catch (err) {
       setMessage({
         type: 'error',

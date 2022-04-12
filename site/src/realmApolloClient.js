@@ -79,7 +79,7 @@ export const RealmAppProvider = ({ children }) => {
   useEffect(() => {
     const attachDbUser = async () => {
       try {
-        const dbUser = await app.currentUser.functions.getDbUserData(app.currentUser.id);
+        const dbUser = await app.currentUser.functions.db_getFullUser(app.currentUser.id);
         if (dbUser) {
           if (currentUser.dbUser !== dbUser) {
             setCurrentUser(prev => ({ ...prev, dbUser: dbUser }));

@@ -4,23 +4,11 @@
         "private": false
     },
     {
-        "name": "resetPassword",
+        "name": "db_categorySearch",
         "private": false
     },
     {
         "name": "db_upsertProduct",
-        "private": false
-    },
-    {
-        "name": "getDbUserData",
-        "private": false
-    },
-    {
-        "name": "db_upsertSubCategory",
-        "private": false
-    },
-    {
-        "name": "getS3Config",
         "private": false
     },
     {
@@ -32,22 +20,11 @@
         "private": false
     },
     {
-        "name": "createPaymentIntent",
-        "private": false,
-        "run_as_system": true
+        "name": "db_getFullUser",
+        "private": false
     },
     {
-        "name": "generateId",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "retrievePaymentIntent",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "db_updateRelations",
+        "name": "db_upsertSubCategory",
         "private": false
     },
     {
@@ -55,17 +32,31 @@
         "private": false
     },
     {
-        "name": "refundPaymentIntent",
-        "private": false,
-        "run_as_system": true
+        "name": "stripe_createPaymentIntent",
+        "private": false
     },
     {
-        "name": "incomingStripeEvents",
-        "private": false,
-        "run_as_system": true
+        "name": "stripe_retrievePaymentIntent",
+        "private": false
     },
     {
-        "name": "db_categorySearch",
+        "name": "stripe_refundPaymentIntent",
+        "private": false
+    },
+    {
+        "name": "stripe_webhookEvents",
+        "private": false
+    },
+    {
+        "name": "s3_getConfig",
+        "private": false
+    },
+    {
+        "name": "helper_createOrderId",
+        "private": false
+    },
+    {
+        "name": "db_updateRelations",
         "private": false
     }
 ]
