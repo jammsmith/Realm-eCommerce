@@ -2,14 +2,17 @@ const { faker } = require('@faker-js/faker');
 
 const subCategories = require('../sampleData/subCategories.js');
 
-const generateSubCategories = (products) => {
+const generateSubCategories = () => {
+  let productsStartCount = 1;
   const generatedSubCategories = subCategories.map(subCategory => {
-    const randomProducts = [];
-    for (let i = 0; i < 10; i++) {
-      const randomProduct = faker.random.arrayElement(products);
-      randomProducts.push(randomProduct.product_id);
+    const generatedProducts = [];
+
+    for (let i = productsStartCount; i < (productsStartCount + 10); i++) {
+      generatedProducts.push(`product-00${i}`);
     }
-    subCategory.products = randomProducts;
+    productsStartCount = productsStartCount + 10;
+
+    subCategory.products = generatedProducts;
     return subCategory;
   });
   return generatedSubCategories;

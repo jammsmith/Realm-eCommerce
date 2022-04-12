@@ -26,8 +26,7 @@ const resetInventory = async () => {
     console.log('Categories added successfully.');
     await Product.insertMany(products);
     console.log('Products added successfully.');
-    const productsFromDb = await Product.find({});
-    const subCategories = generateSubCategories(productsFromDb);
+    const subCategories = generateSubCategories();
     await SubCategory.insertMany(subCategories);
     console.log('Sub-categories added successfully.');
 

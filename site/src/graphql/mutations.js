@@ -188,8 +188,12 @@ const mutations = {
     }
   `,
   DeleteProduct: gql`
-    mutation($product_id: String!) {
-      deleteProduct(input: $product_id) {
+    mutation(
+      $product_id: String!
+    ) {
+      deleteProduct(
+        input: $product_id
+      ) {
         productId
         isDeleted
       }
@@ -218,14 +222,14 @@ const mutations = {
     }
   `,
   DeleteSubCategory: gql`
-    ${SUBCATEGORY_DETAILS}
     mutation(
       $subCategory_id: String!
     ) {
-      deleteOneSubCategory(query: { 
-        subCategory_id: $subCategory_id
-      } ) {
-        ...SubCategoryDetails
+      deleteSubCategory(
+        input: $subCategory_id
+      ) {
+        subCategoryId
+        isDeleted
       }
     }
   `,

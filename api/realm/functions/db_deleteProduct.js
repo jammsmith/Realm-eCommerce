@@ -45,8 +45,13 @@ exports = async function (productId) {
     if (result.deletedCount === 1) {
       await removeFromExistingRelationArray();
       return {
-        productId: productId,
+        productId,
         isDeleted: true
+      };
+    } else {
+      return {
+        productId,
+        isDeleted: false
       };
     }
   } catch (err) {

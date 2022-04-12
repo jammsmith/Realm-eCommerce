@@ -29,6 +29,7 @@ export const InventorySection = styled.div`
   border-radius: 10px;
   position: relative;
 `;
+
 export const EditInventorySection = styled(InventorySection)`
   height: 90vh;
 `;

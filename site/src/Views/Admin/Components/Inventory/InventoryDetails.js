@@ -126,10 +126,24 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
   };
 
   const handleDeleteItemRequest = () => {
+    // Make sure an item is selected to delete
     if (!itemToEdit || isObjectEmpty(itemToEdit)) {
       setMessage({
         type: 'error',
         text: `Must select a ${inventoryType} to delete`
+      });
+      return;
+    }
+    // If item is category or subCategory - make sure they have no children (must delete/move children first)
+    const relatedDocuments = {
+      category: 'subCategories',
+      subCategory: 'products'
+    };
+    const relatedDocumentArray = itemToEdit[relatedDocuments[inventoryType]];
+    if (relatedDocumentArray && relatedDocumentArray.length) {
+      setMessage({
+        type: 'error',
+        text: `Must move or delete all related ${relatedDocuments[inventoryType]} before deleting a ${_.kebabCase(inventoryType)}`
       });
       return;
     }
@@ -209,6 +223,7 @@ const InventoryDetails = ({ tableSection, editSection, inventoryType, open, hand
         onClick={handleCloseAndReset}
         buttonText='Back to dashboard'
         color='white'
+        margin='0 1rem'
       />
       <DialogContentWrapper>
         <TableComponent

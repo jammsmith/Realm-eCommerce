@@ -59,9 +59,13 @@ export const USER_DETAILED = gql`
 // Shop Categories
 export const SINGLE_CATEGORY = gql`
 ${CATEGORY_DETAILS}
+${SUBCATEGORY_DETAILS}
  query($categoryId: String!) {
    category(query: { category_id: $categoryId, }) {
      ...CategoryDetails
+     subCategories {
+       ...SubCategoryDetails
+     }
    }
  }
 `;

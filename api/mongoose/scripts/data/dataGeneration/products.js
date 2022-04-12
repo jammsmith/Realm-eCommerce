@@ -6,7 +6,7 @@ const categories = require('../sampleData/categories.js');
 const generateProducts = () => {
   const generatedProducts = [];
 
-  for (let i = 1; i < 50; i++) {
+  for (let i = 1; i < 231; i++) {
     const numInStockOptions = [0, 1, 2, 3];
 
     // Returns an array of category names.

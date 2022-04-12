@@ -9,12 +9,12 @@ export const HeadingWrapper = styled.div`
   display: flex;
   gap: 1rem;
   align-items: flex-end;
-  margin: 0;
+  margin: ${({ margin }) => margin || 0};
   justify-content: space-between;
 `;
 
-const LinkedHeading = ({ text, onClick, linkTo, buttonText, headingSize, color }) => (
-  <HeadingWrapper>
+const LinkedHeading = ({ text, onClick, linkTo, buttonText, headingSize, color, margin }) => (
+  <HeadingWrapper margin={margin}>
     <div style={{ flex: 1 }}>
       <Heading
         text={text}
@@ -41,8 +41,9 @@ LinkedHeading.propTypes = {
   onClick: PropTypes.func,
   linkTo: PropTypes.string,
   buttonText: PropTypes.string.isRequired,
-  headingSize: PropTypes.string.isRequired,
-  color: PropTypes.string
+  headingSize: PropTypes.string,
+  color: PropTypes.string,
+  margin: PropTypes.string
 };
 
 export default LinkedHeading;

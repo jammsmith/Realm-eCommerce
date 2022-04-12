@@ -132,21 +132,25 @@ const SubCategoryEdit = ({
                   height: '2.5rem'
                 }}
               />
-              <ActionButton
-                text={deleteRequested ? 'confirm deletion' : 'delete subcategory'}
-                onClick={
-                  deleteRequested
-                    ? handleDeleteItem
-                    : handleDeleteItemRequest
-                }
-                loading={loading.state === true && loading.type === 'delete'}
-                customStyles={{
-                  backgroundColor: '#fff',
-                  borderColor: 'red',
-                  color: 'red',
-                  height: '2.5rem'
-                }}
-              />
+              {
+                !shouldCreateNewItem && (
+                  <ActionButton
+                    text={deleteRequested ? 'confirm deletion' : 'delete subcategory'}
+                    onClick={
+                      deleteRequested
+                        ? handleDeleteItem
+                        : handleDeleteItemRequest
+                    }
+                    loading={loading.state === true && loading.type === 'delete'}
+                    customStyles={{
+                      backgroundColor: '#fff',
+                      borderColor: 'red',
+                      color: 'red',
+                      height: '2.5rem'
+                    }}
+                  />
+                )
+              }
               {message && message.type && <UserMessage text={message.text} type={message.type} />}
             </SubmitButtons>
           </>
