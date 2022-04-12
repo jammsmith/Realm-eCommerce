@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import Cart from '../Cart/Cart.js';
 import ActionButton from '../../../../Components/ActionButton.js';
+import LoadingView from '../../../../Components/LoadingView.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { ORDER_BY_PAYMENT_INTENT } from '../../../../graphql/queries.js';
@@ -102,19 +103,20 @@ const Summary = ({ urlParams }) => {
         <h4 style={{ margin: '1rem 0' }}>{message}</h4>
       </SummaryItem>
       {
-        order
-          ? <>
+        order ? (
+          <>
             {
-              isAuthenticated(app.currentUser)
-                ? <SummaryItem>
-                  <Text>Click below to view the order status in your account, or access any time by logging in</Text>
+              isAuthenticated(app.currentUser) ? (
+                <SummaryItem>
+                  <Text>Click below to view the order in your account, or access any time by logging in</Text>
                   <ActionButton
                     text='view in my account'
                     linkTo='/my-account'
                     fullWidth
                   />
                 </SummaryItem>
-                : <SummaryItem>
+              ) : (
+                <SummaryItem>
                   <Text>Register an account to track your order and save your delivery details for next time</Text>
                   <ActionButton
                     text='Click to register!'
@@ -122,6 +124,7 @@ const Summary = ({ urlParams }) => {
                     fullWidth
                   />
                 </SummaryItem>
+              )
             }
             <Cart altOrder={order} isMinimised />
             {
@@ -137,8 +140,8 @@ const Summary = ({ urlParams }) => {
                   </SummaryRow>
                 </SummaryItem>
             }
-            </>
-          : null
+          </>
+        ) : <LoadingView />
       }
     </SummaryWrapper>
   );

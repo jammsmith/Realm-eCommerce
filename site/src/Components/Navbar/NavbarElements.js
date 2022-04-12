@@ -12,7 +12,7 @@ const { fancyHeading, normalHeading } = fonts;
 export const NavbarContainer = styled.header`
   background: ${light};
   width: 100%;
-  height: 60px;
+  height: 70px;
 `;
 
 export const NavbarNavigation = styled.nav`

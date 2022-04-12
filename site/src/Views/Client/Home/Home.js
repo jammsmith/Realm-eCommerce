@@ -43,7 +43,7 @@ const Home = (props) => {
       </GoToShopWrapper>
       <SectionSpacer spaceBelow spaceAbove dark />
       <TextSection
-        headingFontSize='2rem'
+        headingFontSize='1.75rem'
         heading='Our client base starts at home in the U.K, but it is truly international.'
         text='We manufacture and supply our products for TV, living history & re-enactment groups, enthusiasts, or those just dressing up for fun! All through Scandinavia, Central Europe and as far as the USA.'
         secondaryText='Please take a minute to read some of our customer testimonials below...'

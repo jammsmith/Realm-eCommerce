@@ -16,6 +16,7 @@ const AdditionalInfo = ({ additionalInfo, updateAdditionalInfo }) => {
         <TextField
           multiline
           minRows={8}
+          maxRows={8}
           label='Additional info'
           helperText='Please add any additional info to do with your order here'
           sx={{ marginTop: '1rem' }}

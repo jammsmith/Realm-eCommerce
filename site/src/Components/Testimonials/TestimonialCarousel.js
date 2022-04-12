@@ -1,4 +1,3 @@
-// External imports
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -7,12 +6,8 @@ import {
   IoArrowForwardCircleOutline
 } from 'react-icons/io5';
 
-// Components
 import Testimonial from './Testimonial';
-
-// Colours
-import colours from '../../styles/colours';
-const { transparent } = colours;
+import colours from '../../styles/colours.js';
 
 // Custom styled components
 const CarouselWrapper = styled.div`
@@ -32,16 +27,21 @@ const CarouselWrapper = styled.div`
   }
 `;
 
+const Spacer = styled.div`
+  width: 61.05px;
+  height: 75px;
+`;
+
 const ForwardArrow = styled(IoArrowForwardCircleOutline)`
   font-size: 75px;
-  ${({ hidden }) => hidden && ({ color: 'transparent' })};
+  color: ${colours.dark};
   :hover {
     cursor: pointer;
   }
 `;
 const BackArrow = styled(IoArrowBackCircleOutline)`
   font-size: 75px;
-  ${({ hidden }) => hidden && ({ color: 'transparent' })};
+  color: ${colours.dark};
   :hover {
     cursor: pointer;
   }
@@ -121,7 +121,7 @@ const TestimonialCarousel = () => {
     <CarouselWrapper>
       {slideIndex > 0
         ? <BackArrow onClick={handleBackClick} />
-        : <BackArrow hidden />}
+        : <Spacer />}
       <Testimonial
         heading={content.heading}
         text={content.text}
@@ -129,7 +129,7 @@ const TestimonialCarousel = () => {
       />
       {slideIndex < testimonials.length - 1
         ? <ForwardArrow onClick={handleNextClick} />
-        : <ForwardArrow hidden />}
+        : <Spacer />}
     </CarouselWrapper>
   );
 };
