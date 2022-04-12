@@ -2,14 +2,12 @@ import React from 'react';
 import _ from 'lodash';
 
 import ActionButton from '../../../Components/ActionButton.js';
-import CategoryTile from '../../../Components/Tiles/CategoryTile.js';
-import TileList from '../../../Components/Tiles/TileList.js';
 import TextSection from '../../../Components/TextSection.js';
-import TestimonialCarousel from '../../../Components/Testimonials/TestimonialCarousel.js';
+import TestimonialCarousel from './Testimonials/TestimonialCarousel.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 import colours from '../../../styles/colours.js';
 
-import { GoToShopWrapper, ImagesWrapper, PrimaryImage, SecondaryImages, SecondaryImage, GoToShopButton } from './styledComponents.js';
+import { GoToShopWrapper, ImagesWrapper, PrimaryImage, SecondaryImages, SecondaryImage } from './styledComponents.js';
 
 const Home = (props) => {
   return (
