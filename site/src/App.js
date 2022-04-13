@@ -7,6 +7,7 @@ import Admin from './Views/Admin/Admin.js';
 import Shop from './Views/Client/Shop/Shop.js';
 import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
+import CustomerInfo from './Views/Client/CustomerInfo/CustomerInfo.js';
 import Account from './Views/Client/Account/Account.js';
 import Login from './Views/Client/Account/Login.js';
 import Error404 from './Views/Error/Error404.js';
@@ -58,6 +59,14 @@ const App = () => {
             render={() =>
               <ClientView>
                 <ContactUs />
+              </ClientView>}
+          />
+          <Route
+            exact
+            path='/customer-info'
+            render={() =>
+              <ClientView>
+                <CustomerInfo />
               </ClientView>}
           />
           <Route

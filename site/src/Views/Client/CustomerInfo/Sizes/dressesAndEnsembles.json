@@ -1,0 +1,86 @@
+[
+  {
+    "size": "XS",
+    "sizeNum": "2",
+    "bust": "33",
+    "waist": "24"
+  },
+  {
+    "size": "XS",
+    "sizeNum": "4",
+    "bust": "34",
+    "waist": "25"
+  },
+  {
+    "size": "S",
+    "sizeNum": "6",
+    "bust": "35",
+    "waist": "26"
+  },
+  {
+    "size": "S",
+    "sizeNum": "8",
+    "bust": "36",
+    "waist": "27"
+  },
+  {
+    "size": "M",
+    "sizeNum": "10",
+    "bust": "37",
+    "waist": "28"
+  },
+  {
+    "size": "M",
+    "sizeNum": "12",
+    "bust": "38",
+    "waist": "30"
+  },
+  {
+    "size": "L",
+    "sizeNum": "14",
+    "bust": "40",
+    "waist": "31"
+  },
+  {
+    "size": "L",
+    "sizeNum": "16",
+    "bust": "42",
+    "waist": "33"
+  },
+  {
+    "size": "XL",
+    "sizeNum": "18",
+    "bust": "44",
+    "waist": "35"
+  },
+  {
+    "size": "XL",
+    "sizeNum": "20",
+    "bust": "46",
+    "waist": "37"
+  },
+  {
+    "size": "XXL",
+    "sizeNum": "22",
+    "bust": "48",
+    "waist": "39"
+  },
+  {
+    "size": "XXL",
+    "sizeNum": "24",
+    "bust": "50",
+    "waist": "41"
+  },
+  {
+    "size": "XXXL",
+    "sizeNum": "26",
+    "bust": "52",
+    "waist": "43"
+  },
+  {
+    "size": "XXXL",
+    "sizeNum": "28",
+    "bust": "54",
+    "waist": "45"
+  }
+]

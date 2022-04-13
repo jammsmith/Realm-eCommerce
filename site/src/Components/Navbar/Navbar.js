@@ -45,7 +45,7 @@ const Navbar = ({ handleToggle }) => {
               </NavbarLink>
             </NavbarLinkItem>
             <NavbarLinkItem>
-              <NavbarLink className='link' to='/contact-us'>
+              <NavbarLink className='link' to='/customer-info'>
                 Customer Info
               </NavbarLink>
             </NavbarLinkItem>

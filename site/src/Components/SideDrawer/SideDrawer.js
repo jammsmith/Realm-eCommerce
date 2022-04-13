@@ -37,6 +37,7 @@ const SideDrawer = ({ handleDrawerLinkClick }) => {
   const secondaryLinks = [
     { url: '/shop/cart', label: 'My Cart' },
     { url: '/my-account', label: 'My Account' },
+    { url: '/about-us', label: 'About Us' },
     { url: '/contact-us', label: 'Contact Us' }
   ];
   return (
