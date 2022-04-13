@@ -30,11 +30,13 @@ const CustomerInfo = () => {
   };
 
   useEffect(() => {
-    setExpanded(state.type);
+    if (state && state.type) {
+      setExpanded(state.type);
 
-    const { offsetTop } = document.getElementById(state.type);
-    window.scroll(0, (offsetTop - 8));
-  }, [state.type]);
+      const { offsetTop } = document.getElementById(state.type);
+      window.scroll(0, (offsetTop - 8));
+    }
+  }, [state]);
 
   const accordionItems = [
     { id: 'sizing-info', title: 'Sizing Info', component: SizingInfo },
