@@ -32,7 +32,7 @@ const Footer = () => {
           <FooterTopSection>
             <Image
               src='/images/shop-front.jpeg'
-              alt='Doves and Dandys shop front in Llandrindod'
+              alt='Doves and Dandys shop front in Llandrindod Wells'
             />
             <TopSectionInner>
               <TopSectionLinks>
@@ -70,12 +70,24 @@ const Footer = () => {
               </div>
             </ContactWrapper>
             <InfoLinksWrapper>
-              <Link to='/sizing-info'>Sizing Info</Link>
-              <Link to='/payment-info'>Payment Info</Link>
-              <Link to='/delivery-info'>Delivery Info</Link>
-              <Link to='/returns-policy'>Returns Policy</Link>
-              <Link to='/privacy-policy'>Privacy Policy</Link>
-              <Link to='/terms-and-conditions'>T & C's</Link>
+              <Link to={{ pathname: '/customer-info', state: { type: 'sizing-info' } }}>
+                Sizing Info
+              </Link>
+              <Link to={{ pathname: '/customer-info', state: { type: 'payment-info' } }}>
+                Payment Info
+              </Link>
+              <Link to={{ pathname: '/customer-info', state: { type: 'delivery-info' } }}>
+                Delivery Info
+              </Link>
+              <Link to={{ pathname: '/customer-info', state: { type: 'returns-policy' } }}>
+                Returns Policy
+              </Link>
+              <Link to={{ pathname: '/customer-info', state: { type: 'privacy-policy' } }}>
+                Privacy Policy
+              </Link>
+              <Link to={{ pathname: '/customer-info', state: { type: 'faq' } }}>
+                FAQ's
+              </Link>
             </InfoLinksWrapper>
           </FooterBottomSection>
         </FooterInner>

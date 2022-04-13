@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ReturnsInfo = () => {
+const ReturnsPolicy = () => {
   return (
     <>
       <p>
@@ -21,4 +21,4 @@ const ReturnsInfo = () => {
   );
 };
 
-export default ReturnsInfo;
+export default ReturnsPolicy;

@@ -69,7 +69,6 @@ const SizingInfo = () => {
           <Heading text='Mens (Shirts)' size='x-small' />
           <DDTable
             rows={mensSizes}
-
             columns={[
               { name: 'size', label: 'Size' },
               { name: 'chest', label: 'Chest' },
@@ -96,7 +95,6 @@ const SizingInfo = () => {
           <Heading text='Dresses and Ensembles' size='x-small' />
           <DDTable
             rows={dressesAndEnsembles}
-            maxRows={6}
             columns={[
               { name: 'size', label: 'Size' },
               { name: 'sizeNum', label: 'Size No.' },

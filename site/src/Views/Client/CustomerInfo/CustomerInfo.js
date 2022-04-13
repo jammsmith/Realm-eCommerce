@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   Accordion,
@@ -12,7 +13,7 @@ import SectionSpacer from '../../../Components/SectionSpacer.js';
 import SizingInfo from './Components/SizingInfo.js';
 import DeliveryInfo from './Components/DeliveryInfo.js';
 import PaymentInfo from './Components/PaymentInfo.js';
-import ReturnsInfo from './Components/ReturnsInfo.js';
+import ReturnsPolicy from './Components/ReturnsPolicy.js';
 import PrivacyPolicy from './Components/PrivacyPolicy.js';
 import Faq from './Components/Faq.js';
 
@@ -22,17 +23,25 @@ const AccordionWrapper = styled.div`
 
 const CustomerInfo = () => {
   const [expanded, setExpanded] = useState(false);
+  const { state } = useLocation();
 
   const handleChange = (panel) => (_, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  useEffect(() => {
+    setExpanded(state.type);
+
+    const { offsetTop } = document.getElementById(state.type);
+    window.scroll(0, (offsetTop - 8));
+  }, [state.type]);
+
   const accordionItems = [
     { id: 'sizing-info', title: 'Sizing Info', component: SizingInfo },
     { id: 'payment-info', title: 'Payment Info', component: PaymentInfo },
     { id: 'delivery-info', title: 'Delivery Info', component: DeliveryInfo },
+    { id: 'returns-policy', title: 'Returns Policy', component: ReturnsPolicy },
     { id: 'privacy-policy', title: 'Privacy Policy', component: PrivacyPolicy },
-    { id: 'returns-info', title: 'Returns Info', component: ReturnsInfo },
     { id: 'faq', title: 'FAQ\'s', component: Faq }
   ];
 
@@ -44,33 +53,34 @@ const CustomerInfo = () => {
           accordionItems.map((item, index) => {
             const Component = item.component;
             return (
-              <Accordion
-                key={index}
-                expanded={expanded === item.id}
-                onChange={handleChange(item.id)}
-                sx={{
-                  backgroundColor: 'transparent',
-                  padding: '1rem',
-                  margin: '1rem'
-                }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={item.id}
-                  id={item.id}
+              <div key={index} id={item.id}>
+                <Accordion
+                  expanded={expanded === item.id}
+                  onChange={handleChange(item.id)}
+                  sx={{
+                    backgroundColor: 'transparent',
+                    padding: '1rem',
+                    margin: '1rem'
+                  }}
                 >
-                  <Typography
-                    sx={{
-                      width: '150px'
-                    }}
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={item.id}
+                    id={item.id}
                   >
-                    {item.title}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Component />
-                </AccordionDetails>
-              </Accordion>
+                    <Typography
+                      sx={{
+                        width: '150px'
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Component />
+                  </AccordionDetails>
+                </Accordion>
+              </div>
             );
           })
         }

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IoLogoFacebook, IoMailOutline } from 'react-icons/io5';
+import { IoMailOutline } from 'react-icons/io5';
 
 import colours from '../../styles/colours.js';
 const { dark, darkFade, light } = colours;
