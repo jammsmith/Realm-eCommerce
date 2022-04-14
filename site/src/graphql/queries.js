@@ -281,17 +281,20 @@ export const ADMIN_ORDERS = gql`
   ${PRODUCT_DETAILS}
   ${USER_DETAILS}
   query {
-    orders(query: {
-      AND: [
-        {
-          OR: [
-            { paymentStatus: "successful" },
-            { paymentStatus: "refunded" },
-          ]
-        },
-        { orderStatus_ne: "archived" }
-      ]
-    }) {
+    orders(
+      query: {
+        AND: [
+          {
+            OR: [
+              { paymentStatus: "successful" },
+              { paymentStatus: "refunded" },
+            ]
+          },
+          { orderStatus_ne: "archived" }
+        ]
+      },
+      sortBy: DATEPAID_DESC
+    ) {
       ...OrderDetails
       orderItems {
         ...OrderItemDetails
