@@ -39,16 +39,16 @@ const Products = (props) => {
             <Description>{data.subCategory.description}</Description>
             <TileList>
               {
-                data.subCategory.products.map((product, index) => {
-                  return (
+                [...data.subCategory.products]
+                  .sort((a, b) => b.numInStock - a.numInStock)
+                  .map((product, index) => (
                     <ProductTile
                       key={index}
                       product={product}
                       linkTo={`${url}/${product._id}`}
                       {...props}
                     />
-                  );
-                })
+                  ))
               }
             </TileList>
           </>
