@@ -61,7 +61,7 @@ export const NavbarLinkList = styled.ul`
 export const NavbarLinkItem = styled.li`
   color: ${dark};
   font-size: 1.15rem;
-  padding: 0.75rem;
+  padding: 0.5rem;
 `;
 
 export const NavbarLink = styled(Link)`
@@ -95,7 +95,7 @@ export const BrowseShopLink = styled(NavbarLink)`
   }
 `;
 
-export const NavbarCart = styled.li`
+export const NavbarCart = styled.span`
   font-size: 1.15rem;
   padding-left: 4rem;
 `;

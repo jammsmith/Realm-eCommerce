@@ -6,12 +6,15 @@ import './styles/index.css';
 import App from './App.js';
 import { ApolloProvider } from '@apollo/client';
 import client, { RealmAppProvider } from './realmApolloClient.js';
+import { CurrencyContextProvider } from './context/CurrencyContext.js';
 
 ReactDOM.render(
   <React.StrictMode>
     <RealmAppProvider>
       <ApolloProvider client={client}>
-        <App />
+        <CurrencyContextProvider>
+          <App />
+        </CurrencyContextProvider>
       </ApolloProvider>
     </RealmAppProvider>
   </React.StrictMode>,

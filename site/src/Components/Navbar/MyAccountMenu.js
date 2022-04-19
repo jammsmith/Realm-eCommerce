@@ -1,10 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { Button, Menu, MenuItem, MenuList } from '@mui/material';
 import { useHistory } from 'react-router-dom';
+import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 
 import { LoginIcon } from './NavbarElements';
 import { RealmAppContext } from '../../realmApolloClient.js';
 import { isAuthenticated, isAdmin } from '../../helpers/auth.js';
+import colours from '../../styles/colours.js';
 
 const MyAccountMenu = () => {
   const app = useContext(RealmAppContext);
@@ -34,8 +36,7 @@ const MyAccountMenu = () => {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '0.5rem',
-    padding: '0.5rem'
+    gap: '0.5rem'
   };
 
   return (
@@ -46,8 +47,11 @@ const MyAccountMenu = () => {
         aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
         onClick={handleOpenMenu}
+        endIcon={open
+          ? <AiFillCaretUp size={15} style={{ color: colours.dark }} />
+          : <AiFillCaretDown size={15} style={{ color: colours.dark }} />}
       >
-        <LoginIcon size={25} />
+        <LoginIcon size={30} />
       </Button>
       <Menu
         id='my-account-menu'
@@ -56,6 +60,13 @@ const MyAccountMenu = () => {
         onClose={handleCloseMenu}
         MenuListProps={{
           'aria-labelledby': 'my-account-button'
+        }}
+        sx={{
+          '& .MuiPaper-root': {
+            backgroundColor: colours.light,
+            borderRadius: '8px',
+            padding: '0.5rem 1rem'
+          }
         }}
       >
         {

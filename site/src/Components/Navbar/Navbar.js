@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IoCartOutline } from 'react-icons/io5';
 
+import CurrencySelection from './CurrencySelection.js';
 import MyAccountMenu from './MyAccountMenu.js';
 import {
   NavbarContainer,
@@ -53,11 +54,16 @@ const Navbar = ({ handleToggle }) => {
         </NavbarLinksContainer>
         <NavbarLinksContainer>
           <NavbarLinkList>
-            <NavbarCart>
-              <NavbarLink className='link' to='/shop/cart'>
-                Cart <IoCartOutline />
-              </NavbarLink>
-            </NavbarCart>
+            <NavbarLinkItem>
+              <NavbarCart>
+                <NavbarLink className='link' to='/shop/cart'>
+                Cart <IoCartOutline size={30} />
+                </NavbarLink>
+              </NavbarCart>
+            </NavbarLinkItem>
+            <NavbarLinkItem>
+              <CurrencySelection />
+            </NavbarLinkItem>
             <MyAccountMenu />
           </NavbarLinkList>
         </NavbarLinksContainer>

@@ -24,7 +24,13 @@
         "numInStock": {
             "bsonType": "int"
         },
-        "price": {
+        "priceEUR": {
+            "bsonType": "int"
+        },
+        "priceGBP": {
+            "bsonType": "int"
+        },
+        "priceUSD": {
             "bsonType": "int"
         },
         "product_id": {

@@ -18,3 +18,16 @@ export const convertPriceToStripeAmount = (price) => {
 export const toTwoDecimalPlaces = (value) => {
   return parseFloat(value).toFixed(2);
 };
+
+export const getCurrencySymbol = (currency) => {
+  const currencySymbols = {
+    GBP: '£',
+    USD: '$',
+    EUR: '€'
+  };
+  return currencySymbols[currency];
+};
+
+export const getPriceInCurrency = (product, currency) => {
+  return `${getCurrencySymbol(currency)}${product[`price${currency}`]}`;
+};

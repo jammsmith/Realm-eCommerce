@@ -12,11 +12,13 @@ import LoadingView from '../../../../Components/LoadingView.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
+import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 
 import { CheckoutFormsWrapper } from './StyledComponents.js';
 
 const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const app = useContext(RealmAppContext);
+  const { currency } = useContext(CurrencyContext);
 
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [deliveryDetails, setDeliveryDetails] = useState({
@@ -106,7 +108,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   useEffect(() => {
     if (activeOrder && activeOrder.orderItems && !activeOrder.paymentIntentId) {
       const createPaymentIntent = async () => {
-        const intent = await app.currentUser.functions.stripe_createPaymentIntent(activeOrder);
+        const intent = await app.currentUser.functions.stripe_createPaymentIntent({ ...activeOrder, currency });
         const { data } = await updateOrder({
           variables: {
             id: activeOrder._id,
@@ -124,11 +126,11 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
       };
       retrievePaymentIntent();
     }
-  }, [activeOrder, updateActiveOrder, app.currentUser, updateOrder]);
+  }, [activeOrder, updateActiveOrder, app.currentUser, updateOrder, currency]);
 
   return (
-    paymentIntent
-      ? <Elements
+    paymentIntent ? (
+      <Elements
         stripe={stripePromise}
         options={{
           clientSecret: paymentIntent.client_secret,
@@ -157,10 +159,13 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             checkoutFormsComplete={checkoutFormsComplete}
             updateCheckoutCompletion={updateCheckoutCompletion}
             updateOrder={updateOrder}
+            paymentIntent={paymentIntent}
           />
         </CheckoutFormsWrapper>
-        </Elements>
-      : <LoadingView message='Preparing your order for checkout' />
+      </Elements>
+    ) : (
+      <LoadingView message='Preparing your order for checkout' />
+    )
   );
 };
 

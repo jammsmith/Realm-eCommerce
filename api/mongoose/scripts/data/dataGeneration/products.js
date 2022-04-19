@@ -36,7 +36,9 @@ const generateProducts = () => {
       category: randomCategory,
       subCategory: randomSubCategory,
       description: faker.commerce.productDescription(),
-      price: faker.commerce.price(),
+      priceGBP: faker.commerce.price(),
+      priceUSD: faker.commerce.price(),
+      priceEUR: faker.commerce.price(),
       numInStock: faker.random.arrayElement(numInStockOptions)
     });
   }

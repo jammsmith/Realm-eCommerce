@@ -168,7 +168,9 @@ const mutations = {
       $category: String!,
       $subCategory: String!,
       $description: String!,
-      $price: Int!,
+      $priceGBP: Int!,
+      $priceUSD: Int!,
+      $priceEUR: Int!,
       $numInStock: Int!
     ) {
       upsertProduct(input: {
@@ -179,7 +181,9 @@ const mutations = {
           category: $category,
           subCategory: $subCategory,
           description: $description,
-          price: $price,
+          priceGBP: $priceGBP,
+          priceUSD: $priceUSD,
+          priceEUR: $priceEUR,
           numInStock: $numInStock
           }
        ) {
@@ -420,7 +424,8 @@ const mutations = {
       $dateCreated: DateTime,
       $datePaid: DateTime,
       $dateAccepted: DateTime,
-      $dateDispatched: DateTime
+      $dateDispatched: DateTime,
+      $currency: String
     ) {
       updateOneOrder(
         query: { _id: $id },
@@ -432,7 +437,8 @@ const mutations = {
           dateCreated: $dateCreated,
           datePaid: $datePaid,
           dateAccepted: $dateAccepted,
-          dateDispatched: $dateDispatched
+          dateDispatched: $dateDispatched,
+          currency: $currency
         } ) {
         ...OrderDetails
         orderItems {

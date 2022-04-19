@@ -40,7 +40,7 @@ const ProductTable = ({ rows, updateRows, selectedRow, reset, handleItemSelected
           product.category,
           product.subCategory,
           product.numInStock,
-          product.price
+          product.priceGBP
         ));
         if (rows !== mappedRows) {
           updateRows(mappedRows);

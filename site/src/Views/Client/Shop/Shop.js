@@ -10,6 +10,7 @@ import Checkout from './Checkout/Checkout.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 import { getCartSubTotal } from '../../../helpers/cart.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
+import { CurrencyContext } from '../../../context/CurrencyContext.js';
 import useScrollToTop from '../../../hooks/useScrollToTop.js';
 
 // Setup stripe
@@ -19,6 +20,8 @@ const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZh
 const Shop = () => {
   useScrollToTop();
   const app = useContext(RealmAppContext);
+  const { currency } = useContext(CurrencyContext);
+
   const [activeOrder, setActiveOrder] = useState();
   const [addingToCart, setAddingToCart] = useState({
     isLoading: false,
@@ -61,12 +64,13 @@ const Shop = () => {
     addingToCart,
     updateAddingToCart,
     updateCurrentUser,
-    currentUser: app.currentUser
+    currentUser: app.currentUser,
+    currency
   };
 
   return (
-    app.currentUser && app.currentUser.dbUser
-      ? <>
+    app.currentUser && app.currentUser.dbUser ? (
+      <>
         <SectionSpacer dark spaceBelow />
         <Switch>
           <Route exact path='/shop' component={Categories} />
@@ -111,8 +115,8 @@ const Shop = () => {
           />
         </Switch>
         <SectionSpacer spaceBelow />
-        </>
-      : null
+      </>
+    ) : null
   );
 };
 

@@ -1,16 +1,12 @@
-// External imports
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-// GraphQL
-import useDDMutation from '../../../../hooks/useDDMutation.js';
-import mutations from '../../../../graphql/mutations.js';
-
-// Components
 import ActionButton from '../../../../Components/ActionButton.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
+import useDDMutation from '../../../../hooks/useDDMutation.js';
+import mutations from '../../../../graphql/mutations.js';
+import { getPriceInCurrency, getCurrencySymbol } from '../../../../helpers/price.js';
 
-// Styled Components
 import {
   CartLine,
   DetailsWrapper,
@@ -25,7 +21,7 @@ import {
 } from './StyledComponents.js';
 
 // A single product item inside the cart
-const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised }) => {
+const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currency }) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
@@ -33,13 +29,13 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised }) => {
   useEffect(() => {
     if (orderItem && orderItem.quantity) {
       setQuantity(orderItem.quantity);
-      setProductTotal(() => orderItem.quantity * orderItem.product.price);
+      setProductTotal(() => orderItem.quantity * orderItem.product[`price${currency}`]);
     }
-  }, [orderItem, setQuantity]);
+  }, [orderItem, setQuantity, currency]);
 
   useEffect(() => {
-    setProductTotal(quantity * orderItem.product.price);
-  }, [quantity, orderItem, setProductTotal]);
+    setProductTotal(quantity * orderItem.product[`price${currency}`]);
+  }, [quantity, orderItem, setProductTotal, currency]);
 
   // Handlers
   const handleIncreaseQuantityClick = () => {
@@ -101,20 +97,20 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised }) => {
 
   const { product } = orderItem;
   return (
-    product
-      ? <CartLine>
+    product ? (
+      <CartLine>
         <SectionSpacer light />
         <DetailsWrapper>
           <ProductDetailsWrapper>
             <ProductLink to={`/shop/${product.category}/${product.subCategory}/${product._id}`}>
               <h6>{product.name}</h6>
             </ProductLink>
-            <h6 style={{ fontSize: '0.75rem' }}>Unit Price: £{product.price}</h6>
+            <h6 style={{ fontSize: '0.75rem' }}>Unit Price: {getPriceInCurrency(product, currency)}</h6>
           </ProductDetailsWrapper>
           <Divider />
           <CartDetailsWrapper>
             <h6>x {quantity}</h6>
-            <h6>£{productTotal}</h6>
+            <h6>{`${getCurrencySymbol(currency)}${productTotal}`}</h6>
           </CartDetailsWrapper>
         </DetailsWrapper>
         {
@@ -128,8 +124,8 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised }) => {
               </EditButtonsWrapper>
             </CartLine>
         }
-        </CartLine>
-      : null
+      </CartLine>
+    ) : null
   );
 };
 
@@ -137,7 +133,8 @@ CartProduct.propTypes = {
   order: PropTypes.object.isRequired,
   updateActiveOrder: PropTypes.func,
   orderItem: PropTypes.object.isRequired,
-  isMinimised: PropTypes.bool
+  isMinimised: PropTypes.bool,
+  currency: PropTypes.string.isRequired
 };
 
 export default CartProduct;

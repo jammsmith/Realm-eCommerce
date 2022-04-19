@@ -65,7 +65,8 @@ Products.propTypes = {
   updateAddingToCart: PropTypes.func.isRequired,
   activeOrder: PropTypes.object,
   updateActiveOrder: PropTypes.func.isRequired,
-  itemsInCart: PropTypes.array
+  itemsInCart: PropTypes.array,
+  currency: PropTypes.string.isRequired
 };
 
 export default Products;

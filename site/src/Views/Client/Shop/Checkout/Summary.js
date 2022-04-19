@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useLazyQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
-import { RealmAppContext } from '../../../../realmApolloClient.js';
 import Cart from '../Cart/Cart.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import LoadingView from '../../../../Components/LoadingView.js';
@@ -11,12 +10,16 @@ import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { ORDER_BY_PAYMENT_INTENT } from '../../../../graphql/queries.js';
 import { isAuthenticated } from '../../../../helpers/auth.js';
+import { RealmAppContext } from '../../../../realmApolloClient.js';
+import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 
 // Styled Components
 import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponents.js';
 
 const Summary = ({ urlParams }) => {
   const app = useContext(RealmAppContext);
+  const { currency, setCurrency } = useContext(CurrencyContext);
+
   const history = useHistory();
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [message, setMessage] = useState('');
@@ -35,6 +38,7 @@ const Summary = ({ urlParams }) => {
     const retrievePaymentIntent = async () => {
       const intent = await app.currentUser.functions.stripe_retrievePaymentIntent(urlParams.paymentIntentId);
       setPaymentIntent(intent);
+      setCurrency(intent.currency.toUpperCase());
     };
     retrievePaymentIntent();
   }, [urlParams, app.currentUser]);
@@ -68,7 +72,7 @@ const Summary = ({ urlParams }) => {
           address_id: delivery.address.address_id,
           isDefault: true
         }
-      }); // should do this after registration so they cant access it without registering first
+      });
       await updateUser({
         variables: {
           id: dbUser._id,
@@ -126,7 +130,7 @@ const Summary = ({ urlParams }) => {
                 </SummaryItem>
               )
             }
-            <Cart altOrder={order} isMinimised />
+            <Cart altOrder={order} isMinimised currency={currency} />
             {
               paymentIntent.status === 'succeeded' &&
                 <SummaryItem>

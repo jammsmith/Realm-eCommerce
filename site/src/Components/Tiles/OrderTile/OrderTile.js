@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import ProgressSpinner from '../../ProgressSpinner.js';
 import { getDateFromUTCString } from '../../../helpers/global.js';
-import { convertStripeAmountToPrice } from '../../../helpers/price.js';
+import { convertStripeAmountToPrice, getCurrencySymbol } from '../../../helpers/price.js';
 import useBreakpoints from '../../../hooks/useBreakpoints.js';
 
 import {
@@ -27,7 +27,12 @@ const OrderTile = ({ order }) => {
       <OrderStatus>
         <div>
           <Info>Reference: <strong>{order.order_id}</strong></Info>
-          <Info>Amount: <strong>£{convertStripeAmountToPrice(order.stripeAmountPaid)}</strong></Info>
+          <Info>
+            Amount:
+            <strong>
+              {` ${getCurrencySymbol(order.currency)}${convertStripeAmountToPrice(order.stripeAmountPaid)}`}
+            </strong>
+          </Info>
           <Info>Paid: <strong>{getDateFromUTCString(order.datePaid)}</strong></Info>
           <Info>Order Accepted: <strong>{getDateFromUTCString(order.dateAccepted)}</strong></Info>
           <Info>Dispatched: <strong>{getDateFromUTCString(order.dateDispatched)}</strong></Info>

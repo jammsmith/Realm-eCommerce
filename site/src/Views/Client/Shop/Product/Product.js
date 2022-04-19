@@ -14,6 +14,7 @@ import ImageViewer from './ImageViewer.js';
 import colours from '../../../../styles/colours.js';
 import useScrollToTop from '../../../../hooks/useScrollToTop.js';
 import { SINGLE_PRODUCT } from '../../../../graphql/queries.js';
+import { getPriceInCurrency } from '../../../../helpers/price.js';
 
 import {
   ProductWrapper,
@@ -28,7 +29,7 @@ import { HeadingWrapper } from '../styledComponents.js';
 const { dark, light } = colours;
 
 // Return a single product
-const Product = (props) => {
+const Product = ({ currency, ...other }) => {
   useScrollToTop();
   const { category, subCategory, productId } = useParams();
 
@@ -56,12 +57,12 @@ const Product = (props) => {
               </div>
               <div>
                 <h5>{data.product.numInStock ? 'In stock ready for delivery!' : 'Please contact us to request this item'}</h5>
-                <h5>£{data.product.price}</h5>
+                <h5>{getPriceInCurrency(data.product, currency)}</h5>
               </div>
             </ProductInfo>
             <Spacer />
             <AddToCartWrapper>
-              <AddToCart product={data.product} {...props} />
+              <AddToCart product={data.product} {...other} />
             </AddToCartWrapper>
           </MainContent>
         </ProductWrapper>
@@ -95,7 +96,8 @@ Product.propTypes = {
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired
+  updateActiveOrder: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired
 };
 
 export default Product;

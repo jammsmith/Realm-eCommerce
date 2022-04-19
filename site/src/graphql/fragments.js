@@ -42,7 +42,9 @@ export const PRODUCT_DETAILS = gql`
     images
     name
     numInStock
-    price
+    priceGBP
+    priceUSD
+    priceEUR
     category
     subCategory
   }
@@ -61,6 +63,7 @@ export const ORDER_DETAILS = gql`
     dateAccepted
     dateDispatched
     stripeAmountPaid
+    currency
   }
 `;
 

@@ -1,17 +1,15 @@
-// External imports
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
-// Components
 import CartProduct from './CartProduct.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import Heading from '../../../../Components/Headings/Heading.js';
-
-// Hook / helpers
 import useBreakpoints from '../../../../hooks/useBreakpoints.js';
 import useScrollToTop from '../../../../hooks/useScrollToTop.js';
 import { getCartSubTotal } from '../../../../helpers/cart.js';
+import { getCurrencySymbol } from '../../../../helpers/price.js';
+import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 
 // Styled Components
 import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
@@ -19,7 +17,10 @@ import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.
 // A view of all products that have been added to basket
 const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
   useScrollToTop();
-  const [subTotal, setSubTotal] = useState();
+
+  const { currency } = useContext(CurrencyContext);
+
+  const [subTotal, setSubTotal] = useState(0);
   const { isXs } = useBreakpoints();
 
   // Alternative order can be passed in to show the cart component with an order of choice
@@ -30,11 +31,9 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
     if (order && order.subTotal) {
       setSubTotal(order.subTotal);
     } else if (order && order.orderItems && order.orderItems.length) {
-      setSubTotal(() => getCartSubTotal(order));
-    } else {
-      setSubTotal(0);
+      setSubTotal(() => getCartSubTotal(order, currency));
     }
-  }, [order]);
+  }, [order, currency]);
 
   return (
     <CartWrapper isMinimised={isMinimised}>
@@ -42,8 +41,8 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
         <Heading text='Cart' size={isMinimised && 'small'} />
         <SectionSpacer />
         {
-          order && order.orderItems && order.orderItems.length
-            ? <>
+          order && order.orderItems && order.orderItems.length ? (
+            <>
               {order.orderItems.map((item, index) => {
                 return (
                   <CartProduct
@@ -53,12 +52,13 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
                     updateActiveOrder={updateActiveOrder}
                     orderItem={item}
                     isMinimised={isMinimised}
+                    currency={currency}
                   />
                 );
               })}
               <TotalsLine>
                 <h6>Subtotal</h6>
-                <h6>£{subTotal}</h6>
+                <h6>{`${getCurrencySymbol(currency)}${subTotal}`}</h6>
               </TotalsLine>
               {
                 !isMinimised &&
@@ -69,12 +69,14 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
                     customStyles={{ margin: !isXs && '1rem 0.25rem 0' }}
                   />
               }
-              </>
-            : <>
+            </>
+          ) : (
+            <>
               <SectionSpacer />
               <h6>Your cart is empty!</h6>
               <SectionSpacer />
-              </>
+            </>
+          )
         }
       </ProductListWrapper>
       <SectionSpacer spaceBelow />

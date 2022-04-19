@@ -3,14 +3,15 @@ exports = async (order) => {
   Using Axios instead to perform stripe requests. **/
   const axios = require('axios');
   const qs = require('qs');
+
   const secretKey = context.values.get('STRIPE_SK_TEST');
 
   // Get prices for products and make total to pay
-  const collection = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('products');
+  const products = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('products');
 
   const pricesPromise = order.orderItems.map(async item => {
-    const product = await collection.findOne({ _id: BSON.ObjectId(item.product._id) });
-    return product.price;
+    const product = await products.findOne({ _id: BSON.ObjectId(item.product._id) });
+    return product[`price${order.currency}`];
   });
   const prices = await Promise.all(pricesPromise);
 
@@ -19,7 +20,7 @@ exports = async (order) => {
 
   const purchaseData = {
     amount: orderTotal,
-    currency: 'gbp',
+    currency: order.currency.toLowerCase(),
     metadata: {
       order_id: order.order_id
     }

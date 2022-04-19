@@ -1,13 +1,11 @@
-// External imports
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Components
 import Image from '../../Image.js';
 import ActionButton from '../../ActionButton.js';
 import AddToCart from '../../AddToCart.js';
+import { getPriceInCurrency } from '../../../helpers/price.js';
 
-// Custom styled components
 import {
   OuterContainer,
   ProductContent,
@@ -20,8 +18,8 @@ import {
 
 // Show a single product.  Can be used 'stripped down' when showing many products
 // or with all details when showing just one product
-const ProductTile = ({ product, linkTo, ...other }) => {
-  const { name, price, images, numInStock } = product;
+const ProductTile = ({ product, linkTo, currency, ...other }) => {
+  const { name, images, numInStock } = product;
 
   return (
     <OuterContainer>
@@ -30,7 +28,7 @@ const ProductTile = ({ product, linkTo, ...other }) => {
         <ProductTextContent>
           <TextContainer>
             <Text>{name}</Text>
-            <Text>£{price}</Text>
+            <Text>{getPriceInCurrency(product, currency)}</Text>
           </TextContainer>
           <InStockInfo>{numInStock > 0 ? 'In Stock' : 'Out of Stock'}</InStockInfo>
         </ProductTextContent>
@@ -60,7 +58,8 @@ ProductTile.propTypes = {
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired
+  updateActiveOrder: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired
 };
 
 export default ProductTile;

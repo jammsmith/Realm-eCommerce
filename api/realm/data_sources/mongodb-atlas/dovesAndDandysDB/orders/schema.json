@@ -6,8 +6,14 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "currency": {
+            "bsonType": "string"
+        },
         "customer": {
             "bsonType": "string"
+        },
+        "dateAccepted": {
+            "bsonType": "date"
         },
         "dateCreated": {
             "bsonType": "date"
@@ -16,9 +22,6 @@
             "bsonType": "date"
         },
         "datePaid": {
-            "bsonType": "date"
-        },
-        "dateAccepted": {
             "bsonType": "date"
         },
         "delivery": {
@@ -45,14 +48,14 @@
         "paymentStatus": {
             "bsonType": "string"
         },
-        "stripeAmountPaid": {
-            "bsonType": "int"
-        },
         "refunds": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
+        },
+        "stripeAmountPaid": {
+            "bsonType": "int"
         }
     },
     "title": "Order"

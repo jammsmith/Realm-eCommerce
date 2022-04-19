@@ -68,6 +68,7 @@ const ProductEdit = ({
       value: subCat.name
     }));
   };
+  console.log('fields', fields);
 
   return (
     <EditInventorySection>
@@ -152,15 +153,39 @@ const ProductEdit = ({
                   fullWidth
                 />
                 <TextField
-                  name='price'
-                  label='Price'
-                  value={fields.price}
+                  name='priceGBP'
+                  label='Price GBP'
+                  value={fields.priceGBP}
                   variant='outlined'
                   onChange={handleFormChange}
                   required
                   fullWidth
                   InputProps={{
                     startAdornment: <InputAdornment position='start'>£</InputAdornment>
+                  }}
+                />
+                <TextField
+                  name='priceUSD'
+                  label='Price USD'
+                  value={fields.priceUSD}
+                  variant='outlined'
+                  onChange={handleFormChange}
+                  required
+                  fullWidth
+                  InputProps={{
+                    startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                  }}
+                />
+                <TextField
+                  name='priceEUR'
+                  label='Price EUR'
+                  value={fields.priceEUR}
+                  variant='outlined'
+                  onChange={handleFormChange}
+                  required
+                  fullWidth
+                  InputProps={{
+                    startAdornment: <InputAdornment position='start'>€</InputAdornment>
                   }}
                 />
               </RowGroup>

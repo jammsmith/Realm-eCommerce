@@ -30,6 +30,7 @@ const Checkout = (props) => {
       history.push('/shop/checkout');
     }
   }, [history]);
+
   return (
     urlParams && urlParams.paymentIntentId
       ? <Summary urlParams={urlParams} />

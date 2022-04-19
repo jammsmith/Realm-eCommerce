@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import uniqueString from 'unique-string';
 
 import FormSubmit from './FormSubmit.js';
 import RowGroup from '../Forms/RowGroup.js';
@@ -9,7 +8,7 @@ import { formatUserDetails } from '../../helpers/user.js';
 
 const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessage, disableOnComplete, defaultAddress }) => {
   const [addressFields, setAddressFields] = useState({
-    address_id: defaultAddress ? defaultAddress.address_id : `address-${uniqueString()}`,
+    address_id: defaultAddress ? defaultAddress.address_id : '',
     line1: defaultAddress ? defaultAddress.line1 : '',
     line2: defaultAddress ? defaultAddress.line2 : '',
     city: defaultAddress ? defaultAddress.city : '',

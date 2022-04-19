@@ -1,14 +1,6 @@
 [
     {
-        "name": "db_upsertCategory",
-        "private": false
-    },
-    {
         "name": "db_categorySearch",
-        "private": false
-    },
-    {
-        "name": "db_upsertProduct",
         "private": false
     },
     {
@@ -16,7 +8,7 @@
         "private": false
     },
     {
-        "name": "db_productSearch",
+        "name": "db_deleteSubCategory",
         "private": false
     },
     {
@@ -24,7 +16,7 @@
         "private": false
     },
     {
-        "name": "db_upsertSubCategory",
+        "name": "db_productSearch",
         "private": false
     },
     {
@@ -32,23 +24,19 @@
         "private": false
     },
     {
-        "name": "stripe_createPaymentIntent",
+        "name": "db_updateRelations",
         "private": false
     },
     {
-        "name": "stripe_retrievePaymentIntent",
+        "name": "db_upsertCategory",
         "private": false
     },
     {
-        "name": "stripe_refundPaymentIntent",
+        "name": "db_upsertProduct",
         "private": false
     },
     {
-        "name": "stripe_webhookEvents",
-        "private": false
-    },
-    {
-        "name": "s3_getConfig",
+        "name": "db_upsertSubCategory",
         "private": false
     },
     {
@@ -56,7 +44,28 @@
         "private": false
     },
     {
-        "name": "db_updateRelations",
+        "name": "s3_getConfig",
         "private": false
+    },
+    {
+        "name": "stripe_createPaymentIntent",
+        "private": false
+    },
+    {
+        "name": "stripe_refundPaymentIntent",
+        "private": false
+    },
+    {
+        "name": "stripe_retrievePaymentIntent",
+        "private": false
+    },
+    {
+        "name": "stripe_updatePaymentIntent",
+        "private": false
+    },
+    {
+        "name": "stripe_webhookEvents",
+        "private": true,
+        "run_as_system": true
     }
 ]

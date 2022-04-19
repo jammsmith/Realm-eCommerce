@@ -6,6 +6,9 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "info": {
+            "bsonType": "string"
+        },
         "order": {
             "bsonType": "string"
         },
@@ -17,9 +20,6 @@
         },
         "quantity": {
             "bsonType": "int"
-        },
-        "info": {
-            "bsonType": "string"
         }
     },
     "title": "OrderItem"

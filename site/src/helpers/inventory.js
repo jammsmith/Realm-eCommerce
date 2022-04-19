@@ -4,7 +4,17 @@ export const validateInventoryFields = (requestedFields, type) => {
   let requiredFields;
   switch (type) {
     case 'product':
-      requiredFields = ['name', 'description', 'category', 'subCategory', 'images', 'price', 'numInStock'];
+      requiredFields = [
+        'name',
+        'description',
+        'category',
+        'subCategory',
+        'images',
+        'priceGBP',
+        'priceUSD',
+        'priceEUR',
+        'numInStock'
+      ];
       break;
     case 'subCategory':
       requiredFields = ['name', 'description', 'category', 'image'];
@@ -41,7 +51,9 @@ export const validateInventoryFields = (requestedFields, type) => {
           failedItems.push(field);
         }
         break;
-      case 'price': {
+      case 'priceGBP':
+      case 'priceUSD':
+      case 'priceEUR': {
         const parsed = parseFloat(item);
         if (parsed === 0) {
           failedItems.push(field);
@@ -84,7 +96,9 @@ export const getInitialFormFields = (type) => {
         category: '',
         subCategory: '',
         numInStock: '',
-        price: ''
+        priceGBP: '',
+        priceUSD: '',
+        priceEUR: ''
       };
     case 'subCategory':
       return {
@@ -117,7 +131,7 @@ export const getFormattedRow = (item, type) => {
       return {
         ...sharedFields,
         numInStock: item.numInStock,
-        price: item.price,
+        price: item.priceGBP,
         category: _.startCase(item.category),
         subcategory: _.startCase(item.subCategory)
       };

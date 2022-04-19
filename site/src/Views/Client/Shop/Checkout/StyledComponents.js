@@ -21,6 +21,13 @@ export const CheckoutItem = styled.div`
   padding: 0.5rem;
 `;
 
+export const PaymentFormItems = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+`;
+
 export const SummaryWrapper = styled.div`
   min-height: 600px;
   margin: 0.5rem auto;
