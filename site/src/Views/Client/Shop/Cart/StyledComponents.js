@@ -117,3 +117,11 @@ export const ProductListWrapper = styled.div`
   max-width: 768px;
   margin: auto;
 `;
+
+export const DeliveryPrice = styled.h6`
+  ${({ isDeliveryFree }) => isDeliveryFree && ({
+    color: darkFade,
+    textDecoration: 'line-through',
+    marginRight: '0.5rem'
+  })}
+`;

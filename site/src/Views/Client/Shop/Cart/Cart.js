@@ -64,16 +64,6 @@ const Cart = ({ activeOrder, updateActiveOrder }) => {
                     <Spacer />
                     <h6>{`${getCurrencySymbol(currency)}${subTotal}`}</h6>
                   </TotalsLine>
-                  <TotalsLine>
-                    <h6>Delivery</h6>
-                    <Spacer />
-                    <h6>-</h6>
-                  </TotalsLine>
-                  <TotalsLine>
-                    <h6><strong>Total</strong></h6>
-                    <Spacer />
-                    <h6><strong>-</strong></h6>
-                  </TotalsLine>
                 </TotalsRows>
               </TotalsWrapper>
               <ActionButton

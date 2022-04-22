@@ -12,6 +12,7 @@ import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
+import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
 
 // Styled components
 import { CheckoutItem, PaymentFormItems } from './StyledComponents.js';
@@ -56,7 +57,8 @@ const PaymentForm = ({
           paymentIntent.id,
           activeOrder.orderItems,
           deliveryZone,
-          currency
+          currency,
+          getFreeDeliveryConstraints()
         );
         deliveryDetails.price = deliveryTotal;
       }

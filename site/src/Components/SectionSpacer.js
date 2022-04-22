@@ -7,7 +7,7 @@ const { dark, light } = colours;
 
 // Block spacer to be used between sections of a page
 const SectionSpacer = styled.div`
-  height: 0.75rem;
+  height: 0.25rem;
   ${props =>
     props.spaceAbove &&
     css`

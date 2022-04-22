@@ -6,6 +6,7 @@ import Navbar from './Navbar/Navbar';
 import SideDrawer from './SideDrawer/SideDrawer';
 import BackgroundShadow from './BackgroundShadow/BackgroundShadow';
 import Footer from './Footer/Footer.js';
+import FreeDelivery from './Offers/FreeDelivery.js';
 
 const ClientStyles = styled.section`
   min-height: 100vh;
@@ -29,6 +30,7 @@ const ClientView = ({ children }) => {
 
   const content =
     <>
+      <FreeDelivery />
       <Navbar handleToggle={handleToggle} />
       {
         menuInView &&

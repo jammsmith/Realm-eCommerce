@@ -7,6 +7,7 @@ import Heading from '../../../../Components/Headings/Heading.js';
 import useScrollToTop from '../../../../hooks/useScrollToTop.js';
 import { getCartSubTotal } from '../../../../helpers/cart.js';
 import { getCurrencySymbol } from '../../../../helpers/price.js';
+import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 
@@ -17,7 +18,8 @@ import {
   TotalsRows,
   TotalsLine,
   Spacer,
-  ProductListWrapper
+  ProductListWrapper,
+  DeliveryPrice
 } from '../Cart/StyledComponents.js';
 
 // A view of all products that have been added to basket
@@ -34,6 +36,9 @@ const CartSummary = ({
 
   const [deliveryPrice, setDeliveryPrice] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+
+  const freeDeliveryConstraints = getFreeDeliveryConstraints();
+  const isDeliveryFree = subTotal >= freeDeliveryConstraints[currency];
 
   const getDeliveryZone = useCallback(async () => {
     const response = await window.fetch('/PostalCountries/countries.json');
@@ -66,8 +71,11 @@ const CartSummary = ({
       setSubTotal(() => getCartSubTotal(order, currency));
       getDeliveryPrice();
     } else if (order && order.orderItems && order.orderItems.length) {
-      setSubTotal(() => getCartSubTotal(order, currency));
-      isDeliveryFormComplete && getDeliveryPrice();
+      const cartSubTotal = getCartSubTotal(order, currency);
+      setSubTotal(cartSubTotal);
+      if (isDeliveryFormComplete) {
+        getDeliveryPrice();
+      }
     }
   }, [order, currency, deliveryCountry, getDeliveryPrice, isDeliveryFormComplete]);
 
@@ -100,12 +108,22 @@ const CartSummary = ({
               <TotalsLine>
                 <h6>Delivery</h6>
                 <Spacer />
-                <h6>{deliveryPrice === 0 ? '-' : `${getCurrencySymbol(currency)}${deliveryPrice}`}</h6>
+                <DeliveryPrice isDeliveryFree={isDeliveryFree}>
+                  {deliveryPrice === 0 ? '' : `${getCurrencySymbol(currency)}${deliveryPrice}`}
+                </DeliveryPrice>
+                {isDeliveryFree && <h6>FREE</h6>}
               </TotalsLine>
               <TotalsLine>
                 <h6><strong>Total</strong></h6>
                 <Spacer />
-                <h6><strong>{`${getCurrencySymbol(currency)}${subTotal + deliveryPrice}`}</strong></h6>
+                <h6>
+                  <strong>
+                    {`${getCurrencySymbol(currency)}
+                      ${isDeliveryFree
+                          ? subTotal
+                          : subTotal + deliveryPrice}`}
+                  </strong>
+                </h6>
               </TotalsLine>
             </TotalsRows>
           </TotalsWrapper>
