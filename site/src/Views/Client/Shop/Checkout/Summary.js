@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useLazyQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
-import Cart from '../Cart/Cart.js';
+import CartSummary from './CartSummary.js';
 import ActionButton from '../../../../Components/ActionButton.js';
 import LoadingView from '../../../../Components/LoadingView.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
@@ -18,7 +18,7 @@ import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponent
 
 const Summary = ({ urlParams }) => {
   const app = useContext(RealmAppContext);
-  const { currency, setCurrency } = useContext(CurrencyContext);
+  const { setCurrency } = useContext(CurrencyContext);
 
   const history = useHistory();
   const [paymentIntent, setPaymentIntent] = useState(null);
@@ -41,7 +41,7 @@ const Summary = ({ urlParams }) => {
       setCurrency(intent.currency.toUpperCase());
     };
     retrievePaymentIntent();
-  }, [urlParams, app.currentUser]);
+  }, [urlParams, app.currentUser, setCurrency]);
 
   useEffect(() => {
     if (paymentIntent) {
@@ -130,7 +130,7 @@ const Summary = ({ urlParams }) => {
                 </SummaryItem>
               )
             }
-            <Cart altOrder={order} isMinimised currency={currency} />
+            <CartSummary order={order} />
             {
               paymentIntent.status === 'succeeded' &&
                 <SummaryItem>

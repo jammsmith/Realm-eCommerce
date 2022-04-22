@@ -18,9 +18,7 @@ exports = async (payload, response) => {
       datePaid: new Date(Date.now()),
       stripeAmountPaid: event.data.object.amount
     });
-    // add google analytics sales
     // send confirmation email
-    // send order notification to admin
   };
   const handlePaymentFailed = async () => {
     await updateOrderStatus({

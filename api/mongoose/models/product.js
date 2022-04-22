@@ -12,7 +12,8 @@ const productSchema = new Schema({
   priceGBP: { type: Number, required: true },
   priceUSD: { type: Number, required: true },
   priceEUR: { type: Number, required: true },
-  numInStock: { type: Number, required: true, default: 0 }
+  numInStock: { type: Number, required: true, default: 0 },
+  weightInGrams: { type: Number, required: true }
 });
 
 module.exports = model('Product', productSchema);

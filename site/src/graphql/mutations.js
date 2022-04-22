@@ -171,7 +171,8 @@ const mutations = {
       $priceGBP: Int!,
       $priceUSD: Int!,
       $priceEUR: Int!,
-      $numInStock: Int!
+      $numInStock: Int!,
+      $weightInGrams: Int!
     ) {
       upsertProduct(input: {
           _id: $_id,
@@ -184,7 +185,8 @@ const mutations = {
           priceGBP: $priceGBP,
           priceUSD: $priceUSD,
           priceEUR: $priceEUR,
-          numInStock: $numInStock
+          numInStock: $numInStock,
+          weightInGrams: $weightInGrams
           }
        ) {
         ...ProductDetails
@@ -591,6 +593,7 @@ const mutations = {
       $email: String!,
       $address_id: String,
       $phone: String,
+      $price: Int!
     ) {
       updateOneOrder(
         query: { order_id: $order_id },
@@ -603,6 +606,7 @@ const mutations = {
               lastName: $lastName,
               email: $email,
               phone: $phone,
+              price: $price,
               address: {
                 link: $address_id
               }

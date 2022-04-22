@@ -8,7 +8,8 @@ const deliverySchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true },
-  postcode: { type: String, required: true }
+  postcode: { type: String, required: true },
+  price: { type: Number, required: true }
 });
 
 module.exports = model('Delivery', deliverySchema);

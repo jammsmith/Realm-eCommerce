@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IoLogoFacebook, IoMail } from 'react-icons/io5';
+import { IoMail } from 'react-icons/io5';
 import { MdPhone } from 'react-icons/md';
 import { FaMapSigns } from 'react-icons/fa';
 

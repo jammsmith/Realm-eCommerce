@@ -102,7 +102,7 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currenc
         <SectionSpacer light />
         <DetailsWrapper>
           <ProductDetailsWrapper>
-            <ProductLink to={`/shop/${product.category}/${product.subCategory}/${product._id}`}>
+            <ProductLink to={`/shop/browse/${product.category}/${product.subCategory}/${product._id}`}>
               <h6>{product.name}</h6>
             </ProductLink>
             <h6 style={{ fontSize: '0.75rem' }}>Unit Price: {getPriceInCurrency(product, currency)}</h6>

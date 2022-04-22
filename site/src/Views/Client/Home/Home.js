@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 
 import ActionButton from '../../../Components/ActionButton.js';
 import TextSection from '../../../Components/TextSection.js';

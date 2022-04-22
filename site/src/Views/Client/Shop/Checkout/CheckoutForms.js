@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
@@ -7,7 +7,7 @@ import uniqueString from 'unique-string';
 import PaymentForm from './PaymentForm.js';
 import DeliveryForm from './DeliveryForm.js';
 import AdditionalInfo from './AdditionalInfo.js';
-import Cart from '../Cart/Cart.js';
+import CartSummary from './CartSummary.js';
 import LoadingView from '../../../../Components/LoadingView.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
@@ -30,6 +30,8 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     email: '',
     phone: null
   });
+  const deliveryZone = useRef('');
+
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [checkoutCompletion, setCheckoutCompletion] = useState({
     personalFormComplete: false,
@@ -43,12 +45,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const { personalFormComplete, deliveryFormComplete, paymentFormComplete } = checkoutCompletion;
   const checkoutFormsComplete = !!(personalFormComplete && deliveryFormComplete && paymentFormComplete);
 
-  useEffect(() => {
-    if (activeOrder && (!activeOrder.orderItems || (activeOrder.orderItems && !activeOrder.orderItems.length))) {
-      history.push('/shop/cart');
-    }
-  }, [history, activeOrder]);
-
+  //
   const updateCheckoutCompletion = useCallback((update) => {
     setCheckoutCompletion(prev => ({ ...prev, ...update }));
   }, [setCheckoutCompletion]);
@@ -56,6 +53,13 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
   const updateDeliveryDetails = useCallback((update) => {
     setDeliveryDetails(prev => ({ ...prev, ...update }));
   }, [setDeliveryDetails]);
+
+  //
+  useEffect(() => {
+    if (activeOrder && (!activeOrder.orderItems || (activeOrder.orderItems && !activeOrder.orderItems.length))) {
+      history.push('/shop/cart');
+    }
+  }, [history, activeOrder]);
 
   useEffect(() => {
     if (activeOrder) {
@@ -138,11 +142,6 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
         }}
       >
         <CheckoutFormsWrapper>
-          <Cart
-            isMinimised
-            activeOrder={activeOrder}
-            updateActiveOrder={updateActiveOrder}
-          />
           <DeliveryForm
             updateDeliveryDetails={updateDeliveryDetails}
             dbUser={app.currentUser.dbUser}
@@ -152,6 +151,13 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             additionalInfo={additionalInfo}
             updateAdditionalInfo={setAdditionalInfo}
           />
+          <CartSummary
+            order={activeOrder}
+            updateActiveOrder={updateActiveOrder}
+            deliveryCountry={deliveryDetails.country}
+            isDeliveryFormComplete={deliveryFormComplete}
+            deliveryZone={deliveryZone}
+          />
           <PaymentForm
             activeOrder={activeOrder}
             deliveryDetails={deliveryDetails}
@@ -160,6 +166,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             updateCheckoutCompletion={updateCheckoutCompletion}
             updateOrder={updateOrder}
             paymentIntent={paymentIntent}
+            deliveryZone={deliveryZone.current}
           />
         </CheckoutFormsWrapper>
       </Elements>

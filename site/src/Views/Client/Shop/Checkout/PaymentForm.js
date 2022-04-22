@@ -23,7 +23,8 @@ const PaymentForm = ({
   checkoutFormsComplete,
   updateCheckoutCompletion,
   updateOrder,
-  paymentIntent
+  paymentIntent,
+  deliveryZone
 }) => {
   const app = useContext(RealmAppContext);
   const { currency, setCurrency } = useContext(CurrencyContext);
@@ -48,18 +49,21 @@ const PaymentForm = ({
 
       setIsLoading(true);
 
-      console.log('currency, paymentIntent.currency', currency, paymentIntent.currency);
-      // If currency has changed after payment intent was created then make sure it's updated
-      if (currency !== paymentIntent.currency) {
-        const updatedIntent = await app.currentUser.functions.stripe_updatePaymentIntent(paymentIntent.id, { currency });
-        console.log('updatedIntent', updatedIntent);
+      // If delivering or currency has changed after payment intent was created then make sure
+      // payment intent is updated with currency & correct amount (including delivery)
+      if (deliveryZone || currency !== paymentIntent.currency) {
+        const { deliveryTotal } = await app.currentUser.functions.stripe_updatePaymentTotals(
+          paymentIntent.id,
+          activeOrder.orderItems,
+          deliveryZone,
+          currency
+        );
+        deliveryDetails.price = deliveryTotal;
       }
 
       // Update additional order info
-      const variables = {
-        id: activeOrder._id,
-        currency
-      };
+      const variables = { id: activeOrder._id, currency };
+
       if (additionalInfo && additionalInfo.length) {
         variables.extraInfo = additionalInfo;
       }
@@ -90,7 +94,8 @@ const PaymentForm = ({
           firstName: deliveryDetails.firstName,
           lastName: deliveryDetails.lastName,
           email: deliveryDetails.email,
-          phone: deliveryDetails.phone
+          phone: deliveryDetails.phone,
+          price: deliveryDetails.price
         }
       });
 
@@ -181,7 +186,8 @@ PaymentForm.propTypes = {
   checkoutFormsComplete: PropTypes.bool.isRequired,
   updateCheckoutCompletion: PropTypes.func.isRequired,
   updateOrder: PropTypes.func.isRequired,
-  paymentIntent: PropTypes.object.isRequired
+  paymentIntent: PropTypes.object.isRequired,
+  deliveryZone: PropTypes.string
 };
 
 export default PaymentForm;

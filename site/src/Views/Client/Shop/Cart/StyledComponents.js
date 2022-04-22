@@ -82,15 +82,33 @@ export const RemoveItemButton = styled(IoTrashOutline)`
 
 export const ProductLink = styled(Link)`
   color: ${dark};
+  :hover {
+    color: ${dark};
+  }
 `;
 
 // Cart Product List
+export const TotalsWrapper = styled.div`
+  display: flex;
+  padding-top: 0.5rem;
+  padding-right: 2rem;
+`;
+
 export const TotalsLine = styled(CartLine)`
   flex-direction: row;
-  justify-content: flex-end;
-  gap: 2rem;
-  padding: 0.5rem 2rem 0.5rem 0;
   border-bottom: none;
+  text-align: left;
+  width: 150px;
+`;
+
+export const TotalsRows = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const Spacer = styled.div`
+  flex: 1;
 `;
 
 export const ProductListWrapper = styled.div`

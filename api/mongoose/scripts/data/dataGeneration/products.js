@@ -29,6 +29,8 @@ const generateProducts = () => {
       images.push(image);
     }
 
+    const weightOptions = [50, 100, 200, 500, 1500, 2500];
+
     generatedProducts.push({
       product_id: `product-00${i}`,
       name: faker.commerce.productName(),
@@ -39,7 +41,8 @@ const generateProducts = () => {
       priceGBP: faker.commerce.price(),
       priceUSD: faker.commerce.price(),
       priceEUR: faker.commerce.price(),
-      numInStock: faker.random.arrayElement(numInStockOptions)
+      numInStock: faker.random.arrayElement(numInStockOptions),
+      weightInGrams: faker.random.arrayElement(weightOptions)
     });
   }
 

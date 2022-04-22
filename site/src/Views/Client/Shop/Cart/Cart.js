@@ -12,63 +12,76 @@ import { getCurrencySymbol } from '../../../../helpers/price.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 
 // Styled Components
-import { CartWrapper, TotalsLine, ProductListWrapper } from './StyledComponents.js';
+import {
+  CartWrapper,
+  TotalsWrapper,
+  TotalsRows,
+  TotalsLine,
+  Spacer,
+  ProductListWrapper
+} from './StyledComponents.js';
 
 // A view of all products that have been added to basket
-const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
+const Cart = ({ activeOrder, updateActiveOrder }) => {
   useScrollToTop();
-
   const { currency } = useContext(CurrencyContext);
 
   const [subTotal, setSubTotal] = useState(0);
+
   const { isXs } = useBreakpoints();
 
-  // Alternative order can be passed in to show the cart component with an order of choice
-  const order = altOrder || activeOrder;
-
   useEffect(() => {
-    // Add subtotal to order object if there isnt one already
-    if (order && order.subTotal) {
-      setSubTotal(order.subTotal);
-    } else if (order && order.orderItems && order.orderItems.length) {
-      setSubTotal(() => getCartSubTotal(order, currency));
+    if (activeOrder && activeOrder.orderItems && activeOrder.orderItems.length) {
+      setSubTotal(() => getCartSubTotal(activeOrder, currency));
     }
-  }, [order, currency]);
+  }, [activeOrder, currency]);
 
   return (
-    <CartWrapper isMinimised={isMinimised}>
+    <CartWrapper>
       <ProductListWrapper>
-        <Heading text='Cart' size={isMinimised && 'small'} />
+        <Heading text='Cart' />
         <SectionSpacer />
         {
-          order && order.orderItems && order.orderItems.length ? (
+          activeOrder && activeOrder.orderItems && activeOrder.orderItems.length ? (
             <>
-              {order.orderItems.map((item, index) => {
+              {activeOrder.orderItems.map((item, index) => {
                 return (
                   <CartProduct
                     key={index}
                     id={item._id}
-                    order={order}
+                    order={activeOrder}
                     updateActiveOrder={updateActiveOrder}
                     orderItem={item}
-                    isMinimised={isMinimised}
                     currency={currency}
                   />
                 );
               })}
-              <TotalsLine>
-                <h6>Subtotal</h6>
-                <h6>{`${getCurrencySymbol(currency)}${subTotal}`}</h6>
-              </TotalsLine>
-              {
-                !isMinimised &&
-                  <ActionButton
-                    text='Go to checkout'
-                    linkTo='/shop/checkout'
-                    fullWidth={isXs}
-                    customStyles={{ margin: !isXs && '1rem 0.25rem 0' }}
-                  />
-              }
+              <TotalsWrapper>
+                <Spacer />
+                <TotalsRows>
+                  <TotalsLine>
+                    <h6>Subtotal</h6>
+                    <Spacer />
+                    <h6>{`${getCurrencySymbol(currency)}${subTotal}`}</h6>
+                  </TotalsLine>
+                  <TotalsLine>
+                    <h6>Delivery</h6>
+                    <Spacer />
+                    <h6>-</h6>
+                  </TotalsLine>
+                  <TotalsLine>
+                    <h6><strong>Total</strong></h6>
+                    <Spacer />
+                    <h6><strong>-</strong></h6>
+                  </TotalsLine>
+                </TotalsRows>
+              </TotalsWrapper>
+              <ActionButton
+                text='Go to checkout'
+                linkTo='/shop/checkout'
+                fullWidth={isXs}
+                customStyles={{ margin: !isXs && '1rem 0.25rem 0' }}
+              />
             </>
           ) : (
             <>
@@ -86,9 +99,7 @@ const Cart = ({ activeOrder, updateActiveOrder, altOrder, isMinimised }) => {
 
 Cart.propTypes = {
   activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func,
-  altOrder: PropTypes.object,
-  isMinimised: PropTypes.bool
+  updateActiveOrder: PropTypes.func
 };
 
 export default Cart;

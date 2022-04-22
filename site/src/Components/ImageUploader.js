@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from '@apollo/client';
 import { uploadFile } from 'react-s3';
 import styled from 'styled-components';
 import { TiDeleteOutline } from 'react-icons/ti';
@@ -90,7 +89,7 @@ const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) =
     try {
       const imageUpload = await uploadFile(
         file,
-        await app.currentUser.functions.s3_getConfig()
+        await app.currentUser.functions.helper_getS3Config()
       );
       onUpload(imageUpload.location);
       setMessage({

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import FormSubmit from './FormSubmit.js';
 import RowGroup from '../Forms/RowGroup.js';
 import TextInput from '../Forms/TextInput.js';
+import SelectInput from '../Forms/SelectInput.js';
 import { formatUserDetails } from '../../helpers/user.js';
 
 const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessage, disableOnComplete, defaultAddress }) => {
@@ -16,6 +17,7 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
     postcode: defaultAddress ? defaultAddress.postcode : '',
     country: defaultAddress ? defaultAddress.country : ''
   });
+  const [deliveryCountries, setDeliveryCountries] = useState([]);
   const [message, setMessage] = useState({});
   const [loading, setLoading] = useState(false);
   const [formDisabled, setFormDisabled] = useState(false);
@@ -75,6 +77,30 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
     }
   };
 
+  //
+  const url = '/PostalCountries/countries.json';
+
+  const getCountries = useCallback(async () => {
+    const response = await window.fetch(url);
+    const jsonResponse = await response.json();
+
+    const deliveryCountries = jsonResponse
+      .sort((a, b) => {
+        if (a.country < b.country) return -1;
+        if (a.country > b.country) return 1;
+        return 0;
+      })
+      .map(({ country }) => ({
+        name: country,
+        value: country
+      }));
+
+    setDeliveryCountries(deliveryCountries);
+  }, [url]);
+
+  useEffect(() => getCountries(), [getCountries]);
+
+  //
   useEffect(() => {
     if (defaultAddress && disableOnComplete) {
       handleFormComplete();
@@ -82,33 +108,12 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
   }, [defaultAddress, disableOnComplete, handleFormComplete]);
 
   return (
-    <form>
-      <TextInput
-        name='line1'
-        value={addressFields.line1}
-        label='Address Line 1'
-        handleChange={handleInputChange}
-        variant='outlined'
-        margin='normal'
-        type='text'
-        disabled={formDisabled}
-      />
-      <TextInput
-        name='line2'
-        value={addressFields.line2}
-        label='Address Line 2'
-        handleChange={handleInputChange}
-        required={false}
-        variant='outlined'
-        margin='normal'
-        type='text'
-        disabled={formDisabled}
-      />
-      <RowGroup>
+    deliveryCountries ? (
+      <form>
         <TextInput
-          name='city'
-          value={addressFields.city}
-          label='City'
+          name='line1'
+          value={addressFields.line1}
+          label='Address Line 1'
           handleChange={handleInputChange}
           variant='outlined'
           margin='normal'
@@ -116,47 +121,71 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
           disabled={formDisabled}
         />
         <TextInput
-          name='county'
-          value={addressFields.county}
-          label='County / State'
+          name='line2'
+          value={addressFields.line2}
+          label='Address Line 2'
           handleChange={handleInputChange}
+          required={false}
           variant='outlined'
           margin='normal'
           type='text'
           disabled={formDisabled}
         />
-      </RowGroup>
-      <RowGroup>
-        <TextInput
-          name='postcode'
-          value={addressFields.postcode}
-          label='Postcode'
-          handleChange={handleInputChange}
-          variant='outlined'
-          margin='normal'
-          type='text'
-          disabled={formDisabled}
+        <RowGroup>
+          <TextInput
+            name='city'
+            value={addressFields.city}
+            label='City'
+            handleChange={handleInputChange}
+            variant='outlined'
+            margin='normal'
+            type='text'
+            disabled={formDisabled}
+          />
+          <TextInput
+            name='county'
+            value={addressFields.county}
+            label='County / State'
+            handleChange={handleInputChange}
+            variant='outlined'
+            margin='normal'
+            type='text'
+            disabled={formDisabled}
+          />
+        </RowGroup>
+        <RowGroup>
+          <TextInput
+            name='postcode'
+            value={addressFields.postcode}
+            label='Postcode'
+            handleChange={handleInputChange}
+            variant='outlined'
+            margin='normal'
+            type='text'
+            disabled={formDisabled}
+          />
+          <SelectInput
+            name='country'
+            value={addressFields.country}
+            label='Country *'
+            handleChange={handleInputChange}
+            options={deliveryCountries}
+            required
+            variant='outlined'
+            disabled={formDisabled}
+            style={{ marginTop: '8px' }}
+          />
+        </RowGroup>
+        <FormSubmit
+          formDisabled={formDisabled}
+          message={message}
+          buttonText={buttonText}
+          loading={loading}
+          handleSubmit={handleSubmit}
+          handleBackToEdit={handleBackToEdit}
         />
-        <TextInput
-          name='country'
-          value={addressFields.country}
-          label='Country'
-          handleChange={handleInputChange}
-          variant='outlined'
-          margin='normal'
-          type='text'
-          disabled={formDisabled}
-        />
-      </RowGroup>
-      <FormSubmit
-        formDisabled={formDisabled}
-        message={message}
-        buttonText={buttonText}
-        loading={loading}
-        handleSubmit={handleSubmit}
-        handleBackToEdit={handleBackToEdit}
-      />
-    </form>
+      </form>
+    ) : null
   );
 };
 

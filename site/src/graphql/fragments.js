@@ -45,6 +45,7 @@ export const PRODUCT_DETAILS = gql`
     priceGBP
     priceUSD
     priceEUR
+    weightInGrams
     category
     subCategory
   }
@@ -84,6 +85,7 @@ export const DELIVERY_DETAILS = gql`
     lastName
     email
     phone
+    price
   }
 `;
 

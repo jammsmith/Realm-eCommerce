@@ -44,7 +44,15 @@
         "private": false
     },
     {
-        "name": "s3_getConfig",
+        "name": "helper_getDeliveryPrice",
+        "private": false
+    },
+    {
+        "name": "helper_getOrderSubtotal",
+        "private": false
+    },
+    {
+        "name": "helper_getS3Config",
         "private": false
     },
     {
@@ -60,7 +68,7 @@
         "private": false
     },
     {
-        "name": "stripe_updatePaymentIntent",
+        "name": "stripe_updatePaymentTotals",
         "private": false
     },
     {

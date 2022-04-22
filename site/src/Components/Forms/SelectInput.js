@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const SelectInput = ({ name, value, required, label, handleChange, options, variant, disabled }) => (
-  <FormControl fullWidth>
+const SelectInput = ({ name, value, required, label, handleChange, options, variant, disabled, style }) => (
+  <FormControl
+    fullWidth
+    sx={style}
+  >
     <InputLabel>{label}</InputLabel>
     <Select
       id={name}
@@ -33,7 +36,7 @@ const SelectInput = ({ name, value, required, label, handleChange, options, vari
             justifyContent: 'flex-start'
           },
           '.MuiMenu-paper': {
-            width: '100px'
+            width: '200px'
           }
         }
       }}
@@ -59,7 +62,8 @@ SelectInput.propTypes = {
   options: PropTypes.array.isRequired,
   required: PropTypes.bool,
   variant: PropTypes.string,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  style: PropTypes.object
 };
 
 export default SelectInput;
