@@ -165,12 +165,13 @@ const Login = ({ form }) => {
   };
 
   useEffect(() => {
-    if (!isAuthenticated(app.currentUser)) {
-      setFormType('register');
-    } else {
+    if (isAuthenticated(app.currentUser)) {
       history.push('/my-account');
     }
-  }, [app.currentUser, history]);
+    if (formType !== form) {
+      setFormType(form);
+    }
+  }, [form, app.currentUser, history]);
 
   return (
     <LoginWrapper>

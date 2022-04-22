@@ -98,7 +98,7 @@ const Summary = ({ urlParams }) => {
     }
 
     // forward to register page to provide password etc
-    history.push('/login');
+    history.push({ pathname: '/login', state: { form: 'register' } });
   };
 
   return (

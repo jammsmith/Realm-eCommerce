@@ -20,15 +20,25 @@ const MyAccountMenu = () => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  const handleMenuSeletion = async (e, selection) => {
+  const handleMenuSelection = async (e, selection) => {
     e.preventDefault();
-    if (selection === 'logout') {
-      await app.logOut();
-      handleCloseMenu();
-      history.push('/');
-    } else {
-      handleCloseMenu();
-      history.push(`/${selection}`);
+    switch (selection) {
+      case 'logout':
+        await app.logOut();
+        handleCloseMenu();
+        history.push('/');
+        break;
+      case 'login':
+      case 'register':
+        handleCloseMenu();
+        history.push({
+          pathname: '/login',
+          state: { form: selection }
+        });
+        break;
+      default:
+        handleCloseMenu();
+        history.push(`/${selection}`);
     }
   };
 
@@ -70,21 +80,23 @@ const MyAccountMenu = () => {
         }}
       >
         {
-          app.currentUser && isAuthenticated(app.currentUser)
-            ? <MenuList sx={menuStyles}>
+          app.currentUser && isAuthenticated(app.currentUser) ? (
+            <MenuList sx={menuStyles}>
               <MenuItem>{app.currentUser.dbUser.email}</MenuItem>
               <MenuItem divider />
               {
                 isAdmin(app.currentUser) &&
-                  <MenuItem onClick={(e) => handleMenuSeletion(e, 'admin')}>Admin Dashboard</MenuItem>
+                  <MenuItem onClick={(e) => handleMenuSelection(e, 'admin')}>Admin Dashboard</MenuItem>
               }
-              <MenuItem onClick={(e) => handleMenuSeletion(e, 'my-account')}>My Account</MenuItem>
-              <MenuItem onClick={(e) => handleMenuSeletion(e, 'logout')}>Logout</MenuItem>
-              </MenuList>
-            : <MenuList sx={menuStyles}>
-              <MenuItem onClick={(e) => handleMenuSeletion(e, 'login')}>Login</MenuItem>
-              <MenuItem onClick={(e) => handleMenuSeletion(e, 'login')}>Register</MenuItem>
-              </MenuList>
+              <MenuItem onClick={(e) => handleMenuSelection(e, 'my-account')}>My Account</MenuItem>
+              <MenuItem onClick={(e) => handleMenuSelection(e, 'logout')}>Logout</MenuItem>
+            </MenuList>
+          ) : (
+            <MenuList sx={menuStyles}>
+              <MenuItem onClick={(e) => handleMenuSelection(e, 'login')}>Login</MenuItem>
+              <MenuItem onClick={(e) => handleMenuSelection(e, 'register')}>Register</MenuItem>
+            </MenuList>
+          )
         }
       </Menu>
     </div>

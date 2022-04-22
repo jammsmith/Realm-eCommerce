@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, cloneElement } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -28,6 +29,8 @@ const ClientView = ({ children }) => {
   const handleToggle = () => setMenuInView(prevValue => !prevValue);
   const closeMenu = () => setMenuInView(false);
 
+  const { state } = useLocation();
+
   const content =
     <>
       <FreeDelivery />
@@ -39,7 +42,7 @@ const ClientView = ({ children }) => {
             <BackgroundShadow handleBackgroundClick={closeMenu} />
           </>
       }
-      {children}
+      {state && Object.keys(state).length ? cloneElement(children, { ...state }) : children}
       <Spacer />
       <Footer />
     </>;
