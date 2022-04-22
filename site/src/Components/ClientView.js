@@ -8,6 +8,7 @@ import SideDrawer from './SideDrawer/SideDrawer';
 import BackgroundShadow from './BackgroundShadow/BackgroundShadow';
 import Footer from './Footer/Footer.js';
 import FreeDelivery from './Offers/FreeDelivery.js';
+import SectionSpacer from './SectionSpacer.js';
 
 const ClientStyles = styled.section`
   min-height: 100vh;
@@ -35,6 +36,7 @@ const ClientView = ({ children }) => {
     <>
       <FreeDelivery />
       <Navbar handleToggle={handleToggle} />
+      <SectionSpacer dark spaceBelow />
       {
         menuInView &&
           <>

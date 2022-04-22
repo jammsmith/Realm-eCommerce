@@ -4,7 +4,6 @@ import PersonalDetails from './PersonalDetails.js';
 import DeliveryDetails from './DeliveryDetails.js';
 import MyOrders from './MyOrders.js';
 import TabMenu from '../../../Components/TabMenu.js';
-import SectionSpacer from '../../../Components/SectionSpacer.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
 
 const MyAccount = () => {
@@ -38,7 +37,6 @@ const MyAccount = () => {
 
   return (
     <>
-      <SectionSpacer dark spaceBelow />
       <div style={{ minHeight: '500px' }}>
         <TabMenu items={sections} />
       </div>

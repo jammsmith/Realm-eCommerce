@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Heading from '../../../Components/Headings/Heading.js';
-import SectionSpacer from '../../../Components/SectionSpacer.js';
 import useScrollToTop from '../../../hooks/useScrollToTop.js';
 
 import {
@@ -17,7 +16,6 @@ const AboutUs = () => {
   useScrollToTop();
   return (
     <>
-      <SectionSpacer dark spaceBelow />
       <OuterWrapper>
         <Heading text='About Us' />
         <ContentWrapper>

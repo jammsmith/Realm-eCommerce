@@ -71,7 +71,6 @@ const Shop = () => {
   return (
     app.currentUser && app.currentUser.dbUser ? (
       <>
-        <SectionSpacer dark spaceBelow />
         <Switch>
           <Route exact path='/shop' component={Categories} />
           <Route

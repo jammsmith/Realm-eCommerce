@@ -5,7 +5,7 @@ const Error404 = ({ requestedURL }) => {
   return (
     <>
       <h1>Sorry!</h1>
-      <p>{requestedURL ? `${requestedURL} doesn't exist.` : "This page doesn't exist."}</p>
+      <p>{requestedURL ? `${requestedURL} doesn't exist.` : 'This page doesn\'t exist.'}</p>
     </>
   );
 };

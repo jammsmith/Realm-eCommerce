@@ -11,7 +11,6 @@ import { GoToShopWrapper, ImagesWrapper, PrimaryImage, SecondaryImages, Secondar
 const Home = () => {
   return (
     <>
-      <SectionSpacer spaceBelow dark />
       <TextSection
         headingFontSize='3rem'
         heading='Makers of the finest bespoke, Victorian clothing and Old-West leather.'

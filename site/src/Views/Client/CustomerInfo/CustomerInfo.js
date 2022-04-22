@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import SectionSpacer from '../../../Components/SectionSpacer.js';
 import SizingInfo from './Components/SizingInfo.js';
 import DeliveryInfo from './Components/DeliveryInfo.js';
 import PaymentInfo from './Components/PaymentInfo.js';
@@ -49,7 +48,6 @@ const CustomerInfo = () => {
 
   return (
     <>
-      <SectionSpacer dark spaceBelow />
       <AccordionWrapper>
         {
           accordionItems.map((item, index) => {
