@@ -9,9 +9,18 @@ import UserMessage from '../UserMessage.js';
 // Styled components
 import { MessageWrapper } from './StyledComponents.js';
 
-const FormSubmit = ({ formDisabled, message, buttonText, loading, handleSubmit, handleBackToEdit }) => {
+const FormSubmit = ({
+  formDisabled,
+  buttonDisabled,
+  message,
+  buttonText,
+  loading,
+  handleSubmit,
+  handleBackToEdit,
+  pickUpInStore
+}) => {
   const buttonProps = {};
-  if (!formDisabled) {
+  if (!formDisabled || pickUpInStore) {
     buttonProps.onClick = handleSubmit;
     buttonProps.text = loading ? <ProgressSpinner size='1.5rem' /> : buttonText || 'save details';
   } else {
@@ -21,7 +30,7 @@ const FormSubmit = ({ formDisabled, message, buttonText, loading, handleSubmit, 
 
   return (
     <RowGroup>
-      <ActionButton {...buttonProps} customStyles={{ width: '50%', height: '2.5rem' }} />
+      <ActionButton {...buttonProps} customStyles={{ width: '50%', height: '2.5rem' }} disabled={buttonDisabled} />
       {
         message && message.type &&
           <MessageWrapper>
@@ -34,6 +43,7 @@ const FormSubmit = ({ formDisabled, message, buttonText, loading, handleSubmit, 
 
 FormSubmit.propTypes = {
   formDisabled: PropTypes.bool.isRequired,
+  buttonDisabled: PropTypes.bool,
   message: PropTypes.object.isRequired,
   buttonText: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,

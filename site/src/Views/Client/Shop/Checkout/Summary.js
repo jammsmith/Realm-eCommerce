@@ -67,13 +67,7 @@ const Summary = ({ urlParams }) => {
     const { dbUser } = app.currentUser;
 
     try {
-      await updateAddress({
-        variables: {
-          address_id: delivery.address.address_id,
-          isDefault: true
-        }
-      });
-      await updateUser({
+      const { data } = await updateUser({
         variables: {
           id: dbUser._id,
           firstName: delivery.firstName,
@@ -82,16 +76,27 @@ const Summary = ({ urlParams }) => {
           phone: delivery.phone
         }
       });
-      const { data } = await updateUserAddresses({
-        variables: {
-          id: dbUser._id,
-          addresses: [delivery.address.address_id]
-        }
-      });
+      let updatedUser = data.updateOneUser;
+
+      if (delivery && delivery.address) {
+        await updateAddress({
+          variables: {
+            address_id: delivery.address.address_id,
+            isDefault: true
+          }
+        });
+        const { data } = await updateUserAddresses({
+          variables: {
+            id: dbUser._id,
+            addresses: [delivery.address.address_id]
+          }
+        });
+        updatedUser = data.updateOneUser;
+      }
 
       await app.setCurrentUser(user => ({
         ...user,
-        dbUser: data.updateOneUser
+        dbUser: updatedUser
       }));
     } catch (err) {
       throw new Error('Failed to update user with order details. Error:', err.message);

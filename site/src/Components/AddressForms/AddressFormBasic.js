@@ -1,13 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import FormSubmit from './FormSubmit.js';
 import RowGroup from '../Forms/RowGroup.js';
 import TextInput from '../Forms/TextInput.js';
 import SelectInput from '../Forms/SelectInput.js';
+import Checkbox from '../Forms/Checkbox.js';
 import { formatUserDetails } from '../../helpers/user.js';
 
-const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessage, disableOnComplete, defaultAddress }) => {
+import { CheckboxWrapper } from './StyledComponents.js';
+
+const AddressFormBasic = ({
+  onAddressValid,
+  onEditting,
+  onPickUpInStore,
+  buttonText,
+  successMessage,
+  disableOnComplete,
+  defaultAddress
+}) => {
   const [addressFields, setAddressFields] = useState({
     address_id: defaultAddress ? defaultAddress.address_id : '',
     line1: defaultAddress ? defaultAddress.line1 : '',
@@ -17,10 +28,13 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
     postcode: defaultAddress ? defaultAddress.postcode : '',
     country: defaultAddress ? defaultAddress.country : ''
   });
+
   const [deliveryCountries, setDeliveryCountries] = useState([]);
   const [message, setMessage] = useState({});
   const [loading, setLoading] = useState(false);
   const [formDisabled, setFormDisabled] = useState(false);
+
+  const pickUpInStore = useRef(false);
 
   const handleFormComplete = useCallback(() => {
     setMessage({
@@ -69,6 +83,13 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
       setLoading(false);
     }
   };
+
+  const handleStorePickUpChange = () => {
+    pickUpInStore.current = !pickUpInStore.current;
+    setFormDisabled(pickUpInStore.current);
+    onPickUpInStore(pickUpInStore.current);
+  };
+
   const handleBackToEdit = () => {
     setFormDisabled(false);
     setMessage({});
@@ -178,12 +199,21 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
         </RowGroup>
         <FormSubmit
           formDisabled={formDisabled}
+          buttonDisabled={pickUpInStore.current}
           message={message}
           buttonText={buttonText}
           loading={loading}
           handleSubmit={handleSubmit}
           handleBackToEdit={handleBackToEdit}
+          pickUpInStore={pickUpInStore}
         />
+        <CheckboxWrapper>
+          <Checkbox
+            label='Pick up in-store'
+            handleChange={handleStorePickUpChange}
+            value={pickUpInStore.current}
+          />
+        </CheckboxWrapper>
       </form>
     ) : null
   );
@@ -192,6 +222,7 @@ const AddressFormBasic = ({ onAddressValid, onEditting, buttonText, successMessa
 AddressFormBasic.propTypes = {
   onAddressValid: PropTypes.func.isRequired,
   onEditting: PropTypes.func,
+  onPickUpInStore: PropTypes.func.isRequired,
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,
   disableOnComplete: PropTypes.bool,

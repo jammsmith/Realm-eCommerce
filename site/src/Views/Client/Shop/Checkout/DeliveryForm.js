@@ -9,7 +9,7 @@ import { getDefaultAddress } from '../../../../helpers/address.js';
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';
 
-const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion }) => {
+const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion, willCustomerPickUpInStore }) => {
   const handleValidDetails = useCallback((fields, formType) => {
     updateDeliveryDetails(fields);
     if (formType) {
@@ -21,10 +21,15 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
     updateCheckoutCompletion({ [`${formType}FormComplete`]: false });
   }, [updateCheckoutCompletion]);
 
+  const handlePickUpInStore = (willPickUp) => {
+    willCustomerPickUpInStore.current = willPickUp;
+    updateCheckoutCompletion({ deliveryFormComplete: !!willPickUp });
+  };
+
   const defaultAddress = getDefaultAddress(dbUser.addresses);
 
   useEffect(() => {
-    if (dbUser.type === 'customer' || dbUser.type === 'admin') {
+    if (dbUser && dbUser.type) {
       const { firstName, lastName, email, phone } = dbUser;
       if (defaultAddress) {
         handleValidDetails({ address_id: defaultAddress.address_id, firstName, lastName, email, phone });
@@ -60,6 +65,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
         <AddressFormBasic
           onAddressValid={handleValidDetails}
           onEditting={handleEditDetails}
+          onPickUpInStore={handlePickUpInStore}
           buttonText='confirm address'
           successMessage='Address confirmed'
           disableOnComplete
@@ -73,7 +79,8 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion 
 DeliveryForm.propTypes = {
   dbUser: PropTypes.object.isRequired,
   updateDeliveryDetails: PropTypes.func.isRequired,
-  updateCheckoutCompletion: PropTypes.func.isRequired
+  updateCheckoutCompletion: PropTypes.func.isRequired,
+  willCustomerPickUpInStore: PropTypes.bool.isRequired
 };
 
 export default DeliveryForm;

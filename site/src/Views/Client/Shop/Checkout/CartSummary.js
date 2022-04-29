@@ -28,17 +28,25 @@ const CartSummary = ({
   updateActiveOrder,
   deliveryCountry,
   isDeliveryFormComplete,
-  deliveryZone
+  deliveryZone,
+  willCustomerPickUpInStore
 }) => {
   useScrollToTop();
   const app = useContext(RealmAppContext);
   const { currency } = useContext(CurrencyContext);
 
+  const successfulPayment = order && order.paymentStatus === 'successful';
+  const failedPayment = order && order.paymentStatus === 'failed';
+  const orderInCheckout = order && order.orderItems && order.orderItems.length && order.paymentStatus === 'notAttempted';
+
   const [deliveryPrice, setDeliveryPrice] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
 
-  const freeDeliveryConstraints = getFreeDeliveryConstraints();
-  const isDeliveryFree = subTotal >= freeDeliveryConstraints[currency];
+  let freeDelivery;
+  if (orderInCheckout || failedPayment) {
+    const freeDeliveryConstraints = getFreeDeliveryConstraints();
+    freeDelivery = !!(subTotal >= freeDeliveryConstraints[currency] || willCustomerPickUpInStore.current);
+  }
 
   const getDeliveryZone = useCallback(async () => {
     const response = await window.fetch('/PostalCountries/countries.json');
@@ -62,22 +70,37 @@ const CartSummary = ({
 
   // If order has already completed (in Summary stage) then populate the order details, otherwise calculate details
   useEffect(() => {
-    if (order && order.paymentStatus === 'successful') {
+    if (successfulPayment) {
+      // populate summary details from successful order
       const { delivery } = order;
       const amountPaid = order.stripeAmountPaid / 100;
       setSubTotal(delivery ? amountPaid - delivery.price : amountPaid);
-      delivery && setDeliveryPrice(delivery.price);
-    } else if (order && order.paymentStatus === 'failed') {
+      delivery && setDeliveryPrice(delivery.price || 0);
+      //
+    } else if (failedPayment) {
+      // populate summary details from failed order + re-calculate delivery amount
       setSubTotal(() => getCartSubTotal(order, currency));
       getDeliveryPrice();
-    } else if (order && order.orderItems && order.orderItems.length) {
+      //
+    } else if (orderInCheckout) {
+      // calculate summary details and populate form. Check whether or not customer will pay delivery
       const cartSubTotal = getCartSubTotal(order, currency);
       setSubTotal(cartSubTotal);
-      if (isDeliveryFormComplete) {
+
+      if (isDeliveryFormComplete && deliveryCountry) {
         getDeliveryPrice();
       }
     }
-  }, [order, currency, deliveryCountry, getDeliveryPrice, isDeliveryFormComplete]);
+  }, [
+    order,
+    currency,
+    deliveryCountry,
+    getDeliveryPrice,
+    isDeliveryFormComplete,
+    successfulPayment,
+    failedPayment,
+    orderInCheckout
+  ]);
 
   return (
     <CartWrapper isMinimised>
@@ -108,10 +131,10 @@ const CartSummary = ({
               <TotalsLine>
                 <h6>Delivery</h6>
                 <Spacer />
-                <DeliveryPrice isDeliveryFree={isDeliveryFree}>
-                  {deliveryPrice === 0 ? '' : `${getCurrencySymbol(currency)}${deliveryPrice}`}
+                <DeliveryPrice isDeliveryFree={freeDelivery}>
+                  {!deliveryPrice ? '' : `${getCurrencySymbol(currency)}${deliveryPrice}`}
                 </DeliveryPrice>
-                {isDeliveryFree && <h6>FREE</h6>}
+                {freeDelivery && <h6>FREE</h6>}
               </TotalsLine>
               <TotalsLine>
                 <h6><strong>Total</strong></h6>
@@ -119,7 +142,7 @@ const CartSummary = ({
                 <h6>
                   <strong>
                     {`${getCurrencySymbol(currency)}
-                      ${isDeliveryFree
+                      ${freeDelivery
                           ? subTotal
                           : subTotal + deliveryPrice}`}
                   </strong>
@@ -138,7 +161,7 @@ CartSummary.propTypes = {
   updateActiveOrder: PropTypes.func,
   deliveryCountry: PropTypes.string,
   isDeliveryFormComplete: PropTypes.bool,
-  deliveryZone: PropTypes.string
+  deliveryZone: PropTypes.object
 };
 
 export default CartSummary;

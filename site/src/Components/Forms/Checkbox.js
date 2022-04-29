@@ -6,7 +6,7 @@ import { FormControlLabel, Checkbox as MuiCheckbox } from '@mui/material';
 import colours from '../../styles/colours.js';
 const { dark } = colours;
 
-const Checkbox = ({ value, label, handleChange, size }) => {
+const Checkbox = ({ value, label, handleChange, size, disabled }) => {
   return (
     <FormControlLabel
       control={
@@ -20,6 +20,7 @@ const Checkbox = ({ value, label, handleChange, size }) => {
             }
           }}
           value={value}
+          disabled={disabled}
         />
       }
       sx={{
@@ -37,7 +38,8 @@ Checkbox.propTypes = {
   value: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
-  size: PropTypes.string.isRequired
+  size: PropTypes.string.isRequired,
+  disabled: PropTypes.bool
 };
 
 export default Checkbox;

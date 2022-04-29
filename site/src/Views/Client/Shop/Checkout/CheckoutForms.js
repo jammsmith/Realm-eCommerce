@@ -28,9 +28,11 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
     firstName: '',
     lastName: '',
     email: '',
-    phone: null
+    phone: null,
+    country: ''
   });
   const deliveryZone = useRef('');
+  const willCustomerPickUpInStore = useRef(false);
 
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [checkoutCompletion, setCheckoutCompletion] = useState({
@@ -146,6 +148,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             updateDeliveryDetails={updateDeliveryDetails}
             dbUser={app.currentUser.dbUser}
             updateCheckoutCompletion={updateCheckoutCompletion}
+            willCustomerPickUpInStore={willCustomerPickUpInStore}
           />
           <AdditionalInfo
             additionalInfo={additionalInfo}
@@ -157,6 +160,7 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             deliveryCountry={deliveryDetails.country}
             isDeliveryFormComplete={deliveryFormComplete}
             deliveryZone={deliveryZone}
+            willCustomerPickUpInStore={willCustomerPickUpInStore}
           />
           <PaymentForm
             activeOrder={activeOrder}
@@ -166,7 +170,8 @@ const CheckoutForms = ({ stripePromise, activeOrder, updateActiveOrder }) => {
             updateCheckoutCompletion={updateCheckoutCompletion}
             updateOrder={updateOrder}
             paymentIntent={paymentIntent}
-            deliveryZone={deliveryZone.current}
+            deliveryZone={deliveryZone}
+            willCustomerPickUpInStore={willCustomerPickUpInStore}
           />
         </CheckoutFormsWrapper>
       </Elements>

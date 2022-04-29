@@ -25,7 +25,8 @@ const PaymentForm = ({
   updateCheckoutCompletion,
   updateOrder,
   paymentIntent,
-  deliveryZone
+  deliveryZone,
+  willCustomerPickUpInStore
 }) => {
   const app = useContext(RealmAppContext);
   const { currency, setCurrency } = useContext(CurrencyContext);
@@ -37,6 +38,7 @@ const PaymentForm = ({
 
   const [createAddress] = useDDMutation(mutations.CreateAddress);
   const [addDeliveryDetailsToOrder] = useDDMutation(mutations.AddDeliveryDetailsToOrder);
+  const [addPickUpDetailsToOrder] = useDDMutation(mutations.AddPickUpDetailsToOrder);
 
   const handleSubmitPayment = async (e) => {
     try {
@@ -50,17 +52,19 @@ const PaymentForm = ({
 
       setIsLoading(true);
 
+      const toBeDelivered = !willCustomerPickUpInStore.current;
+
       // If delivering or currency has changed after payment intent was created then make sure
       // payment intent is updated with currency & correct amount (including delivery)
-      if (deliveryZone || currency !== paymentIntent.currency) {
-        const { deliveryTotal } = await app.currentUser.functions.stripe_updatePaymentTotals(
+      if (toBeDelivered || currency.toLowerCase() !== paymentIntent.currency) {
+        const updatedTotals = await app.currentUser.functions.stripe_updatePaymentTotals(
           paymentIntent.id,
           activeOrder.orderItems,
           deliveryZone,
           currency,
           getFreeDeliveryConstraints()
         );
-        deliveryDetails.price = deliveryTotal;
+        deliveryDetails.price = updatedTotals ? updatedTotals.deliveryTotal : 0;
       }
 
       // Update additional order info
@@ -69,37 +73,51 @@ const PaymentForm = ({
       if (additionalInfo && additionalInfo.length) {
         variables.extraInfo = additionalInfo;
       }
+
       await updateOrder({ variables });
 
-      let addressId = deliveryDetails.address_id;
+      if (toBeDelivered) {
+        let addressId = toBeDelivered ? deliveryDetails.address_id : null;
 
-      if (!addressId || addressId === '') {
-        const { data } = await createAddress({
+        if (!addressId || addressId === '') {
+          const { data } = await createAddress({
+            variables: {
+              address_id: `address-${await uniqueString()}`,
+              line1: deliveryDetails.line1,
+              line2: deliveryDetails.line2,
+              city: deliveryDetails.city,
+              county: deliveryDetails.county,
+              postcode: deliveryDetails.postcode,
+              country: deliveryDetails.country
+            }
+          });
+          addressId = data.insertOneAddress.address_id;
+
+          await addDeliveryDetailsToOrder({
+            variables: {
+              order_id: deliveryDetails.order_id,
+              delivery_id: deliveryDetails.delivery_id,
+              address_id: addressId,
+              firstName: deliveryDetails.firstName,
+              lastName: deliveryDetails.lastName,
+              email: deliveryDetails.email,
+              phone: deliveryDetails.phone,
+              price: deliveryDetails.price
+            }
+          });
+        }
+      } else {
+        await addPickUpDetailsToOrder({
           variables: {
-            address_id: `address-${await uniqueString()}`,
-            line1: deliveryDetails.line1,
-            line2: deliveryDetails.line2,
-            city: deliveryDetails.city,
-            county: deliveryDetails.county,
-            postcode: deliveryDetails.postcode,
-            country: deliveryDetails.country
+            order_id: deliveryDetails.order_id,
+            delivery_id: deliveryDetails.delivery_id,
+            firstName: deliveryDetails.firstName,
+            lastName: deliveryDetails.lastName,
+            email: deliveryDetails.email,
+            phone: deliveryDetails.phone
           }
         });
-        addressId = data.insertOneAddress.address_id;
       }
-
-      await addDeliveryDetailsToOrder({
-        variables: {
-          order_id: deliveryDetails.order_id,
-          delivery_id: deliveryDetails.delivery_id,
-          address_id: addressId,
-          firstName: deliveryDetails.firstName,
-          lastName: deliveryDetails.lastName,
-          email: deliveryDetails.email,
-          phone: deliveryDetails.phone,
-          price: deliveryDetails.price
-        }
-      });
 
       // Confirm payment with Stripe
       const { error: stripeError } = await stripe.confirmPayment({
@@ -189,7 +207,8 @@ PaymentForm.propTypes = {
   updateCheckoutCompletion: PropTypes.func.isRequired,
   updateOrder: PropTypes.func.isRequired,
   paymentIntent: PropTypes.object.isRequired,
-  deliveryZone: PropTypes.string
+  deliveryZone: PropTypes.object,
+  willCustomerPickUpInStore: PropTypes.bool.isRequired
 };
 
 export default PaymentForm;

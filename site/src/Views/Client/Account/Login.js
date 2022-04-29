@@ -93,7 +93,6 @@ const Login = ({ form }) => {
                 orders: dbUser.orders.map(order => order.order_id),
                 addresses: dbUser.addresses.map(address => address.address_id)
               };
-
         // log user in, this will complete registration and create a new permenant user ID
         const { user, error: loginError } = await app.logIn(email, password);
 
@@ -113,6 +112,7 @@ const Login = ({ form }) => {
 
         let guestUserVars;
         if (guestUser) {
+          console.log('is guest user');
           guestUserVars = {
             ...standardVars,
             firstName: guestUser.firstName,
@@ -154,7 +154,6 @@ const Login = ({ form }) => {
           ...user,
           dbUser: newUser
         }));
-
         history.push('/my-account');
       } else {
         setErrorMessage(registerError);
@@ -171,7 +170,7 @@ const Login = ({ form }) => {
     if (formType !== form) {
       setFormType(form);
     }
-  }, [form, app.currentUser, history]);
+  }, [formType, form, app.currentUser, history]);
 
   return (
     <LoginWrapper>

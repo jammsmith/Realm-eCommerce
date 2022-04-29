@@ -81,6 +81,10 @@ const mutations = {
   `,
   UpdateUser: gql`
     ${USER_DETAILS}
+    ${ORDER_DETAILS}
+    ${ORDER_ITEM_DETAILS}
+    ${PRODUCT_DETAILS}
+    ${ADDRESS_DETAILS}
     mutation(
       $id: ObjectId!,
       $firstName: String,
@@ -96,9 +100,21 @@ const mutations = {
           lastName: $lastName,
           email: $email,
           phone: $phone,
-          type: $type,
+          type: $type
         } ) {
         ...UserDetails
+        addresses {
+          ...AddressDetails
+        }
+        orders {
+          ...OrderDetails
+          orderItems {
+            ...OrderItemDetails
+            product {
+              ...ProductDetails
+            }
+          }
+        }
       }
     }
   `,
@@ -106,7 +122,6 @@ const mutations = {
     ${USER_DETAILS}
     ${ORDER_DETAILS}
     ${ORDER_ITEM_DETAILS}
-    ${PRODUCT_DETAILS}
     ${PRODUCT_DETAILS}
     ${ADDRESS_DETAILS}
     mutation(
@@ -264,7 +279,7 @@ const mutations = {
     mutation(
       $category_id: String!
     ) {
-      deleteOneCategory(query: { 
+      deleteOneCategory(query: {
         category_id: $category_id
       } ) {
         ...CategoryDetails
@@ -593,7 +608,7 @@ const mutations = {
       $email: String!,
       $address_id: String,
       $phone: String,
-      $price: Int!
+      $price: Int
     ) {
       updateOneOrder(
         query: { order_id: $order_id },
@@ -620,7 +635,40 @@ const mutations = {
         }
       }
     }
-  `
+  `,
+  AddPickUpDetailsToOrder: gql`
+  ${ORDER_DETAILS}
+  ${DELIVERY_DETAILS}
+  mutation(
+    $order_id: String!,
+    $delivery_id: String!,
+    $firstName: String!,
+    $lastName: String!,
+    $email: String!,
+    $phone: String
+  ) {
+    updateOneOrder(
+      query: { order_id: $order_id },
+      set: {
+        delivery: {
+          link: "delivery_id",
+          create: {
+            delivery_id: $delivery_id,
+            firstName: $firstName,
+            lastName: $lastName,
+            email: $email,
+            phone: $phone
+          }
+        }
+      }
+    ) {
+      ...OrderDetails,
+      delivery {
+        ...DeliveryDetails
+      }
+    }
+  }
+`
 };
 
 export default mutations;
