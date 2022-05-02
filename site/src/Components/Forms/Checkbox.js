@@ -35,10 +35,10 @@ const Checkbox = ({ value, label, handleChange, size, disabled }) => {
 };
 
 Checkbox.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
-  size: PropTypes.string.isRequired,
+  size: PropTypes.string,
   disabled: PropTypes.bool
 };
 

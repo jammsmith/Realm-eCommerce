@@ -68,7 +68,6 @@ const ProductEdit = ({
       value: subCat.name
     }));
   };
-  console.log('fields', fields);
 
   return (
     <EditInventorySection>

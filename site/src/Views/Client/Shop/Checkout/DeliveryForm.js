@@ -80,7 +80,7 @@ DeliveryForm.propTypes = {
   dbUser: PropTypes.object.isRequired,
   updateDeliveryDetails: PropTypes.func.isRequired,
   updateCheckoutCompletion: PropTypes.func.isRequired,
-  willCustomerPickUpInStore: PropTypes.bool.isRequired
+  willCustomerPickUpInStore: PropTypes.object.isRequired
 };
 
 export default DeliveryForm;

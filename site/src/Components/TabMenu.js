@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab, Box } from '@mui/material';
 import uniqueString from 'unique-string';
@@ -31,8 +31,13 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired
 };
 
-const TabMenu = ({ items }) => {
-  const [value, setValue] = useState(0);
+const TabMenu = ({ items, initialItem }) => {
+  const values = {
+    personal: 0,
+    delivery: 1,
+    orders: 2
+  };
+  const [value, setValue] = useState(values[initialItem] || 0);
   const { isXs, isSm } = useBreakpoints();
 
   const handleChange = (event, newValue) => {
@@ -76,6 +81,11 @@ const TabMenu = ({ items }) => {
       }
     </Box>
   );
+};
+
+TabMenu.propTypes = {
+  items: PropTypes.array.isRequired,
+  initialItem: PropTypes.string
 };
 
 export default TabMenu;

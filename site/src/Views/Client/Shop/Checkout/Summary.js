@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
@@ -12,55 +11,30 @@ import { ORDER_BY_PAYMENT_INTENT } from '../../../../graphql/queries.js';
 import { isAuthenticated } from '../../../../helpers/auth.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
+import { OrderContext } from '../../../../context/OrderContext.js';
 
 // Styled Components
 import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponents.js';
 
-const Summary = ({ urlParams }) => {
+const Summary = () => {
   const app = useContext(RealmAppContext);
   const { setCurrency } = useContext(CurrencyContext);
+  const { activeOrder, setActiveOrder } = useContext(OrderContext);
 
-  const history = useHistory();
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [message, setMessage] = useState('');
-  const [order, setOrder] = useState();
+
+  const history = useHistory();
 
   const [getOrder] = useLazyQuery(ORDER_BY_PAYMENT_INTENT, {
     onCompleted: (data) => {
-      setOrder(data.order);
+      setActiveOrder(data.order);
     }
   });
+
   const [updateUser] = useDDMutation(mutations.UpdateUser);
   const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
   const [updateAddress] = useDDMutation(mutations.UpdateAddress);
-
-  useEffect(() => {
-    const retrievePaymentIntent = async () => {
-      const intent = await app.currentUser.functions.stripe_retrievePaymentIntent(urlParams.paymentIntentId);
-      setPaymentIntent(intent);
-      setCurrency(intent.currency.toUpperCase());
-    };
-    retrievePaymentIntent();
-  }, [urlParams, app.currentUser, setCurrency]);
-
-  useEffect(() => {
-    if (paymentIntent) {
-      switch (paymentIntent.status) {
-        case 'succeeded':
-          getOrder({ variables: { paymentIntentId: paymentIntent.id } });
-          setMessage('Thank you! Your payment was successful!');
-          break;
-        case 'processing':
-          setMessage('Your payment is processing.');
-          break;
-        case 'requires_payment_method':
-          setMessage('Your payment was not successful, please try again.');
-          break;
-        default: setMessage('Something unusual happened. Please contact Doves and Dandys to check the status of your payment.');
-          break;
-      }
-    }
-  }, [paymentIntent, getOrder]);
 
   const handleRegister = async (e, delivery) => {
     e.preventDefault();
@@ -106,13 +80,54 @@ const Summary = ({ urlParams }) => {
     history.push({ pathname: '/login', state: { form: 'register' } });
   };
 
+  // Retrieve the payment intent object using the payment intent id provided by stripe in the url params
+  const getPaymentIntent = useCallback(async () => {
+    try {
+      const paymentIntentId = new URLSearchParams(window.location.search).get(
+        'payment_intent'
+      );
+      if (paymentIntentId) {
+        const intent = await app.currentUser.functions.stripe_retrievePaymentIntent(paymentIntentId);
+        setPaymentIntent(intent);
+        setCurrency(intent.currency.toUpperCase());
+        history.replace('/shop/checkout/summary');
+      } else {
+        history.replace('/shop/cart');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [history, app.currentUser]);
+
+  useEffect(() => getPaymentIntent(), [getPaymentIntent]);
+
+  // Show a message to the customer based on their order status
+  useEffect(() => {
+    if (paymentIntent) {
+      switch (paymentIntent.status) {
+        case 'succeeded':
+          getOrder({ variables: { paymentIntentId: paymentIntent.id } });
+          setMessage('Thank you! Your payment was successful!');
+          break;
+        case 'processing':
+          setMessage('Your payment is processing.');
+          break;
+        case 'requires_payment_method':
+          setMessage('Your payment was not successful, please try again.');
+          break;
+        default: setMessage('Something unusual happened. Please contact Doves and Dandys to check the status of your payment.');
+          break;
+      }
+    }
+  }, [paymentIntent]);
+
   return (
     <SummaryWrapper>
       <SummaryItem>
         <h4 style={{ margin: '1rem 0' }}>{message}</h4>
       </SummaryItem>
       {
-        order ? (
+        paymentIntent && activeOrder ? (
           <>
             {
               isAuthenticated(app.currentUser) ? (
@@ -120,7 +135,7 @@ const Summary = ({ urlParams }) => {
                   <Text>Click below to view the order in your account, or access any time by logging in</Text>
                   <ActionButton
                     text='view in my account'
-                    linkTo='/my-account'
+                    linkTo={{ pathname: '/my-account', state: { form: 'orders' } }}
                     fullWidth
                   />
                 </SummaryItem>
@@ -129,23 +144,23 @@ const Summary = ({ urlParams }) => {
                   <Text>Register an account to track your order and save your delivery details for next time</Text>
                   <ActionButton
                     text='Click to register!'
-                    onClick={(e) => handleRegister(e, order.delivery)}
+                    onClick={(e) => handleRegister(e, activeOrder.delivery)}
                     fullWidth
                   />
                 </SummaryItem>
               )
             }
-            <CartSummary order={order} />
+            <CartSummary />
             {
               paymentIntent.status === 'succeeded' &&
                 <SummaryItem>
                   <SummaryRow>
                     <Text>Order Reference Number:</Text>
-                    <strong>{order.order_id}</strong>
+                    <strong>{activeOrder.order_id}</strong>
                   </SummaryRow>
                   <SummaryRow>
                     <Text>You will receive a confirmation of your payment by email to:</Text>
-                    <strong>{order.delivery.email}</strong>
+                    <strong>{activeOrder.delivery && activeOrder.delivery.email}</strong>
                   </SummaryRow>
                 </SummaryItem>
             }
@@ -154,10 +169,6 @@ const Summary = ({ urlParams }) => {
       }
     </SummaryWrapper>
   );
-};
-
-Summary.propTypes = {
-  urlParams: PropTypes.object.isRequired
 };
 
 export default Summary;

@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import CartProduct from '../Cart/CartProduct.js';
 import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import Heading from '../../../../Components/Headings/Heading.js';
+import LoadingView from '../../../../Components/LoadingView.js';
 import useScrollToTop from '../../../../hooks/useScrollToTop.js';
-import { getCartSubTotal } from '../../../../helpers/cart.js';
 import { getCurrencySymbol } from '../../../../helpers/price.js';
 import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
-import { RealmAppContext } from '../../../../realmApolloClient.js';
+import { OrderContext } from '../../../../context/OrderContext.js';
 
 // Styled Components
 import {
@@ -23,145 +23,121 @@ import {
 } from '../Cart/StyledComponents.js';
 
 // A view of all products that have been added to basket
-const CartSummary = ({
-  order,
-  updateActiveOrder,
-  deliveryCountry,
-  isDeliveryFormComplete,
-  deliveryZone,
-  willCustomerPickUpInStore
-}) => {
+const CartSummary = ({ willCustomerPickUpInStore }) => {
   useScrollToTop();
-  const app = useContext(RealmAppContext);
+
   const { currency } = useContext(CurrencyContext);
+  const {
+    activeOrder,
+    subtotal,
+    deliveryPrice
+  } = useContext(OrderContext);
 
-  const successfulPayment = order && order.paymentStatus === 'successful';
-  const failedPayment = order && order.paymentStatus === 'failed';
-  const orderInCheckout = order && order.orderItems && order.orderItems.length && order.paymentStatus === 'notAttempted';
+  const [completedOrderTotals, setCompletedOrderTotals] = useState({});
 
-  const [deliveryPrice, setDeliveryPrice] = useState(0);
-  const [subTotal, setSubTotal] = useState(0);
+  const successfulPayment =
+    activeOrder &&
+    activeOrder.paymentStatus === 'successful';
+  const failedPayment =
+    activeOrder &&
+    activeOrder.paymentStatus === 'failed';
+  const orderInCheckout =
+    activeOrder &&
+    activeOrder.orderItems &&
+    activeOrder.orderItems.length &&
+    activeOrder.paymentStatus === 'notAttempted';
 
   let freeDelivery;
   if (orderInCheckout || failedPayment) {
     const freeDeliveryConstraints = getFreeDeliveryConstraints();
-    freeDelivery = !!(subTotal >= freeDeliveryConstraints[currency] || willCustomerPickUpInStore.current);
+    freeDelivery = !!(subtotal >= freeDeliveryConstraints[currency] || willCustomerPickUpInStore.current);
   }
 
-  const getDeliveryZone = useCallback(async () => {
-    const response = await window.fetch('/PostalCountries/countries.json');
-    const jsonResponse = await response.json();
+  // Get the actual paid totals if an order is completed and in final Summary stage
+  const getCompletedOrderTotals = useCallback(() => {
+    const { delivery } = activeOrder;
+    const amountPaid = activeOrder.stripeAmountPaid / 100;
 
-    const requestedCountry = await jsonResponse.find(item => item.country === deliveryCountry);
-    return requestedCountry.deliveryZone;
-  }, [deliveryCountry]);
+    setCompletedOrderTotals({
+      completedTotal: amountPaid,
+      completedSubtotal: amountPaid - delivery.price,
+      completedDeliveryPrice: delivery.price
+    });
+  }, [activeOrder]);
 
-  const getDeliveryPrice = useCallback(async () => {
-    if (order && order.orderItems) {
-      deliveryZone.current = await getDeliveryZone();
-      const price = await app.currentUser.functions.helper_getDeliveryPrice(
-        order.orderItems,
-        deliveryZone.current,
-        currency
-      );
-      setDeliveryPrice(price);
-    }
-  }, [order, deliveryZone, getDeliveryZone, currency, app.currentUser]);
-
-  // If order has already completed (in Summary stage) then populate the order details, otherwise calculate details
   useEffect(() => {
-    if (successfulPayment) {
-      // populate summary details from successful order
-      const { delivery } = order;
-      const amountPaid = order.stripeAmountPaid / 100;
-      setSubTotal(delivery ? amountPaid - delivery.price : amountPaid);
-      delivery && setDeliveryPrice(delivery.price || 0);
-      //
-    } else if (failedPayment) {
-      // populate summary details from failed order + re-calculate delivery amount
-      setSubTotal(() => getCartSubTotal(order, currency));
-      getDeliveryPrice();
-      //
-    } else if (orderInCheckout) {
-      // calculate summary details and populate form. Check whether or not customer will pay delivery
-      const cartSubTotal = getCartSubTotal(order, currency);
-      setSubTotal(cartSubTotal);
-
-      if (isDeliveryFormComplete && deliveryCountry) {
-        getDeliveryPrice();
-      }
+    if (successfulPayment && activeOrder.orderItems) {
+      getCompletedOrderTotals();
     }
-  }, [
-    order,
-    currency,
-    deliveryCountry,
-    getDeliveryPrice,
-    isDeliveryFormComplete,
-    successfulPayment,
-    failedPayment,
-    orderInCheckout
-  ]);
+  }, [successfulPayment, activeOrder]);
+
+  const { completedTotal, completedSubtotal, completedDeliveryPrice } = completedOrderTotals;
 
   return (
     <CartWrapper isMinimised>
       <ProductListWrapper>
         <Heading text='Order Summary' size='small' />
         <SectionSpacer />
-        <>
-          {order.orderItems.map((item, index) => (
-            <CartProduct
-              key={index}
-              id={item._id}
-              order={order}
-              updateActiveOrder={updateActiveOrder}
-              orderItem={item}
-              currency={currency}
-              isMinimised
-            />
-          )
-          )}
-          <TotalsWrapper>
-            <Spacer />
-            <TotalsRows>
-              <TotalsLine>
-                <h6>Subtotal</h6>
+        {
+          activeOrder && activeOrder.orderItems ? (
+            <>
+              {activeOrder.orderItems.map((item, index) => (
+                <CartProduct
+                  key={index}
+                  orderItem={item}
+                  isMinimised
+                />
+              )
+              )}
+              <TotalsWrapper>
                 <Spacer />
-                <h6>{`${getCurrencySymbol(currency)}${subTotal}`}</h6>
-              </TotalsLine>
-              <TotalsLine>
-                <h6>Delivery</h6>
-                <Spacer />
-                <DeliveryPrice isDeliveryFree={freeDelivery}>
-                  {!deliveryPrice ? '' : `${getCurrencySymbol(currency)}${deliveryPrice}`}
-                </DeliveryPrice>
-                {freeDelivery && <h6>FREE</h6>}
-              </TotalsLine>
-              <TotalsLine>
-                <h6><strong>Total</strong></h6>
-                <Spacer />
-                <h6>
-                  <strong>
-                    {`${getCurrencySymbol(currency)}
-                      ${freeDelivery
-                          ? subTotal
-                          : subTotal + deliveryPrice}`}
-                  </strong>
-                </h6>
-              </TotalsLine>
-            </TotalsRows>
-          </TotalsWrapper>
-        </>
+                <TotalsRows>
+                  <TotalsLine>
+                    <h6>Subtotal</h6>
+                    <Spacer />
+                    <h6>{`${getCurrencySymbol(currency)}${completedSubtotal || subtotal}`}</h6>
+                  </TotalsLine>
+                  <TotalsLine>
+                    <h6>Delivery</h6>
+                    <Spacer />
+                    <DeliveryPrice isDeliveryFree={freeDelivery}>
+                      {
+                        !deliveryPrice && !completedDeliveryPrice
+                          ? ''
+                          : `${getCurrencySymbol(currency)}${completedDeliveryPrice || deliveryPrice}`
+                      }
+                    </DeliveryPrice>
+                    {freeDelivery && <h6>FREE</h6>}
+                  </TotalsLine>
+                  <TotalsLine>
+                    <h6><strong>Total</strong></h6>
+                    <Spacer />
+                    <h6>
+                      <strong>
+                        {getCurrencySymbol(currency)}
+                      </strong>
+                      {
+                        completedTotal
+                          ? <strong>{completedTotal}</strong>
+                          : freeDelivery
+                            ? <strong>{subtotal}</strong>
+                            : <strong>{subtotal + deliveryPrice}</strong>
+                      }
+                    </h6>
+                  </TotalsLine>
+                </TotalsRows>
+              </TotalsWrapper>
+            </>
+          ) : <LoadingView />
+        }
+
       </ProductListWrapper>
     </CartWrapper>
   );
 };
 
 CartSummary.propTypes = {
-  order: PropTypes.object.isRequired,
-  updateActiveOrder: PropTypes.func,
-  deliveryCountry: PropTypes.string,
-  isDeliveryFormComplete: PropTypes.bool,
-  deliveryZone: PropTypes.object
+  willCustomerPickUpInStore: PropTypes.object
 };
 
 export default CartSummary;

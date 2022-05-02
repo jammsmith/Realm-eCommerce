@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import ActionButton from '../../../../Components/ActionButton.js';
@@ -6,6 +6,8 @@ import SectionSpacer from '../../../../Components/SectionSpacer.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
 import { getPriceInCurrency, getCurrencySymbol } from '../../../../helpers/price.js';
+import { CurrencyContext } from '../../../../context/CurrencyContext.js';
+import { OrderContext } from '../../../../context/OrderContext.js';
 
 import {
   CartLine,
@@ -21,7 +23,10 @@ import {
 } from './StyledComponents.js';
 
 // A single product item inside the cart
-const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currency }) => {
+const CartProduct = ({ orderItem, isMinimised }) => {
+  const { activeOrder, setActiveOrder } = useContext(OrderContext);
+  const { currency } = useContext(CurrencyContext);
+
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [quantity, setQuantity] = useState();
   const [productTotal, setProductTotal] = useState();
@@ -54,7 +59,7 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currenc
   const [updateItemInOrder] = useDDMutation(mutations.UpdateItemInOrder);
 
   const handleRemoveItem = async () => {
-    const updatedOrderItems = order.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
+    const updatedOrderItems = activeOrder.orderItems.filter(item => item.orderItem_id !== orderItem.orderItem_id);
     const orderItemIds = updatedOrderItems.map(item => item.orderItem_id);
 
     try {
@@ -65,11 +70,11 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currenc
       });
       const { data } = await updateOrderItemsInOrder({
         variables: {
-          order_id: order.order_id,
+          order_id: activeOrder.order_id,
           orderItems: orderItemIds
         }
       });
-      updateActiveOrder(data.updateOneOrder);
+      setActiveOrder(data.updateOneOrder);
     } catch (err) {
       throw new Error('Failed to delete item from order');
     }
@@ -85,7 +90,7 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currenc
             quantity
           }
         });
-        updateActiveOrder(data.updateOneOrderItem.order);
+        setActiveOrder(data.updateOneOrderItem.order);
       } else {
         handleRemoveItem();
       }
@@ -130,11 +135,8 @@ const CartProduct = ({ order, updateActiveOrder, orderItem, isMinimised, currenc
 };
 
 CartProduct.propTypes = {
-  order: PropTypes.object.isRequired,
-  updateActiveOrder: PropTypes.func,
   orderItem: PropTypes.object.isRequired,
-  isMinimised: PropTypes.bool,
-  currency: PropTypes.string.isRequired
+  isMinimised: PropTypes.bool
 };
 
 export default CartProduct;

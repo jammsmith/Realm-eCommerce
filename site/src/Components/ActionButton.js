@@ -53,7 +53,10 @@ ActionButton.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]),
-  linkTo: PropTypes.string,
+  linkTo: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
+  ]),
   variant: PropTypes.string,
   customStyles: PropTypes.object,
   onClick: PropTypes.func,

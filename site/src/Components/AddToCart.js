@@ -1,5 +1,5 @@
 // External imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { IoCartOutline, IoMailOutline } from 'react-icons/io5';
 import { useHistory } from 'react-router-dom';
@@ -11,6 +11,7 @@ import mutations from '../graphql/mutations.js';
 import useDDMutation from '../hooks/useDDMutation.js';
 import fonts from '../styles/fonts.js';
 import colours from '../styles/colours.js';
+import { OrderContext } from '../context/OrderContext.js';
 
 const { standard } = fonts;
 const { dark, light } = colours;
@@ -18,13 +19,13 @@ const { dark, light } = colours;
 //
 const AddToCart = ({
   product,
-  activeOrder,
-  updateActiveOrder,
   addingToCart,
   updateAddingToCart,
   currentUser,
   updateCurrentUser
 }) => {
+  const { activeOrder, setActiveOrder } = useContext(OrderContext);
+
   const history = useHistory();
   const [productInCart, setProductInCart] = useState(false);
   const [buttonText, setButtonText] = useState('');
@@ -94,7 +95,7 @@ const AddToCart = ({
             orderItems: orderItemIds
           }
         });
-        updateActiveOrder(data.updateOneOrder);
+        setActiveOrder(data.updateOneOrder);
         updateAddingToCart(false);
       } catch (err) {
         throw new Error(`Failed to add item to existing order. Error: ${err}`);
@@ -124,7 +125,7 @@ const AddToCart = ({
             orders: [...existingOrderIds, newOrderId]
           }
         });
-        updateActiveOrder(data.insertOneOrder);
+        setActiveOrder(data.insertOneOrder);
         updateAddingToCart(false);
       } catch (err) {
         throw new Error(`Failed to add new order for existing customer. Error: ${err}`);
@@ -148,7 +149,7 @@ const AddToCart = ({
             dateCreated: new Date(Date.now())
           }
         });
-        updateActiveOrder(data.insertOneOrder.customer.orders[0]);
+        setActiveOrder(data.insertOneOrder.customer.orders[0]);
         updateAddingToCart(false);
         await updateCurrentUser(data.insertOneOrder.customer);
       } catch (err) {
@@ -183,9 +184,7 @@ AddToCart.propTypes = {
   currentUser: PropTypes.object.isRequired,
   updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
-  updateAddingToCart: PropTypes.func.isRequired,
-  activeOrder: PropTypes.object,
-  updateActiveOrder: PropTypes.func.isRequired
+  updateAddingToCart: PropTypes.func.isRequired
 };
 
 export default AddToCart;

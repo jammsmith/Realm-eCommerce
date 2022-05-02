@@ -10,6 +10,7 @@ import UserMessage from '../../../../Components/UserMessage.js';
 import SelectInput from '../../../../Components/Forms/SelectInput.js';
 import useDDMutation from '../../../../hooks/useDDMutation.js';
 import mutations from '../../../../graphql/mutations.js';
+import { OrderContext } from '../../../../context/OrderContext.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
@@ -18,18 +19,17 @@ import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
 import { CheckoutItem, PaymentFormItems } from './StyledComponents.js';
 
 const PaymentForm = ({
-  activeOrder,
   deliveryDetails,
   additionalInfo,
   checkoutFormsComplete,
   updateCheckoutCompletion,
   updateOrder,
   paymentIntent,
-  deliveryZone,
   willCustomerPickUpInStore
 }) => {
   const app = useContext(RealmAppContext);
   const { currency, setCurrency } = useContext(CurrencyContext);
+  const { activeOrder, deliveryZone } = useContext(OrderContext);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -53,14 +53,14 @@ const PaymentForm = ({
       setIsLoading(true);
 
       const toBeDelivered = !willCustomerPickUpInStore.current;
-
       // If delivering or currency has changed after payment intent was created then make sure
       // payment intent is updated with currency & correct amount (including delivery)
+
       if (toBeDelivered || currency.toLowerCase() !== paymentIntent.currency) {
         const updatedTotals = await app.currentUser.functions.stripe_updatePaymentTotals(
           paymentIntent.id,
           activeOrder.orderItems,
-          deliveryZone,
+          deliveryZone.current,
           currency,
           getFreeDeliveryConstraints()
         );
@@ -123,7 +123,7 @@ const PaymentForm = ({
       const { error: stripeError } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: 'http://localhost:3000/shop/checkout'
+          return_url: 'http://localhost:3000/shop/checkout/summary'
         }
       });
 
@@ -200,15 +200,13 @@ const PaymentForm = ({
 };
 
 PaymentForm.propTypes = {
-  activeOrder: PropTypes.object.isRequired,
   deliveryDetails: PropTypes.object.isRequired,
   additionalInfo: PropTypes.string.isRequired,
   checkoutFormsComplete: PropTypes.bool.isRequired,
   updateCheckoutCompletion: PropTypes.func.isRequired,
   updateOrder: PropTypes.func.isRequired,
   paymentIntent: PropTypes.object.isRequired,
-  deliveryZone: PropTypes.object,
-  willCustomerPickUpInStore: PropTypes.bool.isRequired
+  willCustomerPickUpInStore: PropTypes.object.isRequired
 };
 
 export default PaymentForm;

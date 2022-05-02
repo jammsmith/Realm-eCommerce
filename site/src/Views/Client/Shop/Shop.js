@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import Categories from './Categories.js';
@@ -7,8 +7,8 @@ import Products from './Products.js';
 import Product from './Product/Product.js';
 import Cart from './Cart/Cart.js';
 import Checkout from './Checkout/Checkout.js';
+import Summary from './Checkout/Summary.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
-import { getCartSubTotal } from '../../../helpers/cart.js';
 import { RealmAppContext } from '../../../realmApolloClient.js';
 import { CurrencyContext } from '../../../context/CurrencyContext.js';
 import useScrollToTop from '../../../hooks/useScrollToTop.js';
@@ -19,36 +19,18 @@ const stripePromise = loadStripe('pk_test_51JssHLK4OzaV2zFUvwSBOreLFJyb8YuJT6rZh
 
 const Shop = () => {
   useScrollToTop();
+
   const app = useContext(RealmAppContext);
   const { currency } = useContext(CurrencyContext);
 
-  const [activeOrder, setActiveOrder] = useState();
   const [addingToCart, setAddingToCart] = useState({
     isLoading: false,
     productId: ''
   });
 
-  useEffect(() => {
-    const { dbUser } = app.currentUser;
-    if (dbUser && !activeOrder) {
-      if (dbUser.orders && dbUser.orders.length) {
-        const order = dbUser.orders.find(order => order.orderStatus === 'pendingInCart');
-        if (order && order.orderItems && order.orderItems.length) {
-          const subTotal = getCartSubTotal(order);
-          setActiveOrder({ ...order, subTotal });
-        } else {
-          setActiveOrder({});
-        }
-      }
-    }
-  }, [app.currentUser, activeOrder]);
-
   // Handlers
   const updateCurrentUser = async (user) => {
     await app.setCurrentUser(prev => ({ ...prev, dbUser: user }));
-  };
-  const updateActiveOrder = (order) => {
-    setActiveOrder(order);
   };
   const updateAddingToCart = (isLoading, productId) => {
     setAddingToCart({
@@ -59,8 +41,6 @@ const Shop = () => {
 
   // Accumulate add to cart props into single object
   const props = {
-    activeOrder: activeOrder,
-    updateActiveOrder,
     addingToCart,
     updateAddingToCart,
     updateCurrentUser,
@@ -96,11 +76,7 @@ const Shop = () => {
           <Route
             exact
             path='/shop/cart'
-            render={() =>
-              <Cart
-                activeOrder={activeOrder}
-                updateActiveOrder={updateActiveOrder}
-              />}
+            component={Cart}
           />
           <Route
             exact
@@ -108,9 +84,12 @@ const Shop = () => {
             render={() =>
               <Checkout
                 stripePromise={stripePromise}
-                activeOrder={activeOrder}
-                updateActiveOrder={updateActiveOrder}
               />}
+          />
+          <Route
+            exact
+            path='/shop/checkout/summary'
+            component={Summary}
           />
         </Switch>
         <SectionSpacer spaceBelow />

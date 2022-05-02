@@ -29,6 +29,7 @@ exports = async (paymentIntentId, orderItems, deliveryZone, currency, freeDelive
       amount: orderTotal * 100,
       currency: currency.toLowerCase()
     });
+    console.log('stringifiedData', stringifiedData);
 
     const paymentIntent = await axios.post(
       `https://api.stripe.com/v1/payment_intents/${paymentIntentId}`,

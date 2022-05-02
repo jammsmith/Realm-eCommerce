@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import PersonalDetails from './PersonalDetails.js';
 import DeliveryDetails from './DeliveryDetails.js';
@@ -9,6 +10,8 @@ import { RealmAppContext } from '../../../realmApolloClient.js';
 const MyAccount = () => {
   const app = useContext(RealmAppContext);
   const { dbUser } = app.currentUser;
+
+  const { state } = useLocation();
 
   const updateDbUser = async (updatedUser) => {
     await app.setCurrentUser(user => ({
@@ -38,7 +41,7 @@ const MyAccount = () => {
   return (
     <>
       <div style={{ minHeight: '500px' }}>
-        <TabMenu items={sections} />
+        <TabMenu items={sections} initialItem={state && (state.form || null)} />
       </div>
     </>
   );
