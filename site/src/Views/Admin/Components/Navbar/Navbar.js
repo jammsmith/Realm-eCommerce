@@ -24,7 +24,7 @@ const Navbar = () => {
 
   return (
     <Wrapper>
-      <MainText>Admin Dashboard</MainText>
+      <MainText>Doves & Dandys Dashboard</MainText>
       <ButtonsWrapper>
         <ActionButton
           text='view customer site'

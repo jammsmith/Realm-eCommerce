@@ -275,7 +275,7 @@ export const ALL_ORDERS = gql`
   }
 `;
 
-export const ADMIN_ORDERS = gql`
+export const ADMIN_ACTIVE_ORDERS = gql`
   ${ORDER_DETAILS}
   ${ORDER_ITEM_DETAILS}
   ${PRODUCT_DETAILS}
@@ -293,6 +293,30 @@ export const ADMIN_ORDERS = gql`
           { orderStatus_ne: "archived" }
         ]
       },
+      sortBy: DATEPAID_DESC
+    ) {
+      ...OrderDetails
+      orderItems {
+        ...OrderItemDetails
+        product {
+          ...ProductDetails
+        }
+      }
+      customer {
+        ...UserDetails
+      }
+    }
+  }
+`;
+
+export const ADMIN_ARCHIVED_ORDERS = gql`
+  ${ORDER_DETAILS}
+  ${ORDER_ITEM_DETAILS}
+  ${PRODUCT_DETAILS}
+  ${USER_DETAILS}
+  query {
+    orders(
+      query: { orderStatus: "archived" },
       sortBy: DATEPAID_DESC
     ) {
       ...OrderDetails

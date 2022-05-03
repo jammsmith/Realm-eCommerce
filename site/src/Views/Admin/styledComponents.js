@@ -31,6 +31,11 @@ export const InventoryWrapper = styled(GridItem)`
   grid-row: 1 / 2;
 `;
 
+export const ArchiveWrapper = styled(GridItem)`
+  grid-column: 7 / 14;
+  grid-row: 2 / 3;
+`;
+
 export const InventoryButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
