@@ -14,6 +14,9 @@ import { OrderContext } from '../../../../context/OrderContext.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
+import { isAuthenticated } from '../../../../helpers/auth.js';
+import { getUpdatedObjectFields } from '../../../../helpers/global.js';
+import { getDefaultAddress } from '../../../../helpers/address.js';
 
 // Styled components
 import { CheckoutItem, PaymentFormItems } from './StyledComponents.js';
@@ -37,6 +40,8 @@ const PaymentForm = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const [createAddress] = useDDMutation(mutations.CreateAddress);
+  const [updateAddress] = useDDMutation(mutations.UpdateAddress);
+  const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
   const [addDeliveryDetailsToOrder] = useDDMutation(mutations.AddDeliveryDetailsToOrder);
   const [addPickUpDetailsToOrder] = useDDMutation(mutations.AddPickUpDetailsToOrder);
 
@@ -52,9 +57,27 @@ const PaymentForm = ({
 
       setIsLoading(true);
 
-      const toBeDelivered = !willCustomerPickUpInStore.current;
+      // Seperate address and delivery fields
+      const addressFields = {
+        line1: deliveryDetails.line1,
+        line2: deliveryDetails.line2,
+        city: deliveryDetails.city,
+        county: deliveryDetails.county,
+        postcode: deliveryDetails.postcode,
+        country: deliveryDetails.country,
+        isDefault: isAuthenticated(app.currentUser)
+      };
+      const deliveryFields = {
+        firstName: deliveryDetails.firstName,
+        lastName: deliveryDetails.lastName,
+        email: deliveryDetails.email,
+        phone: deliveryDetails.phone,
+        price: deliveryDetails.price
+      };
+
       // If delivering or currency has changed after payment intent was created then make sure
-      // payment intent is updated with currency & correct amount (including delivery)
+      // payment intent is updated with currency & correct amount (including delivery price)
+      const toBeDelivered = !willCustomerPickUpInStore.current;
 
       if (toBeDelivered || currency.toLowerCase() !== paymentIntent.currency) {
         const updatedTotals = await app.currentUser.functions.stripe_updatePaymentTotals(
@@ -64,7 +87,7 @@ const PaymentForm = ({
           currency,
           getFreeDeliveryConstraints()
         );
-        deliveryDetails.price = updatedTotals ? updatedTotals.deliveryTotal : 0;
+        deliveryFields.price = updatedTotals ? updatedTotals.deliveryTotal : 0;
       }
 
       // Update additional order info
@@ -76,39 +99,48 @@ const PaymentForm = ({
 
       await updateOrder({ variables });
 
-      if (toBeDelivered) {
-        console.log('toBeDelivered', toBeDelivered);
-        let addressId = toBeDelivered ? deliveryDetails.address_id : null;
+      let addressId = deliveryDetails.address_id || null;
 
+      if (toBeDelivered) {
         if (!addressId || addressId === '') {
+          // No address stored -> add a new address and assign to user if they're logged in
           const { data } = await createAddress({
             variables: {
               address_id: `address-${await uniqueString()}`,
-              line1: deliveryDetails.line1,
-              line2: deliveryDetails.line2,
-              city: deliveryDetails.city,
-              county: deliveryDetails.county,
-              postcode: deliveryDetails.postcode,
-              country: deliveryDetails.country
+              ...addressFields
             }
           });
           addressId = data.insertOneAddress.address_id;
 
-          await addDeliveryDetailsToOrder({
-            variables: {
-              order_id: deliveryDetails.order_id,
-              delivery_id: deliveryDetails.delivery_id,
-              address_id: addressId,
-              firstName: deliveryDetails.firstName,
-              lastName: deliveryDetails.lastName,
-              email: deliveryDetails.email,
-              phone: deliveryDetails.phone,
-              price: deliveryDetails.price
-            }
-          });
+          // If user is logged in then save the new address as default address
+          if (isAuthenticated(app.currentUser)) {
+            const { dbUser } = app.currentUser;
+            const { data } = await updateUserAddresses({
+              variables: {
+                id: dbUser._id,
+                addresses: [addressId]
+              }
+            });
+            await app.setCurrentUser(user => ({
+              ...user,
+              dbUser: data.updateOneUser
+            }));
+          }
+        } else {
+          // Address is stored -> update it if it's been changed during checkout
+          const defaultAddress = getDefaultAddress(app.currentUser.dbUser.addresses);
+          const { updatedFields, hasUpdatedFields } = getUpdatedObjectFields(defaultAddress, addressFields);
+
+          if (hasUpdatedFields) {
+            await updateAddress({
+              variables: {
+                address_id: addressId,
+                ...updatedFields
+              }
+            });
+          }
         }
       } else {
-        console.log('toBeDelivered', toBeDelivered);
         await addPickUpDetailsToOrder({
           variables: {
             order_id: deliveryDetails.order_id,
@@ -120,6 +152,16 @@ const PaymentForm = ({
           }
         });
       }
+
+      // Set a delivery on the order even if it isn't being physically delivered
+      await addDeliveryDetailsToOrder({
+        variables: {
+          order_id: deliveryDetails.order_id,
+          delivery_id: deliveryDetails.delivery_id,
+          address_id: addressId,
+          ...deliveryFields
+        }
+      });
 
       // Confirm payment with Stripe
       const { error: stripeError } = await stripe.confirmPayment({

@@ -14,7 +14,8 @@ const PersonalDetailsForm = ({
   buttonText,
   successMessage,
   disableOnComplete,
-  requiredFields
+  requiredFields,
+  isCheckoutForm
 }) => {
   const [personalDetailsFields, setPersonalDetailsFields] = useState({
     firstName: dbUser.firstName || '',
@@ -26,13 +27,18 @@ const PersonalDetailsForm = ({
   const [loading, setLoading] = useState(false);
   const [formDisabled, setFormDisabled] = useState(false);
 
-  const handleFormComplete = useCallback(() => {
+  const handleFormComplete = useCallback(async (fields) => {
     setMessage({
       type: 'success',
       text: successMessage || 'Saved address details'
     });
-    setFormDisabled(true);
-  }, [successMessage]);
+    const formattedFields = formatUserDetails(fields);
+    await onValidDetails(formattedFields, 'personal');
+
+    if (disableOnComplete) {
+      setFormDisabled(true);
+    }
+  }, [successMessage, disableOnComplete, onValidDetails]);
 
   const handleInputChange = (e) => {
     setPersonalDetailsFields(prev => ({
@@ -48,11 +54,7 @@ const PersonalDetailsForm = ({
 
     if (isValid) {
       try {
-        const formattedFields = formatUserDetails(personalDetailsFields);
-        await onValidDetails(formattedFields, 'personal');
-        if (disableOnComplete) {
-          handleFormComplete();
-        }
+        await handleFormComplete(personalDetailsFields);
       } catch (err) {
         console.error('Save personal details failed. Error:', err);
         setMessage({
@@ -78,14 +80,14 @@ const PersonalDetailsForm = ({
   // Check initial values, if all required fields are filled then mark form as complete
   const initialValuesChecked = useRef(false);
   useEffect(() => {
-    if (initialValuesChecked.current === false) {
+    if (initialValuesChecked.current === false && isCheckoutForm) {
       const { isValid } = validateInputFields(personalDetailsFields, requiredFields);
-      if (disableOnComplete && isValid) {
-        handleFormComplete();
+      if (isValid) {
+        handleFormComplete(personalDetailsFields);
       }
       initialValuesChecked.current = true;
     }
-  }, [dbUser, disableOnComplete, handleFormComplete, personalDetailsFields, requiredFields, initialValuesChecked]);
+  }, [dbUser, disableOnComplete, handleFormComplete, personalDetailsFields, requiredFields, initialValuesChecked, isCheckoutForm]);
 
   return (
     <form>
@@ -158,7 +160,8 @@ PersonalDetailsForm.propTypes = {
   onEditting: PropTypes.func,
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,
-  disableOnComplete: PropTypes.bool
+  disableOnComplete: PropTypes.bool,
+  isCheckoutForm: PropTypes.bool
 };
 
 export default PersonalDetailsForm;

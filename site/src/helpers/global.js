@@ -12,3 +12,19 @@ export const getDateFromUTCString = (utcString) => {
   if (typeof utcString !== 'string') return undefined;
   return utcString.split('T')[0];
 };
+
+export const getUpdatedObjectFields = (originalObj, fieldsToCompare) => {
+  const updatedFields = {};
+
+  for (const field in fieldsToCompare) {
+    if (originalObj[field] !== fieldsToCompare[field]) {
+      updatedFields[field] = fieldsToCompare[field];
+    }
+  }
+  const hasUpdatedFields = !!(Object.keys(updatedFields).length);
+
+  return {
+    updatedFields,
+    hasUpdatedFields
+  };
+};

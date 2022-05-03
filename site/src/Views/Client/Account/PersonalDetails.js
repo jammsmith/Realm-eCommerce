@@ -34,7 +34,8 @@ const PersonalDetails = ({ dbUser, updateDbUser }) => {
 };
 
 PersonalDetails.propTypes = {
-  dbUser: PropTypes.object.isRequired
+  dbUser: PropTypes.object.isRequired,
+  updateDbUser: PropTypes.func.isRequired
 };
 
 export default PersonalDetails;

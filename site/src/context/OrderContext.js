@@ -4,8 +4,7 @@ import React, {
   useRef,
   useCallback,
   createContext,
-  useContext,
-  useMemo
+  useContext
 } from 'react';
 
 import { RealmAppContext } from '../realmApolloClient.js';
@@ -52,14 +51,10 @@ export const OrderContextProvider = ({ children }) => {
   }, [activeOrder, currency]);
 
   // If a delivery address is added to order, get the delivery price
-  const countriesJson = '/PostalCountries/countries.json';
-
-  const countries = useMemo(async () => {
-    const response = await window.fetch(countriesJson);
-    return await response.json();
-  }, [countriesJson]);
-
   const getDeliveryPrice = useCallback(async () => {
+    const response = await window.fetch('/PostalCountries/countries.json');
+    const countries = await response.json();
+
     const requestedCountry = await countries.find(item => item.country === deliveryCountry);
 
     if (requestedCountry) {
@@ -71,7 +66,7 @@ export const OrderContextProvider = ({ children }) => {
       setDeliveryPrice(price);
       deliveryZone.current = requestedCountry.deliveryZone;
     }
-  }, [deliveryCountry, deliveryZone, activeOrder.orderItems, currentUser, currency, countries]);
+  }, [deliveryCountry, deliveryZone, activeOrder.orderItems, currentUser, currency]);
 
   useEffect(() => getDeliveryPrice(), [getDeliveryPrice, deliveryCountry]);
 

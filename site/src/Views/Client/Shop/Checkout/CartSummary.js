@@ -29,6 +29,7 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
   const { currency } = useContext(CurrencyContext);
   const {
     activeOrder,
+    setActiveOrder,
     subtotal,
     deliveryPrice
   } = useContext(OrderContext);
@@ -72,6 +73,9 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
   }, [successfulPayment, activeOrder, getCompletedOrderTotals]);
 
   const { completedTotal, completedSubtotal, completedDeliveryPrice } = completedOrderTotals;
+
+  // Reset the active order on unmount
+  useEffect(() => () => setActiveOrder({}), [setActiveOrder]);
 
   return (
     <CartWrapper isMinimised>

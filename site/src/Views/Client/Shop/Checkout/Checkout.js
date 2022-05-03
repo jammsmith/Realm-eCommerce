@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Elements } from '@stripe/react-stripe-js';
 import uniqueString from 'unique-string';
@@ -40,6 +41,7 @@ const Checkout = ({ stripePromise }) => {
   });
 
   const willCustomerPickUpInStore = useRef(false);
+  const history = useHistory();
 
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
 
@@ -55,12 +57,14 @@ const Checkout = ({ stripePromise }) => {
     setDeliveryDetails(prev => ({ ...prev, ...update }));
   }, [setDeliveryDetails]);
 
-  // Set the order ID if there already is one
+  // Set the order ID or redirectback to cart if there is no available order
   useEffect(() => {
-    if (activeOrder) {
+    if (activeOrder && Object.keys(activeOrder).length) {
       updateDeliveryDetails({ order_id: activeOrder.order_id });
+    } else {
+      history.replace('/shop/cart');
     }
-  }, [activeOrder, updateDeliveryDetails]);
+  }, [activeOrder, updateDeliveryDetails, history]);
 
   useEffect(() => {
     if (deliveryFormComplete && deliveryDetails.country && deliveryDetails.country !== '') {
@@ -144,8 +148,8 @@ const Checkout = ({ stripePromise }) => {
       >
         <CheckoutFormsWrapper>
           <DeliveryForm
+            deliveryDetails={deliveryDetails}
             updateDeliveryDetails={updateDeliveryDetails}
-            dbUser={app.currentUser.dbUser}
             updateCheckoutCompletion={updateCheckoutCompletion}
             willCustomerPickUpInStore={willCustomerPickUpInStore}
           />

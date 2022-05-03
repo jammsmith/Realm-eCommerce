@@ -72,32 +72,33 @@ const Summary = () => {
         ...user,
         dbUser: updatedUser
       }));
+
+      // forward to register page to provide password etc
+      history.push({ pathname: '/login', state: { form: 'register' } });
     } catch (err) {
       throw new Error('Failed to update user with order details. Error:', err.message);
     }
-
-    // forward to register page to provide password etc
-    history.push({ pathname: '/login', state: { form: 'register' } });
   };
 
   // Retrieve the payment intent object using the payment intent id provided by stripe in the url params
+  const { stripe_retrievePaymentIntent: retrievePaymentIntent } = app.currentUser.functions;
   const getPaymentIntent = useCallback(async () => {
     try {
       const paymentIntentId = new URLSearchParams(window.location.search).get(
         'payment_intent'
       );
       if (paymentIntentId) {
-        const intent = await app.currentUser.functions.stripe_retrievePaymentIntent(paymentIntentId);
+        const intent = await retrievePaymentIntent(paymentIntentId);
         setPaymentIntent(intent);
         setCurrency(intent.currency.toUpperCase());
         history.replace('/shop/checkout/summary');
-      } else {
+      } else if (!paymentIntent) {
         history.replace('/shop/cart');
       }
     } catch (err) {
       console.error(err);
     }
-  }, [history, app.currentUser, setCurrency]);
+  }, [history, retrievePaymentIntent, setCurrency, paymentIntent]);
 
   useEffect(() => getPaymentIntent(), [getPaymentIntent]);
 

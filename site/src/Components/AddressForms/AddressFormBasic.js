@@ -17,7 +17,8 @@ const AddressFormBasic = ({
   buttonText,
   successMessage,
   disableOnComplete,
-  defaultAddress
+  defaultAddress,
+  isCheckoutForm
 }) => {
   const [addressFields, setAddressFields] = useState({
     address_id: defaultAddress ? defaultAddress.address_id : '',
@@ -36,13 +37,21 @@ const AddressFormBasic = ({
 
   const pickUpInStore = useRef(false);
 
-  const handleFormComplete = useCallback(() => {
+  const handleFormComplete = useCallback(async (fields) => {
     setMessage({
       type: 'success',
       text: successMessage || 'Saved address details'
     });
-    setFormDisabled(true);
-  }, [successMessage]);
+
+    const { address_id: addressId, ...fieldsToFormat } = fields;
+    const formattedFields = formatUserDetails(fieldsToFormat);
+
+    await onAddressValid({ ...formattedFields, address_id: addressId }, 'delivery');
+
+    if (disableOnComplete) {
+      setFormDisabled(true);
+    }
+  }, [successMessage, disableOnComplete, onAddressValid]);
 
   const handleInputChange = (e) => {
     setAddressFields(prev => ({
@@ -70,12 +79,7 @@ const AddressFormBasic = ({
           text: 'Address must include all fields marked as required (*)'
         });
       } else {
-        const { address_id: addressId, ...fieldsToFormat } = addressFields;
-        const formattedFields = formatUserDetails(fieldsToFormat);
-        onAddressValid({ ...formattedFields, address_id: addressId }, 'delivery');
-        if (disableOnComplete) {
-          handleFormComplete();
-        }
+        handleFormComplete(addressFields);
       }
     } catch (err) {
       throw new Error('Failed to save address. Error:', err);
@@ -124,7 +128,7 @@ const AddressFormBasic = ({
   //
   useEffect(() => {
     if (defaultAddress && disableOnComplete) {
-      handleFormComplete();
+      handleFormComplete(defaultAddress);
     }
   }, [defaultAddress, disableOnComplete, handleFormComplete]);
 
@@ -205,15 +209,19 @@ const AddressFormBasic = ({
           loading={loading}
           handleSubmit={handleSubmit}
           handleBackToEdit={handleBackToEdit}
-          pickUpInStore={pickUpInStore}
+          pickUpInStore={pickUpInStore.current}
         />
-        <CheckboxWrapper>
-          <Checkbox
-            label='Pick up in-store'
-            handleChange={handleStorePickUpChange}
-            value={pickUpInStore.current}
-          />
-        </CheckboxWrapper>
+        {
+          isCheckoutForm && (
+            <CheckboxWrapper>
+              <Checkbox
+                label='Pick up in-store'
+                handleChange={handleStorePickUpChange}
+                value={pickUpInStore.current}
+              />
+            </CheckboxWrapper>
+          )
+        }
       </form>
     ) : null
   );
@@ -226,7 +234,8 @@ AddressFormBasic.propTypes = {
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,
   disableOnComplete: PropTypes.bool,
-  defaultAddress: PropTypes.object
+  defaultAddress: PropTypes.object,
+  isCheckoutForm: PropTypes.bool
 };
 
 export default AddressFormBasic;

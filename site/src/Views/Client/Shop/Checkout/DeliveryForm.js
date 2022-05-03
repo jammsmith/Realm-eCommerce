@@ -1,23 +1,55 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import AddressFormBasic from '../../../../Components/AddressForms/AddressFormBasic.js';
 import PersonalDetailsForm from '../../../../Components/AddressForms/PersonalDetailsForm.js';
 import Heading from '../../../../Components/Headings/Heading.js';
 import { getDefaultAddress } from '../../../../helpers/address.js';
+import { isAuthenticated } from '../../../../helpers/auth.js';
+import { getUpdatedObjectFields } from '../../../../helpers/global.js';
+import { RealmAppContext } from '../../../../realmApolloClient.js';
+import mutations from '../../../../graphql/mutations.js';
+import useDDMutation from '../../../../hooks/useDDMutation.js';
 
 // Styled components
 import { CheckoutItem } from './StyledComponents.js';
 
-const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion, willCustomerPickUpInStore }) => {
-  const personalRequiredFields = ['firstName', 'lastName', 'email'];
+const DeliveryForm = ({
+  updateDeliveryDetails,
+  updateCheckoutCompletion,
+  willCustomerPickUpInStore
+}) => {
+  const { currentUser, setCurrentUser } = useContext(RealmAppContext);
 
-  const handleValidDetails = useCallback((fields, formType) => {
+  const [updateUser] = useDDMutation(mutations.UpdateUser);
+
+  const personalRequiredFields = ['firstName', 'lastName', 'email'];
+  const defaultAddress = getDefaultAddress(currentUser.dbUser.addresses);
+
+  const handleValidDetails = useCallback(async (fields, formType) => {
     updateDeliveryDetails(fields);
     if (formType) {
       updateCheckoutCompletion({ [`${formType}FormComplete`]: true });
     }
-  }, [updateDeliveryDetails, updateCheckoutCompletion]);
+
+    // if logged in user then update details if any have changed
+    if (isAuthenticated(currentUser)) {
+      const { updatedFields, hasUpdatedFields } = getUpdatedObjectFields(currentUser.dbUser, fields);
+
+      if (formType === 'personal' && hasUpdatedFields) {
+        const { data } = await updateUser({
+          variables: {
+            id: currentUser.dbUser._id,
+            ...updatedFields
+          }
+        });
+        await setCurrentUser(user => ({
+          ...user,
+          dbUser: data.updateOneUser
+        }));
+      }
+    }
+  }, [updateDeliveryDetails, updateCheckoutCompletion, currentUser, updateUser, setCurrentUser]);
 
   const handleEditDetails = useCallback((formType) => {
     updateCheckoutCompletion({ [`${formType}FormComplete`]: false });
@@ -28,20 +60,19 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion,
     updateCheckoutCompletion({ deliveryFormComplete: !!willPickUp });
   };
 
-  const defaultAddress = getDefaultAddress(dbUser.addresses);
-
   return (
     <div>
       <CheckoutItem>
         <Heading text='Your details' size='small' />
         <PersonalDetailsForm
-          dbUser={dbUser}
+          dbUser={currentUser.dbUser}
           onValidDetails={handleValidDetails}
           onEditting={handleEditDetails}
           buttonText='confirm details'
           successMessage='Personal details confirmed'
           disableOnComplete
           requiredFields={personalRequiredFields}
+          isCheckoutForm
         />
       </CheckoutItem>
       <CheckoutItem>
@@ -54,6 +85,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion,
           successMessage='Address confirmed'
           disableOnComplete
           defaultAddress={defaultAddress}
+          isCheckoutForm
         />
       </CheckoutItem>
     </div>
@@ -61,7 +93,6 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion,
 };
 
 DeliveryForm.propTypes = {
-  dbUser: PropTypes.object.isRequired,
   updateDeliveryDetails: PropTypes.func.isRequired,
   updateCheckoutCompletion: PropTypes.func.isRequired,
   willCustomerPickUpInStore: PropTypes.object.isRequired

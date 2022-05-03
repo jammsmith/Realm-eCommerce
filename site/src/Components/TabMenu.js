@@ -40,7 +40,7 @@ const TabMenu = ({ items, initialItem }) => {
   const [value, setValue] = useState(values[initialItem] || 0);
   const { isXs, isSm } = useBreakpoints();
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_, newValue) => {
     setValue(newValue);
   };
 
