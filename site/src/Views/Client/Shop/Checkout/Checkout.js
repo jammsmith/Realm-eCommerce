@@ -22,6 +22,7 @@ const Checkout = ({ stripePromise }) => {
   const { activeOrder, setActiveOrder, setDeliveryCountry } = useContext(OrderContext);
 
   const [paymentIntent, setPaymentIntent] = useState(null);
+  const [additionalInfo, setAdditionalInfo] = useState('');
   const [deliveryDetails, setDeliveryDetails] = useState({
     order_id: '',
     delivery_id: `delivery-${uniqueString()}`,
@@ -32,14 +33,13 @@ const Checkout = ({ stripePromise }) => {
     phone: null,
     country: ''
   });
-  const willCustomerPickUpInStore = useRef(false);
-
-  const [additionalInfo, setAdditionalInfo] = useState('');
   const [checkoutCompletion, setCheckoutCompletion] = useState({
     personalFormComplete: false,
     deliveryFormComplete: false,
     paymentFormComplete: false
   });
+
+  const willCustomerPickUpInStore = useRef(false);
 
   const [updateOrder] = useDDMutation(mutations.UpdateOrder);
 
@@ -66,7 +66,7 @@ const Checkout = ({ stripePromise }) => {
     if (deliveryFormComplete && deliveryDetails.country && deliveryDetails.country !== '') {
       setDeliveryCountry(deliveryDetails.country);
     }
-  }, [deliveryFormComplete, deliveryDetails.country]);
+  }, [deliveryFormComplete, deliveryDetails.country, setDeliveryCountry]);
 
   // Payment Element styling
   const paymentElementStyles = {

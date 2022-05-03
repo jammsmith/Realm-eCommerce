@@ -1,4 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  createContext,
+  useContext,
+  useMemo
+} from 'react';
 
 import { RealmAppContext } from '../realmApolloClient.js';
 import { CurrencyContext } from './CurrencyContext.js';
@@ -29,7 +37,7 @@ export const OrderContextProvider = ({ children }) => {
         }
       }
     }
-  }, [currentUser, currency]);
+  }, [currentUser, activeOrder]);
 
   // Set the active order to the pending order if there is one
   useEffect(() => getActiveOrder(), [getActiveOrder, activeOrder]);
@@ -41,14 +49,18 @@ export const OrderContextProvider = ({ children }) => {
     } else {
       setSubtotal(0);
     }
-  }, [activeOrder]);
+  }, [activeOrder, currency]);
 
   // If a delivery address is added to order, get the delivery price
-  const getDeliveryPrice = useCallback(async () => {
-    const response = await window.fetch('/PostalCountries/countries.json');
-    const jsonResponse = await response.json();
+  const countriesJson = '/PostalCountries/countries.json';
 
-    const requestedCountry = await jsonResponse.find(item => item.country === deliveryCountry);
+  const countries = useMemo(async () => {
+    const response = await window.fetch(countriesJson);
+    return await response.json();
+  }, [countriesJson]);
+
+  const getDeliveryPrice = useCallback(async () => {
+    const requestedCountry = await countries.find(item => item.country === deliveryCountry);
 
     if (requestedCountry) {
       const price = await currentUser.functions.helper_getDeliveryPrice(
@@ -59,7 +71,7 @@ export const OrderContextProvider = ({ children }) => {
       setDeliveryPrice(price);
       deliveryZone.current = requestedCountry.deliveryZone;
     }
-  }, [deliveryCountry, deliveryZone, activeOrder.orderItems, currentUser, currency]);
+  }, [deliveryCountry, deliveryZone, activeOrder.orderItems, currentUser, currency, countries]);
 
   useEffect(() => getDeliveryPrice(), [getDeliveryPrice, deliveryCountry]);
 

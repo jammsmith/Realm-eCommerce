@@ -69,7 +69,7 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
     if (successfulPayment && activeOrder.orderItems) {
       getCompletedOrderTotals();
     }
-  }, [successfulPayment, activeOrder]);
+  }, [successfulPayment, activeOrder, getCompletedOrderTotals]);
 
   const { completedTotal, completedSubtotal, completedDeliveryPrice } = completedOrderTotals;
 

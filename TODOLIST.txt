@@ -1,1 +1,7 @@
 
+When providing an address/personal details as a logged in user, user does not receive the address_id on its object
+
+PaymentForm -> handleSubmit.
+
+If user is authenticated, then update their details based on whatever they have provided. Unauthenticated users
+will have their details filled for them if they register in the summary stage. 

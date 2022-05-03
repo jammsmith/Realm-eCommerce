@@ -77,6 +77,7 @@ const PaymentForm = ({
       await updateOrder({ variables });
 
       if (toBeDelivered) {
+        console.log('toBeDelivered', toBeDelivered);
         let addressId = toBeDelivered ? deliveryDetails.address_id : null;
 
         if (!addressId || addressId === '') {
@@ -107,6 +108,7 @@ const PaymentForm = ({
           });
         }
       } else {
+        console.log('toBeDelivered', toBeDelivered);
         await addPickUpDetailsToOrder({
           variables: {
             order_id: deliveryDetails.order_id,

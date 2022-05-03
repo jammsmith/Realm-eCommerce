@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import FormSubmit from './FormSubmit.js';
@@ -75,11 +75,17 @@ const PersonalDetailsForm = ({
     }
   };
 
+  // Check initial values, if all required fields are filled then mark form as complete
+  const initialValuesChecked = useRef(false);
   useEffect(() => {
-    if (disableOnComplete && dbUser.email) {
-      handleFormComplete();
+    if (initialValuesChecked.current === false) {
+      const { isValid } = validateInputFields(personalDetailsFields, requiredFields);
+      if (disableOnComplete && isValid) {
+        handleFormComplete();
+      }
+      initialValuesChecked.current = true;
     }
-  }, [dbUser, disableOnComplete, handleFormComplete]);
+  }, [dbUser, disableOnComplete, handleFormComplete, personalDetailsFields, requiredFields, initialValuesChecked]);
 
   return (
     <form>

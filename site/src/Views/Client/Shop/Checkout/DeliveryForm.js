@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import AddressFormBasic from '../../../../Components/AddressForms/AddressFormBasic.js';
@@ -10,6 +10,8 @@ import { getDefaultAddress } from '../../../../helpers/address.js';
 import { CheckoutItem } from './StyledComponents.js';
 
 const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion, willCustomerPickUpInStore }) => {
+  const personalRequiredFields = ['firstName', 'lastName', 'email'];
+
   const handleValidDetails = useCallback((fields, formType) => {
     updateDeliveryDetails(fields);
     if (formType) {
@@ -28,24 +30,6 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion,
 
   const defaultAddress = getDefaultAddress(dbUser.addresses);
 
-  useEffect(() => {
-    if (dbUser && dbUser.type) {
-      const { firstName, lastName, email, phone } = dbUser;
-      if (defaultAddress) {
-        handleValidDetails({ address_id: defaultAddress.address_id, firstName, lastName, email, phone });
-        updateCheckoutCompletion({
-          personalFormComplete: true,
-          deliveryFormComplete: true
-        });
-      } else {
-        handleValidDetails({ firstName, lastName, email, phone });
-        updateCheckoutCompletion({
-          personalFormComplete: true
-        });
-      }
-    }
-  }, [dbUser, defaultAddress, handleValidDetails, updateCheckoutCompletion]);
-
   return (
     <div>
       <CheckoutItem>
@@ -57,7 +41,7 @@ const DeliveryForm = ({ dbUser, updateDeliveryDetails, updateCheckoutCompletion,
           buttonText='confirm details'
           successMessage='Personal details confirmed'
           disableOnComplete
-          requiredFields={['firstName', 'lastName', 'email']}
+          requiredFields={personalRequiredFields}
         />
       </CheckoutItem>
       <CheckoutItem>

@@ -97,7 +97,7 @@ const Summary = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [history, app.currentUser]);
+  }, [history, app.currentUser, setCurrency]);
 
   useEffect(() => getPaymentIntent(), [getPaymentIntent]);
 
@@ -119,7 +119,7 @@ const Summary = () => {
           break;
       }
     }
-  }, [paymentIntent]);
+  }, [paymentIntent, getOrder]);
 
   return (
     <SummaryWrapper>

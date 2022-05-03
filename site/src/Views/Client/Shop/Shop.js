@@ -81,10 +81,7 @@ const Shop = () => {
           <Route
             exact
             path='/shop/checkout'
-            render={() =>
-              <Checkout
-                stripePromise={stripePromise}
-              />}
+            render={() => <Checkout stripePromise={stripePromise} />}
           />
           <Route
             exact
