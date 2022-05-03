@@ -140,6 +140,15 @@ const ProductEdit = ({
                       : []
                   }
                 />
+                <TextField
+                  name='weightInGrams'
+                  label='Est. Weight (g)'
+                  value={fields.weightInGrams}
+                  variant='outlined'
+                  onChange={handleFormChange}
+                  required
+                  fullWidth
+                />
               </RowGroup>
               <RowGroup>
                 <TextField

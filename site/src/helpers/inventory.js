@@ -13,7 +13,8 @@ export const validateInventoryFields = (requestedFields, type) => {
         'priceGBP',
         'priceUSD',
         'priceEUR',
-        'numInStock'
+        'numInStock',
+        'weightInGrams'
       ];
       break;
     case 'subCategory':
@@ -60,7 +61,8 @@ export const validateInventoryFields = (requestedFields, type) => {
         }
       }
         break;
-      case 'numInStock': {
+      case 'numInStock':
+      case 'weightInGrams': {
         const parsed = parseInt(item);
         if (typeof parsed !== 'number') {
           failedItems.push(field);
@@ -98,7 +100,8 @@ export const getInitialFormFields = (type) => {
         numInStock: '',
         priceGBP: '',
         priceUSD: '',
-        priceEUR: ''
+        priceEUR: '',
+        weightInGrams: ''
       };
     case 'subCategory':
       return {
