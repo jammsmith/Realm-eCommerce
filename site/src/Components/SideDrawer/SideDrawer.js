@@ -1,8 +1,10 @@
-// External imports
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import { RealmAppContext } from '../../realmApolloClient.js';
 import SectionSpacer from '../SectionSpacer.js';
+import { isAuthenticated, isAdmin } from '../../helpers/auth.js';
+
 import {
   DrawerNav,
   DrawerItems,
@@ -10,36 +12,66 @@ import {
   LinkContainer
 } from './SideDrawerElements.js';
 
-const DrawerLink = ({ url, label, handleClick }) => (
-  <LinkContainer>
-    <Link
-      to={url}
-      onClick={handleClick}
-    >
-      {label}
-    </Link>
-  </LinkContainer>
-);
+const DrawerLink = ({ url, label, handleClick, handleClickComplete }) => {
+  let handleLinkClick;
+
+  if (handleClickComplete) {
+    handleLinkClick = () => {
+      handleClick();
+      handleClickComplete();
+    };
+  } else {
+    handleLinkClick = handleClick;
+  }
+  return (
+    <LinkContainer>
+      <Link
+        to={url}
+        onClick={handleLinkClick}
+      >
+        {label}
+      </Link>
+    </LinkContainer>
+  );
+};
 DrawerLink.propTypes = {
-  url: PropTypes.string.isRequired,
+  url: PropTypes.oneOfType([
+    PropTypes.string.isRequired,
+    PropTypes.object.isRequired
+  ]),
   label: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  handleClickComplete: PropTypes.func
 };
 
 // Show a menu that appears from the side on small screens
 const SideDrawer = ({ handleDrawerLinkClick }) => {
+  const app = useContext(RealmAppContext);
+
   const primaryLinks = [
-    { url: '/shop/browse/old-west-leather', label: 'Old West Leather' },
-    { url: '/shop/browse/gents-wear', label: 'Gents Wear' },
-    { url: '/shop/browse/ladies-wear', label: 'Ladies Wear' },
-    { url: '/shop/browse/accessories', label: 'Accessories' }
-  ];
-  const secondaryLinks = [
-    { url: '/shop/cart', label: 'My Cart' },
-    { url: '/my-account', label: 'My Account' },
+    { url: '/shop', label: 'Browse Shop' },
     { url: '/about-us', label: 'About Us' },
-    { url: '/contact-us', label: 'Contact Us' }
+    { url: '/contact-us', label: 'Contact Us' },
+    { url: '/customer-info', label: 'Customer Info' }
   ];
+
+  let secondaryLinks = [
+    { url: '/shop/cart', label: 'My Cart' }
+  ];
+
+  if (isAuthenticated(app.currentUser)) {
+    secondaryLinks.push({ url: '/', label: 'Logout' });
+    if (isAdmin(app.currentUser)) {
+      secondaryLinks.push({ url: '/admin', label: 'Admin Dashboard' });
+    }
+  } else {
+    secondaryLinks = [
+      ...secondaryLinks,
+      { url: '/login', label: 'Login' },
+      { url: { pathname: '/login', state: { form: 'register' } }, label: 'Register' }
+    ];
+  }
+
   return (
     <DrawerNav>
       <DrawerItems>
@@ -68,6 +100,7 @@ const SideDrawer = ({ handleDrawerLinkClick }) => {
               url={link.url}
               label={link.label}
               handleClick={handleDrawerLinkClick}
+              handleClickComplete={link.label === 'Logout' ? () => app.logOut() : null}
             />
           ))
         }

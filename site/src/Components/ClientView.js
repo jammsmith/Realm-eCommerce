@@ -28,7 +28,10 @@ const ClientView = ({ children }) => {
   // Small screen menu toggle -->
   const [menuInView, setMenuInView] = useState(false);
   const handleToggle = () => setMenuInView(prevValue => !prevValue);
-  const closeMenu = () => setMenuInView(false);
+
+  const closeMenu = () => {
+    setMenuInView(false);
+  };
 
   const { state } = useLocation();
 

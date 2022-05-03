@@ -17,7 +17,8 @@ import {
   NavbarLink,
   NavbarToggleIcon,
   BrowseShop,
-  BrowseShopLink
+  BrowseShopLink,
+  SmallScreenOptions
 } from './NavbarElements';
 
 const Navbar = ({ handleToggle }) => {
@@ -67,7 +68,12 @@ const Navbar = ({ handleToggle }) => {
             <MyAccountMenu />
           </NavbarLinkList>
         </NavbarLinksContainer>
-        <NavbarToggleIcon size={25} onClick={handleToggle} />
+
+        <SmallScreenOptions>
+          <CurrencySelection />
+          <NavbarToggleIcon size={25} onClick={handleToggle} />
+        </SmallScreenOptions>
+
       </NavbarNavigation>
     </NavbarContainer>
   );

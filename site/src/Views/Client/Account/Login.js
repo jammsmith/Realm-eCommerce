@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import uniqueString from 'unique-string';
@@ -163,12 +163,14 @@ const Login = ({ form }) => {
     }
   };
 
+  const locationStateUsed = useRef(false);
   useEffect(() => {
     if (isAuthenticated(app.currentUser)) {
-      history.push('/my-account');
+      history.replace('/my-account');
     }
-    if (formType !== form) {
+    if (form && formType !== form && locationStateUsed.current === false) {
       setFormType(form);
+      locationStateUsed.current = true;
     }
   }, [formType, form, app.currentUser, history]);
 

@@ -107,9 +107,6 @@ export const NavbarToggleIcon = styled(FaBars)`
   :active {
     cursor: pointer;
   }
-  @media (min-width: 1024px) {
-    display: none;
-  }
 `;
 
 export const LoginIcon = styled(IoPersonCircleOutline)`
@@ -118,5 +115,15 @@ export const LoginIcon = styled(IoPersonCircleOutline)`
   :hover,
   :active {
     cursor: pointer;
+  }
+`;
+
+export const SmallScreenOptions = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-right: 0.5rem;
+  @media (min-width: 1024px) {
+    display: none;
   }
 `;
