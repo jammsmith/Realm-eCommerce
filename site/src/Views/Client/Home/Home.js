@@ -1,14 +1,42 @@
 import React from 'react';
 
+import Services from './Services.js';
+import Testimonials from './Testimonials.js';
 import ActionButton from '../../../Components/ActionButton.js';
 import TextSection from '../../../Components/TextSection.js';
-import TestimonialCarousel from './Testimonials/TestimonialCarousel.js';
 import SectionSpacer from '../../../Components/SectionSpacer.js';
 import colours from '../../../styles/colours.js';
+import useBreakpoints from '../../../hooks/useBreakpoints.js';
 
-import { GoToShopWrapper, ImagesWrapper, PrimaryImage, SecondaryImages, SecondaryImage } from './styledComponents.js';
+import {
+  GoToShopWrapper,
+  ImagesWrapper,
+  PrimaryImage,
+  SecondaryImages,
+  SecondaryImage,
+  TertiaryImage,
+  LargeScreenImageAndButton,
+  HomeBottomWrapper
+} from './styledComponents.js';
 
 const Home = () => {
+  const { isLg } = useBreakpoints();
+
+  let buttonStyles = {
+    height: '5rem',
+    backgroundColor: colours.dark,
+    borderRadius: '10px',
+    color: colours.light,
+    fontSize: '1.5rem',
+    width: '220px'
+  };
+  if (isLg) {
+    buttonStyles = {
+      ...buttonStyles,
+      display: 'relative',
+      right: '1rem'
+    };
+  }
   return (
     <>
       <TextSection
@@ -25,28 +53,31 @@ const Home = () => {
             <SecondaryImage src='/images/old-west-leather-landing-page.jpg' />
           </SecondaryImages>
         </ImagesWrapper>
-        <ActionButton
-          text='Browse Shop'
-          linkTo='/shop'
-          customStyles={{
-            height: '5rem',
-            backgroundColor: colours.dark,
-            borderRadius: '10px',
-            color: colours.light,
-            fontSize: '1.5rem'
-          }}
-        />
+        {
+          isLg ? (
+            <LargeScreenImageAndButton>
+              <TertiaryImage src='https://placedog.net/200/276' />
+              <ActionButton
+                text='Browse Shop'
+                linkTo='/shop'
+                customStyles={buttonStyles}
+              />
+            </LargeScreenImageAndButton>
+          ) : (
+            <ActionButton
+              text='Browse Shop'
+              linkTo='/shop'
+              customStyles={buttonStyles}
+            />
+          )
+        }
       </GoToShopWrapper>
       <SectionSpacer spaceBelow spaceAbove dark />
-      <TextSection
-        headingFontSize='1.75rem'
-        heading='Our client base starts at home in the U.K, but it is truly international.'
-        text='We manufacture and supply our products for TV, living history & re-enactment groups, enthusiasts, or those just dressing up for fun! All through Scandinavia, Central Europe and as far as the USA.'
-        secondaryText='Please take a minute to read some of our customer testimonials below...'
-      />
-      <SectionSpacer spaceBelow spaceAbove dark />
-      <TestimonialCarousel />
-      <SectionSpacer />
+      <HomeBottomWrapper>
+        <Services />
+        <Testimonials />
+      </HomeBottomWrapper>
+      <SectionSpacer spaceBelow />
     </>
   );
 };

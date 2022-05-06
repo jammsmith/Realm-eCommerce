@@ -4,6 +4,8 @@ import { IoCartOutline } from 'react-icons/io5';
 
 import CurrencySelection from './CurrencySelection.js';
 import MyAccountMenu from './MyAccountMenu.js';
+import useBreakpoints from '../../hooks/useBreakpoints.js';
+
 import {
   NavbarContainer,
   NavbarNavigation,
@@ -22,11 +24,13 @@ import {
 } from './NavbarElements';
 
 const Navbar = ({ handleToggle }) => {
+  const { isMd, isLg } = useBreakpoints();
+
   return (
     <NavbarContainer>
       <NavbarNavigation>
         <NavbarHomeLink to='/'>
-          <NavbarBrand>Doves and Dandys Westernwear</NavbarBrand>
+          <NavbarBrand>Doves and Dandys{(isMd || isLg) && ' Westernwear'}</NavbarBrand>
         </NavbarHomeLink>
         <NavbarSpacer />
         <NavbarLinksContainer>

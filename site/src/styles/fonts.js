@@ -1,5 +1,5 @@
 const fonts = {
-  fancyHeading: "'Pinyon Script', cursive",
+  fancyHeading: "'Libre Bodoni', serif",
   standard: "'Ubuntu', sans-serif"
 };
 

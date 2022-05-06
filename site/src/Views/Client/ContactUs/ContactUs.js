@@ -23,7 +23,8 @@ const ContactUs = () => {
           <p>
           If you would like contact us, we would love to hear from you. Our preferred method of contact is by email with your request or question. We will get back to you as soon as possible.
           </p>
-          <p>Visits are by appointment only.</p>
+          <p>No appointment necessary!</p>
+          <br />
         </div>
         <ContactDetailsWrapper>
           <div>

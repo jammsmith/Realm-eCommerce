@@ -20,13 +20,20 @@ const Container = styled.div`
 const Icon = styled(GrDeliver)`
   background-color: ${colours.light};
   border-radius: 5px;
-  font-size: 2rem;
+  font-size: 1.5rem;
   padding: 0.25rem;
   margin-right: 1rem;
+  @media (min-width: 414px) {
+    font-size: 2rem;
+  }
 `;
 
 const Text = styled.h5`
+  font-size: 1rem;
   margin: 0;
+  @media (min-width: 414px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const FreeDelivery = () => {

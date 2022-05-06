@@ -9,7 +9,7 @@ export const Shadow = styled.div`
   width: 100%;
   z-index: 99;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1180px) {
     display: none;
   }
 `;

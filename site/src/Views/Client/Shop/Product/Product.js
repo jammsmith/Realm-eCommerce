@@ -80,8 +80,9 @@ const Product = ({ currency, ...other }) => {
               color: light,
               width: '100%',
               maxWidth: '300px',
-              height: '60px',
-              borderRadius: '6px'
+              height: '50px',
+              borderRadius: '6px',
+              fontSize: '1.15rem'
             }}
           />
         </ContactUsWrapper>

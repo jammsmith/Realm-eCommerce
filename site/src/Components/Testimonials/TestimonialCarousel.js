@@ -7,40 +7,45 @@ import {
 } from 'react-icons/io5';
 
 import Testimonial from './Testimonial';
-import colours from '../../../../styles/colours.js';
+import colours from '../../styles/colours.js';
 
 // Custom styled components
 const CarouselWrapper = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
-  min-height: 350px;
+  height: 400px;
+  @media (min-width: 414px) {
+    height: 350px;
+  };
+  @media (min-width: 600px) {
+    height: 300px;
+  }
   @media (min-width: 768px) {
-    max-width: 70%;
-    margin: auto;
-  }
-  @media (min-width: 1024px) {
-    max-width: 60%;
-  }
-  @media (min-width: 1280px) {
-    max-width: 50%;
+    height: 250px;
   }
 `;
 
 const Spacer = styled.div`
-  width: 61.05px;
-  height: 75px;
+  width: 60px;
+  height: 60px;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 `;
 
 const ForwardArrow = styled(IoArrowForwardCircleOutline)`
-  font-size: 75px;
+  font-size: 60px;
   color: ${colours.dark};
   :hover {
     cursor: pointer;
   }
 `;
 const BackArrow = styled(IoArrowBackCircleOutline)`
-  font-size: 75px;
+  font-size: 60px;
   color: ${colours.dark};
   :hover {
     cursor: pointer;
@@ -79,12 +84,6 @@ const TestimonialCarousel = () => {
       heading: 'Mark Effner, Germany',
       text:
         "The rig arrived today and I can't believe how beautiful it is.  All the details and everything and you did all that in such a short time. Also the price, payment procedure and shipping... everything perfect. I wish that shopping over the internet would always be like this."
-    },
-    {
-      id: 5,
-      heading: "That's it here!",
-      text:
-        'but take a look at our testimonial page for even more kind words from our customers.'
     }
   ];
 
@@ -118,19 +117,27 @@ const TestimonialCarousel = () => {
   };
 
   return (
-    <CarouselWrapper>
-      {slideIndex > 0
-        ? <BackArrow onClick={handleBackClick} />
-        : <Spacer />}
-      <Testimonial
-        heading={content.heading}
-        text={content.text}
-        isLastSlide={slideIndex === testimonials.length - 1}
-      />
-      {slideIndex < testimonials.length - 1
-        ? <ForwardArrow onClick={handleNextClick} />
-        : <Spacer />}
-    </CarouselWrapper>
+    <>
+      <CarouselWrapper>
+        <Testimonial
+          heading={content.heading}
+          text={content.text}
+          isLastSlide={slideIndex === testimonials.length - 1}
+        />
+      </CarouselWrapper>
+      <Buttons>
+        {
+          slideIndex > 0
+            ? <BackArrow onClick={handleBackClick} />
+            : <Spacer />
+        }
+        {
+          slideIndex < testimonials.length - 1
+            ? <ForwardArrow onClick={handleNextClick} />
+            : <Spacer />
+        }
+      </Buttons>
+    </>
   );
 };
 

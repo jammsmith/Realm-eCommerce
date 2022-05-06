@@ -16,7 +16,7 @@ export const DrawerNav = styled.nav`
   width: 80%;
   max-width: 350px;
   z-index: 100;
-  @media (min-width: 1024px) {
+  @media (min-width: 1180px) {
     display: none;
   }
 `;
@@ -33,7 +33,7 @@ export const DrawerItems = styled.ul`
 
 export const LinkContainer = styled.li`
   padding: 0.25rem 0;
-  @media (min-width: 1024px) {
+  @media (min-width: 1180px) {
     padding: 0.5rem 0;
   }
 `;

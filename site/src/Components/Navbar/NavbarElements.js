@@ -45,7 +45,7 @@ export const NavbarSpacer = styled.div`
 export const NavbarLinksContainer = styled.div`
   display: none;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1180px) {
     display: block;
   }
 `;
@@ -123,7 +123,7 @@ export const SmallScreenOptions = styled.div`
   gap: 1rem;
   align-items: center;
   margin-right: 0.5rem;
-  @media (min-width: 1024px) {
+  @media (min-width: 1180px) {
     display: none;
   }
 `;

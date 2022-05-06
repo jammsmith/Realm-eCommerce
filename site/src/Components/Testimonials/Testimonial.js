@@ -19,7 +19,7 @@ const Heading = styled.h1`
   font-size: 1.35rem;
   text-align: center;
   @media (min-width: 1024px) {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 `;
 
@@ -28,25 +28,20 @@ const MainText = styled.p`
   font-size: 1.15rem;
   letter-spacing: 1.5px
   line-height: 2rem;
-  @media (min-width: 1024px) {
-    font-size: 1.15rem;
-    line-height: 2.15rem;
-  }
 `;
 
-const Testimonial = ({ heading, text, isLastSlide }) => {
+const Testimonial = ({ heading, text }) => {
   return (
     <Wrapper>
+      <MainText>"{text}"</MainText>
       <Heading>{heading}</Heading>
-      <MainText>{isLastSlide ? text : `"${text}"`}</MainText>
     </Wrapper>
   );
 };
 
 Testimonial.propTypes = {
   heading: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-  isLastSlide: PropTypes.bool
+  text: PropTypes.string.isRequired
 };
 
 export default Testimonial;
