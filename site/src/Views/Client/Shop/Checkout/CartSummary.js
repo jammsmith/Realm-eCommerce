@@ -23,13 +23,12 @@ import {
 } from '../Cart/StyledComponents.js';
 
 // A view of all products that have been added to basket
-const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete }) => {
+const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete, successfulOrder }) => {
   useScrollToTop();
 
   const { currency } = useContext(CurrencyContext);
   const {
     activeOrder,
-    setActiveOrder,
     subtotal,
     deliveryPrice
   } = useContext(OrderContext);
@@ -37,8 +36,9 @@ const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete }) => {
   const [completedOrderTotals, setCompletedOrderTotals] = useState({});
 
   const successfulPayment =
-    activeOrder &&
-    activeOrder.paymentStatus === 'successful';
+    successfulOrder &&
+    successfulOrder.paymentStatus === 'successful' &&
+    successfulOrder.orderItems;
   const failedPayment =
     activeOrder &&
     activeOrder.paymentStatus === 'failed';
@@ -56,26 +56,22 @@ const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete }) => {
 
   // Get the actual paid totals if an order is completed and in final Summary stage
   const getCompletedOrderTotals = useCallback(() => {
-    const { delivery } = activeOrder;
-    const amountPaid = activeOrder.stripeAmountPaid / 100;
+    if (successfulPayment) {
+      const { delivery } = successfulOrder;
+      const amountPaid = successfulOrder.stripeAmountPaid / 100;
 
-    setCompletedOrderTotals({
-      completedTotal: amountPaid,
-      completedSubtotal: amountPaid - delivery.price,
-      completedDeliveryPrice: delivery.price
-    });
-  }, [activeOrder]);
-
-  useEffect(() => {
-    if (successfulPayment && activeOrder.orderItems) {
-      getCompletedOrderTotals();
+      setCompletedOrderTotals({
+        completedTotal: amountPaid,
+        completedSubtotal: amountPaid - delivery.price,
+        completedDeliveryPrice: delivery.price
+      });
     }
-  }, [successfulPayment, activeOrder, getCompletedOrderTotals]);
+  }, [successfulOrder, successfulPayment]);
 
+  useEffect(() => getCompletedOrderTotals(), [getCompletedOrderTotals]);
+
+  //
   const { completedTotal, completedSubtotal, completedDeliveryPrice } = completedOrderTotals;
-
-  // Reset the active order on unmount
-  useEffect(() => () => setActiveOrder({}), [setActiveOrder]);
 
   // Get the delivery price to display
   const getDeliveryPriceToDisplay = () => {
@@ -96,15 +92,17 @@ const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete }) => {
     }
   };
 
+  const orderToDiplay = successfulOrder || activeOrder;
+
   return (
     <CartWrapper isMinimised>
       <ProductListWrapper>
         <Heading text='Order Summary' size='small' />
         <SectionSpacer />
         {
-          activeOrder && activeOrder.orderItems ? (
+          orderToDiplay && orderToDiplay.orderItems ? (
             <>
-              {activeOrder.orderItems.map((item, index) => (
+              {orderToDiplay.orderItems.map((item, index) => (
                 <CartProduct
                   key={index}
                   orderItem={item}
@@ -155,7 +153,8 @@ const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete }) => {
 
 CartSummary.propTypes = {
   willCustomerPickUpInStore: PropTypes.object,
-  deliveryFormComplete: PropTypes.bool
+  deliveryFormComplete: PropTypes.bool,
+  successfulOrder: PropTypes.object
 };
 
 export default CartSummary;

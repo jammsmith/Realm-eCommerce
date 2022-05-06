@@ -25,19 +25,19 @@ export const OrderContextProvider = ({ children }) => {
   const deliveryZone = useRef();
 
   const getActiveOrder = useCallback(async () => {
-    if (currentUser && currentUser.dbUser) {
-      const activeOrder = await currentUser.functions.db_getActiveOrder(currentUser.dbUser.user_id);
-      setActiveOrder(activeOrder || {});
+    if (!activeOrder || !Object.keys(activeOrder).length) {
+      if (currentUser && currentUser.dbUser) {
+        const userActiveOrder = await currentUser.functions.db_getActiveOrder(currentUser.dbUser.user_id);
+        if (userActiveOrder !== activeOrder) {
+          setActiveOrder(userActiveOrder);
+        }
+      }
     }
   }, [currentUser, activeOrder]);
 
   // Set the active order to the pending order if there is one or just refetch the db user
   // to make sure it stays consistent with active order changes
-  useEffect(() => {
-    if (!activeOrder || !Object.keys(activeOrder).length) {
-      getActiveOrder();
-    }
-  }, [getActiveOrder, activeOrder]);
+  useEffect(() => getActiveOrder(), [getActiveOrder]);
 
   // Set the subtotal whenever the order is updated
   useEffect(() => {

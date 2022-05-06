@@ -8,7 +8,9 @@ exports = async (orderItems, currency) => {
 
     const pricesPromise = orderItems.map(async item => {
       const product = await products.findOne({ _id: BSON.ObjectId(item.product._id) });
-      return product[`price${currency}`];
+      const priceInCurrency = product[`price${currency}`];
+
+      return priceInCurrency * item.quantity;
     });
     const prices = await Promise.all(pricesPromise);
 

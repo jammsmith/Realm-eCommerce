@@ -11,7 +11,6 @@ import { ORDER_BY_PAYMENT_INTENT } from '../../../../graphql/queries.js';
 import { isAuthenticated } from '../../../../helpers/auth.js';
 import { RealmAppContext } from '../../../../realmApolloClient.js';
 import { CurrencyContext } from '../../../../context/CurrencyContext.js';
-import { OrderContext } from '../../../../context/OrderContext.js';
 
 // Styled Components
 import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponents.js';
@@ -19,21 +18,18 @@ import { SummaryWrapper, SummaryItem, SummaryRow, Text } from './StyledComponent
 const Summary = () => {
   const app = useContext(RealmAppContext);
   const { setCurrency } = useContext(CurrencyContext);
-  const { activeOrder, setActiveOrder } = useContext(OrderContext);
 
+  const [successfulOrder, setSuccessfulOrder] = useState({});
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [message, setMessage] = useState('');
 
   const history = useHistory();
 
-  const [getOrder] = useLazyQuery(ORDER_BY_PAYMENT_INTENT, {
+  const [getSuccessfulOrder] = useLazyQuery(ORDER_BY_PAYMENT_INTENT, {
     onCompleted: (data) => {
-      console.log('data', data);
-      setActiveOrder(data.order);
+      setSuccessfulOrder(data.order);
     }
   });
-
-  useEffect(() => console.log('paymentIntent', paymentIntent), [paymentIntent]);
 
   const [updateUser] = useDDMutation(mutations.UpdateUser);
   const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
@@ -110,7 +106,7 @@ const Summary = () => {
     if (paymentIntent) {
       switch (paymentIntent.status) {
         case 'succeeded':
-          getOrder({ variables: { paymentIntentId: paymentIntent.id } });
+          getSuccessfulOrder({ variables: { paymentIntentId: paymentIntent.id } });
           setMessage('Thank you! Your payment was successful!');
           break;
         case 'processing':
@@ -123,7 +119,7 @@ const Summary = () => {
           break;
       }
     }
-  }, [paymentIntent, getOrder]);
+  }, [paymentIntent, getSuccessfulOrder]);
 
   return (
     <SummaryWrapper>
@@ -131,7 +127,7 @@ const Summary = () => {
         <h4 style={{ margin: '1rem 0' }}>{message}</h4>
       </SummaryItem>
       {
-        paymentIntent && activeOrder ? (
+        paymentIntent && successfulOrder ? (
           <>
             {
               isAuthenticated(app.currentUser) ? (
@@ -148,23 +144,23 @@ const Summary = () => {
                   <Text>Register an account to track your order and save your delivery details for next time</Text>
                   <ActionButton
                     text='Click to register!'
-                    onClick={(e) => handleRegister(e, activeOrder.delivery)}
+                    onClick={(e) => handleRegister(e, successfulOrder.delivery)}
                     fullWidth
                   />
                 </SummaryItem>
               )
             }
-            <CartSummary />
+            <CartSummary successfulOrder={successfulOrder} />
             {
               paymentIntent.status === 'succeeded' &&
                 <SummaryItem>
                   <SummaryRow>
                     <Text>Order Reference Number:</Text>
-                    <strong>{activeOrder.order_id}</strong>
+                    <strong>{successfulOrder.order_id}</strong>
                   </SummaryRow>
                   <SummaryRow>
                     <Text>You will receive a confirmation of your payment by email to:</Text>
-                    <strong>{activeOrder.delivery && activeOrder.delivery.email}</strong>
+                    <strong>{successfulOrder.delivery && successfulOrder.delivery.email}</strong>
                   </SummaryRow>
                 </SummaryItem>
             }

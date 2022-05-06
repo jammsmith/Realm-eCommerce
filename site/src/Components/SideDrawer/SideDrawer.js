@@ -60,7 +60,10 @@ const SideDrawer = ({ handleDrawerLinkClick }) => {
   ];
 
   if (isAuthenticated(app.currentUser)) {
-    secondaryLinks.push({ url: '/', label: 'Logout' });
+    secondaryLinks.push(
+      { url: '/my-account', label: 'My Account' },
+      { url: '/', label: 'Logout' }
+    );
     if (isAdmin(app.currentUser)) {
       secondaryLinks.push({ url: '/admin', label: 'Admin Dashboard' });
     }

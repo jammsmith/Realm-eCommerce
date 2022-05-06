@@ -97,7 +97,7 @@ export const RealmAppProvider = ({ children }) => {
     if (currentUser && (!currentUser.dbUser || !currentUser.dbUser._id)) {
       getDbUser();
     }
-  }, [getDbUser]);
+  }, [currentUser, getDbUser]);
 
   const wrapped = {
     ...realmApp,

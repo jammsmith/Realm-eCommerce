@@ -78,18 +78,16 @@ const PaymentForm = ({
       // If delivering or currency has changed after payment intent was created then make sure
       // payment intent is updated with currency & correct amount (including delivery price)
       const toBeDelivered = !willCustomerPickUpInStore.current;
-      console.log('toBeDelivered', toBeDelivered);
 
-      if (toBeDelivered || currency.toLowerCase() !== paymentIntent.currency) {
-        const updatedTotals = await app.currentUser.functions.stripe_updatePaymentTotals(
-          paymentIntent.id,
-          activeOrder.orderItems,
-          deliveryZone.current,
-          currency,
-          getFreeDeliveryConstraints()
-        );
-        deliveryFields.price = updatedTotals ? updatedTotals.deliveryTotal : 0;
-      }
+      // make sure payment intent is up-to-date with any changes
+      const updatedTotals = await app.currentUser.functions.stripe_updatePaymentTotals(
+        paymentIntent.id,
+        activeOrder.orderItems,
+        deliveryZone.current,
+        currency,
+        getFreeDeliveryConstraints()
+      );
+      deliveryFields.price = updatedTotals ? updatedTotals.deliveryTotal : 0;
 
       // Update additional order info
       const variables = { id: activeOrder._id, currency };
@@ -104,7 +102,6 @@ const PaymentForm = ({
 
       if (toBeDelivered) {
         if (!addressId || addressId === '') {
-          console.log('no stored address');
           // No address stored -> add a new address and assign to user if they're logged in
           const { data } = await createAddress({
             variables: {
@@ -128,7 +125,6 @@ const PaymentForm = ({
             }));
           }
         } else {
-          console.log('stored address');
           // Address is stored -> update it if it's been changed during checkout
           const defaultAddress = getDefaultAddress(app.currentUser.dbUser.addresses);
           const { updatedFields, hasUpdatedFields } = getUpdatedObjectFields(defaultAddress, addressFields);
@@ -154,7 +150,6 @@ const PaymentForm = ({
         });
       } else {
         // Order will be collected -> still create the delivery but don't attach an address
-        console.log('order to be collected');
         await addPickUpDetailsToOrder({
           variables: {
             order_id: deliveryDetails.order_id,
