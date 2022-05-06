@@ -3,7 +3,8 @@ const {
   Delivery,
   Order,
   OrderItem,
-  Refund
+  Refund,
+  User
 } = require('../models');
 const mongooseConnection = require('../client.js');
 
@@ -16,6 +17,14 @@ mongooseConnection();
     await Order.deleteMany();
     await OrderItem.deleteMany();
     await Refund.deleteMany();
+
+    // Remove all orders and addresses from user objects
+    await User.updateMany({},
+      {
+        orders: [],
+        addresses: []
+      }
+    );
 
     console.log('Data deletion successful.');
     process.exit(0);

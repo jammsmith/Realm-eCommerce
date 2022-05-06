@@ -53,8 +53,6 @@ const ProductTile = ({ product, linkTo, currency, ...other }) => {
 ProductTile.propTypes = {
   product: PropTypes.object.isRequired,
   linkTo: PropTypes.string,
-  currentUser: PropTypes.object.isRequired,
-  updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired

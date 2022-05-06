@@ -59,8 +59,6 @@ const Products = (props) => {
 };
 
 Products.propTypes = {
-  currentUser: PropTypes.object.isRequired,
-  updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   itemsInCart: PropTypes.array,

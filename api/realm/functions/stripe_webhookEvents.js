@@ -3,40 +3,93 @@ exports = async (payload, response) => {
   const event = EJSON.parse(payload.body.text());
 
   // Handle payments
-  const orders = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('orders');
-  const updateOrderStatus = async (options) => {
-    await orders.updateOne(
-      { paymentIntentId: event.data.object.id },
-      { $set: options }
-    );
+  const db = context.services.get('mongodb-atlas').db('dovesAndDandysDB');
+
+  const orders = db.collection('orders');
+  const orderItems = db.collection('orderitems');
+  const products = db.collection('products');
+
+  const updateOrderStatus = async (update) => {
+    try {
+      const updatedOrder = await orders.findOneAndUpdate(
+        { paymentIntentId: event.data.object.id },
+        { $set: update },
+        {
+          returnNewDocument: true
+        }
+      );
+      console.log('Updated order in updateOrderStatus', updatedOrder);
+      console.log('Updated order_id in updateOrderStatus', updatedOrder.order_id);
+
+      console.log('Updated order keys -------->');
+      const updatedOrderKeys = Object.keys(updatedOrder);
+      for (const key of updatedOrderKeys) {
+        console.log(key);
+      }
+      return updatedOrder;
+    } catch (err) {
+      console.log('updateOrderStatus failed:', err);
+    }
   };
 
   const handlePaymentSucceeded = async () => {
-    await updateOrderStatus({
-      orderStatus: 'awaitingConfirmation',
-      paymentStatus: 'successful',
-      datePaid: new Date(Date.now()),
-      stripeAmountPaid: event.data.object.amount
-    });
-    // send confirmation email
+    try {
+      const { order_id: orderId } = await updateOrderStatus({
+        orderStatus: 'awaitingConfirmation',
+        paymentStatus: 'successful',
+        datePaid: new Date(Date.now()),
+        stripeAmountPaid: event.data.object.amount
+      });
+      console.log('Order updated. order_id:', orderId);
+
+      // get the product quantities and update inventory levels
+      const orderedItems = await orderItems.find({ order: orderId }).toArray();
+      console.log('Ordered items found. Number of items:', orderedItems.length);
+
+      for (const item of orderedItems) {
+        console.log(
+          'Attempting to update product quantity for orderItem_id:',
+          item.orderItem_id
+        );
+
+        const orderedQuantity = parseInt(item.quantity);
+        console.log('Quantity of product ordered:', orderedQuantity);
+
+        await products.updateOne(
+          { product_id: item.product },
+          { $inc: { numInStock: -orderedQuantity } }
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   const handlePaymentFailed = async () => {
-    await updateOrderStatus({
-      paymentStatus: 'failed'
-    });
+    try {
+      await updateOrderStatus({
+        paymentStatus: 'failed'
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // Handle refunds
   const handleRefundUpdated = async () => {
-    const refunds = context.services.get('mongodb-atlas').db('dovesAndDandysDB').collection('refunds');
-    const refund = event.data.object;
+    try {
+      const refunds = db.collection('refunds');
+      const refund = event.data.object;
 
-    await refunds.updateOne(
-      { refund_id: refund.id },
-      {
-        $set: { status: refund.status }
-      }
-    );
+      await refunds.updateOne(
+        { refund_id: refund.id },
+        {
+          $set: { status: refund.status }
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // Handle the event

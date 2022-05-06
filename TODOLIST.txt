@@ -1,7 +1,6 @@
 
-When providing an address/personal details as a logged in user, user does not receive the address_id on its object
+------- Checkout testing -------
 
-PaymentForm -> handleSubmit.
+-> Guest user with no orders or addresses and pick-up in store checked. Following error on submit payment:
 
-If user is authenticated, then update their details based on whatever they have provided. Unauthenticated users
-will have their details filled for them if they register in the summary stage. 
+    Error: must provide a "link" or "create" when inserting relationships

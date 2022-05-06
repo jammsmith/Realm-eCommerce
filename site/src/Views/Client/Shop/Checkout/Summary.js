@@ -28,9 +28,12 @@ const Summary = () => {
 
   const [getOrder] = useLazyQuery(ORDER_BY_PAYMENT_INTENT, {
     onCompleted: (data) => {
+      console.log('data', data);
       setActiveOrder(data.order);
     }
   });
+
+  useEffect(() => console.log('paymentIntent', paymentIntent), [paymentIntent]);
 
   const [updateUser] = useDDMutation(mutations.UpdateUser);
   const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);

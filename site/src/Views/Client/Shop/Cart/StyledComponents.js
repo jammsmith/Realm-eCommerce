@@ -119,7 +119,7 @@ export const ProductListWrapper = styled.div`
 `;
 
 export const DeliveryPrice = styled.h6`
-  ${({ isDeliveryFree }) => isDeliveryFree && ({
+  ${({ showLineThrough }) => showLineThrough && ({
     color: darkFade,
     textDecoration: 'line-through',
     marginRight: '0.5rem'

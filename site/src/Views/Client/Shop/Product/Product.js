@@ -91,8 +91,6 @@ const Product = ({ currency, ...other }) => {
 };
 
 Product.propTypes = {
-  currentUser: PropTypes.object.isRequired,
-  updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired

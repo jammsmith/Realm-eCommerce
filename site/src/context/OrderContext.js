@@ -24,6 +24,8 @@ export const OrderContextProvider = ({ children }) => {
 
   const deliveryZone = useRef();
 
+  useEffect(() => console.log('activeOrder', activeOrder), [activeOrder]);
+
   const getActiveOrder = useCallback(async () => {
     if (currentUser && currentUser.dbUser) {
       const user = currentUser.dbUser;
@@ -38,12 +40,17 @@ export const OrderContextProvider = ({ children }) => {
     }
   }, [currentUser, activeOrder]);
 
-  // Set the active order to the pending order if there is one
-  useEffect(() => getActiveOrder(), [getActiveOrder, activeOrder]);
+  // Set the active order to the pending order if there is one or just refetch the db user
+  // to make sure it stays consistent with active order changes
+  useEffect(() => {
+    if (!activeOrder || !Object.keys(activeOrder).length) {
+      getActiveOrder();
+    }
+  }, [getActiveOrder, activeOrder]);
 
   // Set the subtotal whenever the order is updated
   useEffect(() => {
-    if (activeOrder.orderItems && activeOrder.orderItems.length) {
+    if (activeOrder && activeOrder.orderItems && activeOrder.orderItems.length) {
       setSubtotal(getCartSubTotal(activeOrder, currency));
     } else {
       setSubtotal(0);
@@ -66,7 +73,7 @@ export const OrderContextProvider = ({ children }) => {
       setDeliveryPrice(price);
       deliveryZone.current = requestedCountry.deliveryZone;
     }
-  }, [deliveryCountry, deliveryZone, activeOrder.orderItems, currentUser, currency]);
+  }, [deliveryCountry, deliveryZone, activeOrder, currentUser, currency]);
 
   useEffect(() => getDeliveryPrice(), [getDeliveryPrice, deliveryCountry]);
 

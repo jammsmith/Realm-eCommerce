@@ -1,4 +1,3 @@
-// External imports
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { IoCartOutline, IoMailOutline } from 'react-icons/io5';
@@ -12,24 +11,23 @@ import useDDMutation from '../hooks/useDDMutation.js';
 import fonts from '../styles/fonts.js';
 import colours from '../styles/colours.js';
 import { OrderContext } from '../context/OrderContext.js';
+import { RealmAppContext } from '../realmApolloClient.js';
 
 const { standard } = fonts;
 const { dark, light } = colours;
 
-//
-const AddToCart = ({
-  product,
-  addingToCart,
-  updateAddingToCart,
-  currentUser,
-  updateCurrentUser
-}) => {
+const AddToCart = ({ product, addingToCart, updateAddingToCart }) => {
   const { activeOrder, setActiveOrder } = useContext(OrderContext);
+  const { currentUser, setCurrentUser } = useContext(RealmAppContext);
 
-  const history = useHistory();
   const [productInCart, setProductInCart] = useState(false);
   const [buttonText, setButtonText] = useState('');
+  const history = useHistory();
   const isLoading = addingToCart.isLoading && addingToCart.productId === product.product_id;
+
+  const updateCurrentUser = async (user) => {
+    await setCurrentUser(prev => ({ ...prev, dbUser: user }));
+  };
 
   useEffect(() => {
     if (activeOrder && activeOrder.orderItems && activeOrder.orderItems.length) {
@@ -181,8 +179,6 @@ const AddToCart = ({
 
 AddToCart.propTypes = {
   product: PropTypes.object.isRequired,
-  currentUser: PropTypes.object.isRequired,
-  updateCurrentUser: PropTypes.func.isRequired,
   addingToCart: PropTypes.object.isRequired,
   updateAddingToCart: PropTypes.func.isRequired
 };

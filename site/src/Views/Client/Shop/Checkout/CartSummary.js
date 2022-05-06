@@ -77,6 +77,27 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
   // Reset the active order on unmount
   useEffect(() => () => setActiveOrder({}), [setActiveOrder]);
 
+  // Get the delivery price to display
+  const getDeliveryPriceToDisplay = () => {
+    if (orderInCheckout || failedPayment) {
+      if (!deliveryPrice) {
+        return '-';
+      } else if (deliveryPrice === 0) {
+        return 'FREE';
+      } else {
+        return `${getCurrencySymbol(currency)}${deliveryPrice}`;
+      }
+    } else if (successfulPayment) {
+      if (completedDeliveryPrice === 0) {
+        return 'FREE';
+      } else if (!completedDeliveryPrice) {
+        return '-';
+      } else {
+        return `${getCurrencySymbol(currency)}${completedDeliveryPrice}`;
+      }
+    }
+  };
+
   return (
     <CartWrapper isMinimised>
       <ProductListWrapper>
@@ -104,12 +125,8 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
                   <TotalsLine>
                     <h6>Delivery</h6>
                     <Spacer />
-                    <DeliveryPrice isDeliveryFree={freeDelivery}>
-                      {
-                        !deliveryPrice && !completedDeliveryPrice
-                          ? ''
-                          : `${getCurrencySymbol(currency)}${completedDeliveryPrice || deliveryPrice}`
-                      }
+                    <DeliveryPrice showLineThrough={freeDelivery && deliveryPrice > 0}>
+                      {getDeliveryPriceToDisplay()}
                     </DeliveryPrice>
                     {freeDelivery && <h6>FREE</h6>}
                   </TotalsLine>
@@ -134,7 +151,6 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
             </>
           ) : <LoadingView />
         }
-
       </ProductListWrapper>
     </CartWrapper>
   );

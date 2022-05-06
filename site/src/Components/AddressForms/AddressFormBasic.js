@@ -230,7 +230,7 @@ const AddressFormBasic = ({
 AddressFormBasic.propTypes = {
   onAddressValid: PropTypes.func.isRequired,
   onEditting: PropTypes.func,
-  onPickUpInStore: PropTypes.func.isRequired,
+  onPickUpInStore: PropTypes.func,
   buttonText: PropTypes.string,
   successMessage: PropTypes.string,
   disableOnComplete: PropTypes.bool,

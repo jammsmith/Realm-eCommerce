@@ -1,13 +1,17 @@
-exports = async (paymentIntentId, stripeAmount, amount, reason, isFullRefund) => {
+exports = async (
+  paymentIntentId,
+  stripeAmount,
+  amount,
+  reason,
+  isFullRefund
+) => {
   /** Mongodb Realm has an ongoing problem with the stripe SDK which makes it run VERY slowly.
   Using Axios instead to perform stripe requests. **/
   const axios = require('axios');
   const qs = require('qs');
   const secretKey = context.values.get('STRIPE_SK_TEST');
 
-  const db = context.services
-    .get('mongodb-atlas')
-    .db('dovesAndDandysDB');
+  const db = context.services.get('mongodb-atlas').db('dovesAndDandysDB');
 
   try {
     // remove decimal place for stripe (12.77 should be 1277)
@@ -38,17 +42,22 @@ exports = async (paymentIntentId, stripeAmount, amount, reason, isFullRefund) =>
       reason,
       date: timestamp
     });
-    const dbRefund = await db.collection('refunds').findOne({ refund_id: refund.data.id });
+    const dbRefund = await db
+      .collection('refunds')
+      .findOne({ refund_id: refund.data.id });
 
     // update the order
     const orderUpdate = { dateRefunded: timestamp };
     if (isFullRefund) {
       orderUpdate.paymentStatus = 'refunded';
     }
-    await db.collection('orders').updateOne({ paymentIntentId }, {
-      $set: orderUpdate,
-      $push: { refunds: refund.data.id }
-    });
+    await db.collection('orders').updateOne(
+      { paymentIntentId },
+      {
+        $set: orderUpdate,
+        $push: { refunds: refund.data.id }
+      }
+    );
 
     const shallowParsed = JSON.parse(JSON.stringify(dbRefund));
     const amountParsed = JSON.parse(JSON.stringify(shallowParsed.amount));

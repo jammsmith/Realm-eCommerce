@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
@@ -76,25 +76,28 @@ export const RealmAppProvider = ({ children }) => {
     return { error };
   };
 
-  useEffect(() => {
-    const attachDbUser = async () => {
-      try {
-        const dbUser = await app.currentUser.functions.db_getFullUser(app.currentUser.id);
-        if (dbUser) {
-          if (currentUser.dbUser !== dbUser) {
-            setCurrentUser(prev => ({ ...prev, dbUser: dbUser }));
-          }
-        } else if (!currentUser.dbUser || Object.keys(currentUser.dbUser).length) {
-          setCurrentUser(prev => ({ ...prev, dbUser: {} }));
+  // Get the users db object and attach to Realm current user object
+  const getDbUser = useCallback(async () => {
+    try {
+      const dbUser = await app.currentUser.functions.db_getFullUser(app.currentUser.id);
+
+      if (dbUser) {
+        if (currentUser.dbUser !== dbUser) {
+          setCurrentUser(prev => ({ ...prev, dbUser: dbUser }));
         }
-      } catch (err) {
-        console.error('Failed to retrieve user details from db. Error:', err);
+      } else if (!currentUser.dbUser || Object.keys(currentUser.dbUser).length) {
+        setCurrentUser(prev => ({ ...prev, dbUser: {} }));
       }
-    };
-    if (currentUser && (!currentUser.dbUser || !currentUser.dbUser._id)) {
-      attachDbUser();
+    } catch (err) {
+      console.error('Failed to retrieve user details from db. Error:', err);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser && (!currentUser.dbUser || !currentUser.dbUser._id)) {
+      getDbUser();
+    }
+  }, [getDbUser]);
 
   const wrapped = {
     ...realmApp,
