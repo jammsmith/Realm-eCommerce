@@ -159,6 +159,7 @@ const Checkout = ({ stripePromise }) => {
           />
           <CartSummary
             willCustomerPickUpInStore={willCustomerPickUpInStore}
+            deliveryFormComplete={deliveryFormComplete}
           />
           <PaymentForm
             deliveryDetails={deliveryDetails}

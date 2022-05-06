@@ -23,7 +23,7 @@ import {
 } from '../Cart/StyledComponents.js';
 
 // A view of all products that have been added to basket
-const CartSummary = ({ willCustomerPickUpInStore }) => {
+const CartSummary = ({ willCustomerPickUpInStore, deliveryFormComplete }) => {
   useScrollToTop();
 
   const { currency } = useContext(CurrencyContext);
@@ -79,22 +79,20 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
 
   // Get the delivery price to display
   const getDeliveryPriceToDisplay = () => {
-    if (orderInCheckout || failedPayment) {
+    if ((deliveryFormComplete && orderInCheckout) || failedPayment) {
       if (!deliveryPrice) {
-        return '-';
-      } else if (deliveryPrice === 0) {
         return 'FREE';
       } else {
         return `${getCurrencySymbol(currency)}${deliveryPrice}`;
       }
     } else if (successfulPayment) {
-      if (completedDeliveryPrice === 0) {
-        return 'FREE';
-      } else if (!completedDeliveryPrice) {
-        return '-';
+      if (!completedDeliveryPrice) {
+        return `${getCurrencySymbol(currency)}0`;
       } else {
         return `${getCurrencySymbol(currency)}${completedDeliveryPrice}`;
       }
+    } else {
+      return '-';
     }
   };
 
@@ -128,7 +126,6 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
                     <DeliveryPrice showLineThrough={freeDelivery && deliveryPrice > 0}>
                       {getDeliveryPriceToDisplay()}
                     </DeliveryPrice>
-                    {freeDelivery && <h6>FREE</h6>}
                   </TotalsLine>
                   <TotalsLine>
                     <h6><strong>Total</strong></h6>
@@ -157,7 +154,8 @@ const CartSummary = ({ willCustomerPickUpInStore }) => {
 };
 
 CartSummary.propTypes = {
-  willCustomerPickUpInStore: PropTypes.object
+  willCustomerPickUpInStore: PropTypes.object,
+  deliveryFormComplete: PropTypes.bool
 };
 
 export default CartSummary;

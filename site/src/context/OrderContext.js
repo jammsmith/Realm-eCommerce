@@ -24,19 +24,10 @@ export const OrderContextProvider = ({ children }) => {
 
   const deliveryZone = useRef();
 
-  useEffect(() => console.log('activeOrder', activeOrder), [activeOrder]);
-
   const getActiveOrder = useCallback(async () => {
     if (currentUser && currentUser.dbUser) {
-      const user = currentUser.dbUser;
-
-      if (user.orders && user.orders.length) {
-        const order = user.orders.find(order => order.orderStatus === 'pendingInCart');
-
-        if (order && order !== activeOrder) {
-          setActiveOrder(order);
-        }
-      }
+      const activeOrder = await currentUser.functions.db_getActiveOrder(currentUser.dbUser.user_id);
+      setActiveOrder(activeOrder || {});
     }
   }, [currentUser, activeOrder]);
 

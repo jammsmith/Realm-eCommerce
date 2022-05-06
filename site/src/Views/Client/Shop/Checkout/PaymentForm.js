@@ -78,6 +78,7 @@ const PaymentForm = ({
       // If delivering or currency has changed after payment intent was created then make sure
       // payment intent is updated with currency & correct amount (including delivery price)
       const toBeDelivered = !willCustomerPickUpInStore.current;
+      console.log('toBeDelivered', toBeDelivered);
 
       if (toBeDelivered || currency.toLowerCase() !== paymentIntent.currency) {
         const updatedTotals = await app.currentUser.functions.stripe_updatePaymentTotals(
@@ -96,13 +97,14 @@ const PaymentForm = ({
       if (additionalInfo && additionalInfo.length) {
         variables.extraInfo = additionalInfo;
       }
-
       await updateOrder({ variables });
 
+      // Add delivery address details and update user if necessary
       let addressId = deliveryDetails.address_id || null;
 
       if (toBeDelivered) {
         if (!addressId || addressId === '') {
+          console.log('no stored address');
           // No address stored -> add a new address and assign to user if they're logged in
           const { data } = await createAddress({
             variables: {
@@ -112,7 +114,6 @@ const PaymentForm = ({
           });
           addressId = data.insertOneAddress.address_id;
 
-          // If user is logged in then save the new address as default address
           if (isAuthenticated(app.currentUser)) {
             const { dbUser } = app.currentUser;
             const { data } = await updateUserAddresses({
@@ -127,6 +128,7 @@ const PaymentForm = ({
             }));
           }
         } else {
+          console.log('stored address');
           // Address is stored -> update it if it's been changed during checkout
           const defaultAddress = getDefaultAddress(app.currentUser.dbUser.addresses);
           const { updatedFields, hasUpdatedFields } = getUpdatedObjectFields(defaultAddress, addressFields);
@@ -140,7 +142,19 @@ const PaymentForm = ({
             });
           }
         }
+
+        // Create a delivery with a link to the address and assign to the order
+        await addDeliveryDetailsToOrder({
+          variables: {
+            order_id: deliveryDetails.order_id,
+            delivery_id: deliveryDetails.delivery_id,
+            address_id: addressId,
+            ...deliveryFields
+          }
+        });
       } else {
+        // Order will be collected -> still create the delivery but don't attach an address
+        console.log('order to be collected');
         await addPickUpDetailsToOrder({
           variables: {
             order_id: deliveryDetails.order_id,
@@ -152,16 +166,6 @@ const PaymentForm = ({
           }
         });
       }
-
-      // Set a delivery on the order even if it isn't being physically delivered
-      await addDeliveryDetailsToOrder({
-        variables: {
-          order_id: deliveryDetails.order_id,
-          delivery_id: deliveryDetails.delivery_id,
-          address_id: addressId,
-          ...deliveryFields
-        }
-      });
 
       // Confirm payment with Stripe
       const { error: stripeError } = await stripe.confirmPayment({

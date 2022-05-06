@@ -16,6 +16,10 @@
         "private": false
     },
     {
+        "name": "db_getActiveOrder",
+        "private": false
+    },
+    {
         "name": "db_productSearch",
         "private": false
     },

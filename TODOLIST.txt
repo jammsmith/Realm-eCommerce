@@ -1,6 +1,1 @@
 
-------- Checkout testing -------
-
--> Guest user with no orders or addresses and pick-up in store checked. Following error on submit payment:
-
-    Error: must provide a "link" or "create" when inserting relationships
