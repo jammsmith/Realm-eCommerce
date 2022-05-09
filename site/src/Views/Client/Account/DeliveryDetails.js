@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import AddressFormBasic from '../../../Components/AddressForms/AddressFormBasic.js';
 import mutations from '../../../graphql/mutations.js';
 import useDDMutation from '../../../hooks/useDDMutation.js';
+import useBreakpoints from '../../../hooks/useBreakpoints.js';
 import { getDefaultAddress } from '../../../helpers/address.js';
 
 // Styled components
@@ -13,6 +14,8 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
   const [createAddress] = useDDMutation(mutations.CreateAddress);
   const [updateAddress] = useDDMutation(mutations.UpdateAddress);
   const [updateUserAddresses] = useDDMutation(mutations.UpdateUserAddresses);
+
+  const { isXs, isSm } = useBreakpoints();
 
   const onAddressValid = async (fields) => {
     try {
@@ -51,7 +54,7 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
   };
 
   return (
-    <Wrapper width='100%'>
+    <Wrapper width={isXs || isSm ? '100%' : null}>
       <AddressFormBasic
         onAddressValid={onAddressValid}
         buttonText='save address'
