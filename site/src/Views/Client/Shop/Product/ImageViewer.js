@@ -51,8 +51,8 @@ const ImageViewer = ({ images }) => {
         {
           images.map((img, index) => (
             img === currentImage
-              ? <SelectedImage key={index} src={img} onClick={() => setCurrentImage(img)} />
-              : <MiniImage key={index} src={img} onClick={() => setCurrentImage(img)} />
+              ? <SelectedImage key={index} src={img} alt='Main product image' onClick={() => setCurrentImage(img)} />
+              : <MiniImage key={index} src={img} alt='Secondary product image' onClick={() => setCurrentImage(img)} />
           ))
         }
       </AllImages>

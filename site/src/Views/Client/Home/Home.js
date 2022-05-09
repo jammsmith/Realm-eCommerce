@@ -48,16 +48,16 @@ const Home = () => {
       <SectionSpacer spaceAbove spaceBelow={(isMd || isLg)} dark />
       <GoToShopWrapper>
         <ImagesWrapper>
-          <PrimaryImage src='/images/gents-wear-landing-page.jpg' />
+          <PrimaryImage src='/images/gents-wear-landing-page.jpg' alt='Gents Wear' />
           <SecondaryImages>
-            <SecondaryImage src='/images/ladies-wear-landing-page.jpg' />
-            <SecondaryImage src='/images/old-west-leather-landing-page.jpg' />
+            <SecondaryImage src='/images/ladies-wear-landing-page.jpg' alt='Ladies Wear' />
+            <SecondaryImage src='/images/old-west-leather-landing-page.jpg' alt='Old West Leather' />
           </SecondaryImages>
         </ImagesWrapper>
         {
           isLg ? (
             <LargeScreenImageAndButton>
-              <TertiaryImage src='https://placedog.net/200/276' />
+              <TertiaryImage src='https://placedog.net/200/276' alt='Westernwear' />
               <ActionButton
                 text='Browse Shop'
                 linkTo='/shop'

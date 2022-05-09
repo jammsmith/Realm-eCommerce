@@ -41,6 +41,7 @@ const Footer = () => {
                     <FindUsOnFacebook
                       src='/images/find-us-on-facebook.png'
                       onClick={() => window.open('https://www.facebook.com/Doves-Dandys-143717172379125', '_blank')}
+                      alt='Find us on Facebook'
                     />
                     <MailIcon
                       onClick={() => history.push('/contact-us')}

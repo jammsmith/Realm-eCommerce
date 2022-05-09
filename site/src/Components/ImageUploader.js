@@ -151,7 +151,7 @@ const ImageUploader = ({ onUpload, onDelete, images, placeholderText, reset }) =
             ? images.map((imageUrl, index) => (
               <ThumbnailWrapper key={uniqueString()}>
                 <ThumbnailDeleteIcon size='1.5rem' onClick={(e) => handleDelete(e, imageUrl)} />
-                <ThumbnailImage src={imageUrl} />
+                <ThumbnailImage src={imageUrl} alt='Thumbnail image' />
               </ThumbnailWrapper>
             ))
             : <ImagePlaceholder>{placeholderText || 'No images yet!'}</ImagePlaceholder>
