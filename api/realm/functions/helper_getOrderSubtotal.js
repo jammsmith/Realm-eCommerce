@@ -16,6 +16,7 @@ exports = async (orderItems, currency) => {
 
     const reducer = (a, b) => a + b;
     const orderTotal = prices.reduce(reducer);
+    console.log('orderTotal', orderTotal);
 
     return orderTotal;
   } catch (err) {

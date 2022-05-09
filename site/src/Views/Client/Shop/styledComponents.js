@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const ShopBrowseWrapper = styled.div`
+  padding: 0 0.5rem;
   @media (min-width: 414px) {
     margin: 0 1rem;
   }

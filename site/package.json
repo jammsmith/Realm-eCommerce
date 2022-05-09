@@ -1,5 +1,6 @@
 {
   "name": "doves-and-dandys-app",
+  "homepage": "https://doves-and-dandys-fkaex.mongodbstitch.com",
   "version": "0.1.0",
   "private": true,
   "type": "module",
