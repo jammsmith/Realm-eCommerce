@@ -106,9 +106,15 @@ export const ServicesList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 1rem;
 `;
-export const ListItem = styled.p`
+export const ListItem = styled.div`
   font-size: 1.35rem;
+  display: flex;
+  gap: 1rem;
+  width: 300px;
+  margin-top: 0.5rem;
+  justify-content: center;
 `;
 export const LeatherIcon = styled(GiCowboyHolster)`
   font-size: 1.75rem;

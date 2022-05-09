@@ -1,8 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import Link from '../Link';
-import Image from '../Image';
+import Image from '../Image.js';
+import Link from '../Link.js';
 
 import {
   FooterOuterWrapper,

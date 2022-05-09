@@ -1,9 +1,10 @@
 exports = async (orderItems, currency) => {
   try {
     // Get prices for products and return total to pay
+    const dbName = context.values.get('DATABASE_NAME');
     const products = context.services
       .get('mongodb-atlas')
-      .db('dovesAndDandysDB')
+      .db(dbName)
       .collection('products');
 
     const pricesPromise = orderItems.map(async item => {
@@ -16,10 +17,10 @@ exports = async (orderItems, currency) => {
 
     const reducer = (a, b) => a + b;
     const orderTotal = prices.reduce(reducer);
+    console.log('orderTotal', orderTotal);
 
     return orderTotal;
   } catch (err) {
-    console.log('Failed to get order subtotal. Error:', err);
-    return null;
+    console.log(err);
   }
 };

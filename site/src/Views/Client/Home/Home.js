@@ -20,7 +20,7 @@ import {
 } from './styledComponents.js';
 
 const Home = () => {
-  const { isLg } = useBreakpoints();
+  const { isMd, isLg } = useBreakpoints();
 
   let buttonStyles = {
     height: '5rem',
@@ -39,12 +39,13 @@ const Home = () => {
   }
   return (
     <>
+      {(isMd || isLg) && <SectionSpacer spaceAbove />}
       <TextSection
         headingFontSize='3rem'
         heading='Makers of the finest bespoke, Victorian clothing and Old-West leather.'
         text='We specialise in individual designs and styles for both clothing and leather. We use only the finest materials available and all of our products are carefully researched and hand crafted by us.'
       />
-      <SectionSpacer spaceBelow dark />
+      <SectionSpacer spaceAbove spaceBelow={(isMd || isLg)} dark />
       <GoToShopWrapper>
         <ImagesWrapper>
           <PrimaryImage src='/images/gents-wear-landing-page.jpg' />

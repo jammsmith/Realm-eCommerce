@@ -6,11 +6,20 @@ node_modules
 /.pnp
 .pnp.js
 
+# realm
+/api/realm/realm_config.json
+/api/realm/auth
+/api/realm/values
+/api/realm/hosting
+/api/realm/realm-config
+/api/realm/data_sources/mongodb-atlas/config.json
+
 # testing
 /coverage
 
 # production
 /build
+/site/build
 
 # misc
 .DS_Store

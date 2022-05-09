@@ -2,8 +2,13 @@ import { createContext, useState, useEffect, useCallback } from 'react';
 import * as Realm from 'realm-web';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
-export const appId = 'doves-and-dandys-fkaex';
-const graphqlUri = `https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/${appId}/graphql`;
+import { getEnvVar } from './helpers/env.js';
+
+const appId = getEnvVar('REALM_APP_ID');
+const region = getEnvVar('REALM_APP_REGION');
+
+const graphqlUri = `https://${region}.aws.realm.mongodb.com/api/client/v2.0/app/${appId}/graphql`;
+
 const app = new Realm.App(appId);
 
 // Guarantee that there's a logged in user with a valid access token
@@ -40,6 +45,11 @@ export const RealmAppProvider = ({ children }) => {
   const [realmApp] = useState(app);
   const [currentUser, setCurrentUser] = useState(app.currentUser);
 
+  const loginAnon = useCallback(async () => {
+    const user = await app.logIn(Realm.Credentials.anonymous());
+    setCurrentUser(user);
+  }, []);
+
   const logIn = async (email, password) => {
     let error;
     let user;
@@ -65,9 +75,7 @@ export const RealmAppProvider = ({ children }) => {
           setCurrentUser(app.currentUser);
         } else {
           // Otherwise, create a new anonymous user and log them in.
-          const credentials = Realm.Credentials.anonymous();
-          const user = await app.logIn(credentials);
-          setCurrentUser(user);
+          await loginAnon();
         }
       }
     } catch (err) {
@@ -94,10 +102,12 @@ export const RealmAppProvider = ({ children }) => {
   }, [currentUser]);
 
   useEffect(() => {
-    if (currentUser && (!currentUser.dbUser || !currentUser.dbUser._id)) {
+    if (!currentUser) {
+      loginAnon();
+    } else if (currentUser && (!currentUser.dbUser || !currentUser.dbUser._id)) {
       getDbUser();
     }
-  }, [currentUser, getDbUser]);
+  }, [currentUser, getDbUser, loginAnon]);
 
   const wrapped = {
     ...realmApp,

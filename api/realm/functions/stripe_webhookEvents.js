@@ -3,7 +3,10 @@ exports = async (payload, response) => {
   const event = EJSON.parse(payload.body.text());
 
   // Handle payments
-  const db = context.services.get('mongodb-atlas').db('dovesAndDandysDB');
+  const dbName = context.values.get('DATABASE_NAME');
+  const db = context.services
+    .get('mongodb-atlas')
+    .db(dbName);
 
   const orders = db.collection('orders');
   const orderItems = db.collection('orderitems');

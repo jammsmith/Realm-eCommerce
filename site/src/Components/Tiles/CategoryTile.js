@@ -27,21 +27,20 @@ const Image = styled.img`
 
 export const CategoryCaption = styled.h1`
   background-color: ${lightFade};
-  border-radius: 30px;
   color: ${dark};
-  font-size: 2rem;
+  font-size: 1.5rem;
   padding: 0.5rem 1.5rem;
   position: absolute;
-  top: 43%;
-  left: 12.5%;
+  bottom: 0;
+  left: 0;
   text-align: center;
   transition: background-color 0.2s ease-in-out;
-  width: 75%;
+  width: 100%;
   :active,
   :focus,
   :hover {
     background-color: ${light};
-  }
+  };
 `;
 
 // Link to a specific category

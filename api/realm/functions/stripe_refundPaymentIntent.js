@@ -11,7 +11,10 @@ exports = async (
   const qs = require('qs');
   const secretKey = context.values.get('STRIPE_SK_TEST');
 
-  const db = context.services.get('mongodb-atlas').db('dovesAndDandysDB');
+  const dbName = context.values.get('DATABASE_NAME');
+  const db = context.services
+    .get('mongodb-atlas')
+    .db(dbName);
 
   try {
     // remove decimal place for stripe (12.77 should be 1277)

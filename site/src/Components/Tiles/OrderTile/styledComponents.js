@@ -52,14 +52,19 @@ export const CurrentStatus = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   font-size: 1.75rem;
   background-color: ${colours.green};
   color: #fff;
   padding: 1.5rem 0;
   overflow: hidden;
-    width: 340px;
+  width: 340px;
+
   @media (max-width: 768px) {
     width: 100%;
+  }
+  @media (max-width: 414px) {
+    font-size: 1.25rem;
   }
 `;
 export const Image = styled.img`

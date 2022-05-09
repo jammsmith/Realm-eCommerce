@@ -33,14 +33,14 @@
         "priceUSD": {
             "bsonType": "int"
         },
-        "weightInGrams": {
-            "bsonType": "int"
-        },
         "product_id": {
             "bsonType": "string"
         },
         "subCategory": {
             "bsonType": "string"
+        },
+        "weightInGrams": {
+            "bsonType": "int"
         }
     },
     "title": "Product"

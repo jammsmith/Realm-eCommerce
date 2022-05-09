@@ -46,6 +46,6 @@ exports = async (paymentIntentId, orderItems, deliveryZone, currency, freeDelive
       deliveryTotal: !deliveryIsFree ? deliveryTotal : 0
     };
   } catch (err) {
-    console.log('Realm function error -> getPaymentIntent.', err);
+    console.log(err);
   }
 };

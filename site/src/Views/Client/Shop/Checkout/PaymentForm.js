@@ -17,6 +17,7 @@ import { getFreeDeliveryConstraints } from '../../../../helpers/offers.js';
 import { isAuthenticated } from '../../../../helpers/auth.js';
 import { getUpdatedObjectFields } from '../../../../helpers/global.js';
 import { getDefaultAddress } from '../../../../helpers/address.js';
+import { getEnvVar } from '../../../../helpers/env.js';
 
 // Styled components
 import { CheckoutItem, PaymentFormItems } from './StyledComponents.js';
@@ -34,10 +35,12 @@ const PaymentForm = ({
   const { currency, setCurrency } = useContext(CurrencyContext);
   const { activeOrder, deliveryZone } = useContext(OrderContext);
 
-  const stripe = useStripe();
-  const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const stripe = useStripe();
+  const elements = useElements();
+  const url = getEnvVar('BASE_URL');
 
   const [createAddress] = useDDMutation(mutations.CreateAddress);
   const [updateAddress] = useDDMutation(mutations.UpdateAddress);
@@ -166,7 +169,7 @@ const PaymentForm = ({
       const { error: stripeError } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: 'http://localhost:3000/shop/checkout/summary'
+          return_url: `${url}/shop/checkout/summary`
         }
       });
 

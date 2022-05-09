@@ -17,7 +17,7 @@ const MyOrders = ({ dbUser }) => {
       {
         orders
           ? orders.map(order => <OrderTile key={order._id} order={order} />)
-          : 'no orders'
+          : 'No orders yet!'
       }
     </Wrapper>
   );

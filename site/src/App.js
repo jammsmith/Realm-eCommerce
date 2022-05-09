@@ -21,14 +21,14 @@ import PrivateAdminRoute from './Components/PrivateRoutes/PrivateAdminRoute.js';
 import { RealmAppContext } from './realmApolloClient.js';
 
 const App = () => {
-  const app = useContext(RealmAppContext);
+  const { currentUser } = useContext(RealmAppContext);
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-    if (app && app.currentUser && app.currentUser.dbUser) {
+    if (currentUser && currentUser.dbUser) {
       setAppReady(true);
     }
-  }, [app]);
+  }, [currentUser]);
 
   return (
     appReady ? (

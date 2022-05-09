@@ -117,9 +117,12 @@ export const ContactWrapper = styled.div`
 `;
 
 export const InfoLinksWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: none;
+  @media (min-width: 414px) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 `;
 // End
 
