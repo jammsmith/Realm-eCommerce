@@ -1,0 +1,47 @@
+{
+    "properties": {
+        "__v": {
+            "bsonType": "int"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "category": {
+            "bsonType": "string"
+        },
+        "description": {
+            "bsonType": "string"
+        },
+        "images": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "name": {
+            "bsonType": "string"
+        },
+        "numInStock": {
+            "bsonType": "int"
+        },
+        "priceEUR": {
+            "bsonType": "int"
+        },
+        "priceGBP": {
+            "bsonType": "int"
+        },
+        "priceUSD": {
+            "bsonType": "int"
+        },
+        "product_id": {
+            "bsonType": "string"
+        },
+        "subCategory": {
+            "bsonType": "string"
+        },
+        "weightInGrams": {
+            "bsonType": "int"
+        }
+    },
+    "title": "Product"
+}

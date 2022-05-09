@@ -1,0 +1,5 @@
+{
+    "name": "GRAPHQL_API_KEY",
+    "value": "graphqlApiKey",
+    "from_secret": true
+}

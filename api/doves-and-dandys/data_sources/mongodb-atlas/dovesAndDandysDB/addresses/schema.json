@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "__v": {
+            "bsonType": "int"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "address_id": {
+            "bsonType": "string"
+        },
+        "city": {
+            "bsonType": "string"
+        },
+        "country": {
+            "bsonType": "string"
+        },
+        "county": {
+            "bsonType": "string"
+        },
+        "isDefault": {
+            "bsonType": "boolean"
+        },
+        "line1": {
+            "bsonType": "string"
+        },
+        "line2": {
+            "bsonType": "string"
+        },
+        "postcode": {
+            "bsonType": "string"
+        }
+    },
+    "title": "Address"
+}

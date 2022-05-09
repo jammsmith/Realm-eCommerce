@@ -1,0 +1,5 @@
+{
+    "name": "S3_REGION",
+    "value": "s3_region",
+    "from_secret": true
+}

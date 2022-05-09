@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 module.exports = () => {
   dotenv.config();
 
-  const { MONGO_CONNECTION_URI } = process.env;
+  const { MONGO_CONNECTION_URI, DATABASE_NAME } = process.env;
 
   mongoose
     .connect(MONGO_CONNECTION_URI, {
@@ -15,5 +15,5 @@ module.exports = () => {
 
   const db = mongoose.connection;
   db.on('error', err => console.log(err));
-  db.once('open', () => console.log('Connected with dovesAndDandysDB'));
+  db.once('open', () => console.log(`Connected with ${DATABASE_NAME}`));
 };

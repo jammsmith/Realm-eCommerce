@@ -1,9 +1,10 @@
 exports = async function (productId) {
   console.log('product_id:', productId);
   try {
+    const dbName = context.values.get('DATABASE_NAME');
     const db = context.services
       .get('mongodb-atlas')
-      .db('dovesAndDandysDB');
+      .db(dbName);
 
     const products = db.collection('products');
     const subCategories = db.collection('subcategories');
