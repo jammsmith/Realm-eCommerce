@@ -1,6 +1,5 @@
 {
-    "enabled": true,
-    "app_default_domain": "doves-and-dandys-fkaex.mongodbstitch.com",
-    "default_error_path": "/index.html",
-    "default_error_code": "200"
+  "enabled": true,
+  "default_response_code": 200,
+  "default_error_path": "/index.html"
 }
