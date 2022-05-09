@@ -1,9 +1,0 @@
-{
-    "field_name": "categorySearch",
-    "function_name": "db_categorySearch",
-    "input_type": "string",
-    "input_type_format": "scalar",
-    "on_type": "Query",
-    "payload_type": "Category",
-    "payload_type_format": "generated-list"
-}

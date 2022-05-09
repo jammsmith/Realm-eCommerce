@@ -1,8 +1,0 @@
-{
-    "products": {
-        "ref": "#/relationship/mongodb-atlas/dovesAndDandysDB/products",
-        "source_key": "products",
-        "foreign_key": "product_id",
-        "is_list": true
-    }
-}
