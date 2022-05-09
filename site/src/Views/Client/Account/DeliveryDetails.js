@@ -51,7 +51,7 @@ const DeliveryDetails = ({ dbUser, updateDbUser }) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper width='100%'>
       <AddressFormBasic
         onAddressValid={onAddressValid}
         buttonText='save address'

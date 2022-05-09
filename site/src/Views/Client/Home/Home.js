@@ -39,12 +39,13 @@ const Home = () => {
   }
   return (
     <>
+      <SectionSpacer spaceAbove />
       <TextSection
         headingFontSize='3rem'
         heading='Makers of the finest bespoke, Victorian clothing and Old-West leather.'
         text='We specialise in individual designs and styles for both clothing and leather. We use only the finest materials available and all of our products are carefully researched and hand crafted by us.'
       />
-      <SectionSpacer spaceBelow dark />
+      <SectionSpacer spaceAbove spaceBelow dark />
       <GoToShopWrapper>
         <ImagesWrapper>
           <PrimaryImage src='/images/gents-wear-landing-page.jpg' />

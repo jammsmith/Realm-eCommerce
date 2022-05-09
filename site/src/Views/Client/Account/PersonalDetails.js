@@ -22,7 +22,7 @@ const PersonalDetails = ({ dbUser, updateDbUser }) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper width='100%'>
       <PersonalDetailsForm
         dbUser={dbUser}
         onValidDetails={handleValidDetails}

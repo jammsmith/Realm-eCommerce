@@ -24,13 +24,35 @@ import {
 } from './NavbarElements';
 
 const Navbar = ({ handleToggle }) => {
-  const { isMd, isLg } = useBreakpoints();
+  const breakpoints = useBreakpoints();
+
+  let currentBreakpoint;
+  for (const size in breakpoints) {
+    if (breakpoints[size] === true) {
+      currentBreakpoint = size;
+    }
+  }
+
+  let brand;
+  switch (currentBreakpoint) {
+    case 'isXs':
+      brand = 'D&D';
+      break;
+    case 'isSm':
+    case 'isMd':
+      brand = 'Doves & Dandys';
+      break;
+    case 'isLg':
+      brand = 'Doves & Dandys Westernwear';
+      break;
+    default: brand = 'Doves & Dandys Westernwear';
+  }
 
   return (
     <NavbarContainer>
       <NavbarNavigation>
         <NavbarHomeLink to='/'>
-          <NavbarBrand>Doves and Dandys{(isMd || isLg) && ' Westernwear'}</NavbarBrand>
+          <NavbarBrand>{brand}</NavbarBrand>
         </NavbarHomeLink>
         <NavbarSpacer />
         <NavbarLinksContainer>
@@ -74,6 +96,11 @@ const Navbar = ({ handleToggle }) => {
         </NavbarLinksContainer>
 
         <SmallScreenOptions>
+          <NavbarCart>
+            <NavbarLink className='link' to='/shop/cart'>
+              <IoCartOutline size={30} />
+            </NavbarLink>
+          </NavbarCart>
           <CurrencySelection />
           <NavbarToggleIcon size={25} onClick={handleToggle} />
         </SmallScreenOptions>
