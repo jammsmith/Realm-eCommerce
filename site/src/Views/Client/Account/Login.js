@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import uniqueString from 'unique-string';
 import styled from 'styled-components';
 
@@ -14,7 +14,7 @@ import useDDMutation from '../../../hooks/useDDMutation.js';
 import colours from '../../../styles/colours.js';
 
 // Styled components
-const LoginWrapper = styled.div`
+export const LoginWrapper = styled.div`
   border-radius: 5px;
   box-shadow: -3px -1px 10px 2px rgba(0,0,0,0.2);
   padding: 1rem;
@@ -27,7 +27,16 @@ const LoginWrapper = styled.div`
 const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
+  margin: 1rem 0 0.5rem 0;
+`;
+const ForgotPassword = styled(Link)`
+  color: ${colours.dark};
+  text-decoration: none;
+  :hover {
+    color: ${colours.dark};
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;
 
 const Login = ({ form }) => {
@@ -231,6 +240,7 @@ const Login = ({ form }) => {
           </ButtonsWrapper>
         )
       }
+      {formType === 'login' && <ForgotPassword to='/forgotPassword'>Forgotten your password?</ForgotPassword>}
       {errorMessage && <UserMessage text={errorMessage} type='error' />}
     </LoginWrapper>
   );
