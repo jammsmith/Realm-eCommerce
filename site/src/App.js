@@ -9,6 +9,8 @@ import AboutUs from './Views/Client/AboutUs/AboutUs.js';
 import ContactUs from './Views/Client/ContactUs/ContactUs.js';
 import CustomerInfo from './Views/Client/CustomerInfo/CustomerInfo.js';
 import Account from './Views/Client/Account/Account.js';
+import ForgottenPassword from './Views/Client/Account/ForgottenPassword.js';
+import ResetPassword from './Views/Client/Account/ResetPassword.js';
 import Login from './Views/Client/Account/Login.js';
 import Error404 from './Views/Error/Error404.js';
 
@@ -75,6 +77,22 @@ const App = () => {
             render={() =>
               <ClientView>
                 <Login />
+              </ClientView>}
+          />
+          <Route
+            exact
+            path='/forgotPassword'
+            render={() =>
+              <ClientView>
+                <ForgottenPassword />
+              </ClientView>}
+          />
+          <Route
+            exact
+            path='/resetPassword'
+            render={() =>
+              <ClientView>
+                <ResetPassword />
               </ClientView>}
           />
           <PrivateClientRoute

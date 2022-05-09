@@ -14,10 +14,8 @@
         "type": "local-userpass",
         "config": {
             "autoConfirm": true,
-            "confirmEmailSubject": "Confirm your email address",
-            "emailConfirmationUrl": "https://us-east-1.aws.data.mongodb-api.com/app/doves-and-dandys-fkaex/endpoint/confirmEmailAddress",
-            "resetPasswordSubject": "Here's a link to reset your 'Doves and Dandys Westernwear' password",
-            "resetPasswordUrl": "https://us-east-1.aws.data.mongodb-api.com/app/doves-and-dandys-fkaex/endpoint/resetPassword",
+            "resetPasswordSubject": "Here's a link to reset your Doves and Dandys Westernwear password",
+            "resetPasswordUrl": "http://localhost:3000/resetPassword",
             "runConfirmationFunction": false,
             "runResetFunction": false
         },

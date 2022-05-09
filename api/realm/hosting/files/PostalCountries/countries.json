@@ -1,0 +1,182 @@
+[
+  {
+    "country": "Russia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Germany",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "United Kingdom",
+    "deliveryZone": "uk"
+  },
+  {
+    "country": "France",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Italy",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Spain",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Ukraine",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Poland",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Romania",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Netherlands",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Belgium",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Czech Republic",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Greece",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Portugal",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Sweden",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Hungary",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Belarus",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Austria",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Serbia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Switzerland",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Bulgaria",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Denmark",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Finland",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Slovakia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Norway",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Republic of Ireland",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Northern Ireland",
+    "deliveryZone": "uk"
+  },
+  {
+    "country": "Croatia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Moldova",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Bosnia and Herzegovina",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Albania",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Lithuania",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "North Macedonia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Slovenia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Latvia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Estonia",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Montenegro",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Luxembourg",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Malta",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Iceland",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Andorra",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Monaco",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "Liechtenstein",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "San Marino",
+    "deliveryZone": "europe"
+  },
+  {
+    "country": "USA",
+    "deliveryZone": "usa"
+  }
+]
